@@ -6,8 +6,8 @@
     ./config
     ./zed
     ./neovim
-    ./niri
-    ./niri/quickshell
+    ./hyprland
+    ./hyprland/quickshell
   ];
   home.file."NAS" = {source = config.lib.file.mkOutOfStoreSymlink "/NAS";};
 }

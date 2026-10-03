@@ -10,7 +10,7 @@
       ../../modules/nixos/services
       ../../modules/nixos/greetd.nix
       ../../modules/nixos/audio.nix
-      ../../modules/nixos/niri.nix
+      ../../modules/nixos/hyprland.nix
     ];
 
   boot = {

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Switch theme — btop, gdu, fastfetch, ghostty, kitty, yazi, nvim, gtk, qt, niri, wallpaper,
 # discord, element, steam, heroic, obsidian, obs, firefox, userstyles, jellyfin, kopuz, cider,
-# blender, kdeglobals, hyprlock, tuta, opencode, vibe
+# blender, kdeglobals, hyprlock, tuta, opencode
 
 MODE="full"
 THEME_FILE="$HOME/.config/quickshell/.current-theme"
@@ -118,7 +118,6 @@ if [ "$MODE" = "background" ]; then
   gen_kdeglobals
   switch_tuta
   switch_opencode
-  switch_vibe
   echo "Finished background theme update: ${C[name]}"
   exit 0
 fi
