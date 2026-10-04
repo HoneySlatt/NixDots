@@ -25,7 +25,7 @@
     "Mod+Shift+T".action.spawn = "toggle-quickshell";
     "Mod+Shift+Q".action.spawn = "toggle-quickshell";
     "Mod+Shift+W".action.spawn = "toggle-bar-position";
-    "Mod+Shift+V".action.spawn = "toggle-tailscale";
+    "Mod+Shift+V".action.spawn = "toggle-nym";
     "Mod+Ctrl+V".action.spawn = "toggle-vpn-launcher";
     "Mod+U".action.spawn = "toggle-nsfw";
     "Mod+S".action.screenshot = { };

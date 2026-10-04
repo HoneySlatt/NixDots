@@ -137,7 +137,7 @@ in
       (bind "SUPER + SHIFT + T" (exec "toggle-quickshell"))
       (bind "SUPER + SHIFT + Q" (exec "toggle-quickshell"))
       (bind "SUPER + SHIFT + W" (exec "toggle-bar-position"))
-      (bind "SUPER + SHIFT + V" (exec "toggle-tailscale"))
+      (bind "SUPER + SHIFT + V" (exec "toggle-nym"))
       (bind "SUPER + CTRL + V" (exec "toggle-vpn-launcher"))
       (bind "SUPER + U" (exec "toggle-nsfw"))
       (bind "SUPER + S" (exec "hyprquickshot-toggle"))

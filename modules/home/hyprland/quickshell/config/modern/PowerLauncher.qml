@@ -495,7 +495,7 @@ Item {
 
             Process {
                 id: vpnToggleProc
-                command: ["bash", "/home/honey/NixOS/modules/home/hyprland/quickshell/config/scripts/toggle-tailscale-exit-node.sh"]
+                command: ["/etc/profiles/per-user/honey/bin/toggle-nym"]
                 running: false
             }
 
@@ -596,7 +596,7 @@ Item {
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
                                 icon: "\uf132"
-                                title: "Tailscale"
+                                title: "NymVPN"
                                 subtitle: NetworkState.vpnConnected ? "On" : "Off"
                                 active: NetworkState.vpnConnected
                                 onClicked: vpnToggleProc.running = true

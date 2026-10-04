@@ -9,6 +9,9 @@ Item {
     id: scope
 
     property var allNodes: []
+    property string vpnState: ""
+    property string entryCountry: ""
+    property string exitCountry: ""
 
     function refreshNodes() {
         nodesProc.buffer = "";
@@ -17,7 +20,7 @@ Item {
 
     Process {
         id: nodesProc
-        command: ["bash", "/home/honey/NixOS/modules/home/hyprland/quickshell/config/scripts/tailscale-exit-nodes.sh"]
+        command: ["/etc/profiles/per-user/honey/bin/nym-countries"]
         running: false
         property string buffer: ""
 
@@ -25,7 +28,11 @@ Item {
 
         onExited: {
             try {
-                scope.allNodes = JSON.parse(nodesProc.buffer);
+                const data = JSON.parse(nodesProc.buffer);
+                scope.vpnState = data.state;
+                scope.entryCountry = data.entry;
+                scope.exitCountry = data.exit;
+                scope.allNodes = data.countries;
             } catch (e) {
                 scope.allNodes = [];
             }
@@ -79,7 +86,13 @@ Item {
             property int selectedIndex: 0
             property var filteredNodes: []
             readonly property var selectedNode: filteredNodes.length > 0 ? filteredNodes[selectedIndex] : null
-            readonly property var activeNode: scope.allNodes.find(n => n.selected) ?? null
+            // Entry is picked first, then exit
+            property string step: "entry"
+            property var pendingEntry: null
+
+            function isCurrent(node) {
+                return step === "entry" ? node.entry : node.exit;
+            }
 
             color: "transparent"
             WlrLayershell.namespace: "quickshell:vpnlauncher"
@@ -92,7 +105,7 @@ Item {
                 const q = searchQuery.toLowerCase();
                 filteredNodes = q.length === 0
                     ? scope.allNodes
-                    : scope.allNodes.filter(n => (n.host + " " + n.country + " " + n.city + " " + n.ip).toLowerCase().includes(q));
+                    : scope.allNodes.filter(n => (n.name + " " + n.code).toLowerCase().includes(q));
                 selectedIndex = Math.max(0, Math.min(selectedIndex, filteredNodes.length - 1));
                 nodeList.currentIndex = selectedIndex;
                 Qt.callLater(centerSelection);
@@ -104,6 +117,8 @@ Item {
             }
 
             function initializeLauncher() {
+                step = "entry";
+                pendingEntry = null;
                 searchField.text = "";
                 searchQuery = "";
                 selectedIndex = 0;
@@ -115,13 +130,27 @@ Item {
 
             function setSelectedNode() {
                 if (!selectedNode) return;
-                setNodeProc.command = ["bash", "/home/honey/NixOS/modules/home/hyprland/quickshell/config/scripts/toggle-tailscale-exit-node.sh", selectedNode.host];
-                setNodeProc.running = true;
+                if (step === "entry") {
+                    pendingEntry = selectedNode;
+                    step = "exit";
+                    searchField.text = "";
+                    selectedIndex = Math.max(0, scope.allNodes.findIndex(n => n.exit));
+                    return;
+                }
+                // Connecting takes several seconds, so detach and close right away
+                Quickshell.execDetached(["/etc/profiles/per-user/honey/bin/toggle-nym", "set", pendingEntry.code, selectedNode.code]);
+                VpnLauncherState.close();
             }
 
             function clearNode() {
-                setNodeProc.command = ["bash", "/home/honey/NixOS/modules/home/hyprland/quickshell/config/scripts/toggle-tailscale-exit-node.sh", "off"];
-                setNodeProc.running = true;
+                Quickshell.execDetached(["/etc/profiles/per-user/honey/bin/toggle-nym", "off"]);
+                VpnLauncherState.close();
+            }
+
+            function previousStep() {
+                step = "entry";
+                selectedIndex = Math.max(0, scope.allNodes.findIndex(n => n.code === pendingEntry.code));
+                pendingEntry = null;
             }
 
             function handleKey(event) {
@@ -138,6 +167,7 @@ Item {
                     event.accepted = true;
                     return;
                 }
+                if (event.key === Qt.Key_Backspace && searchField.text.length === 0 && step === "exit") { previousStep(); event.accepted = true; return; }
                 if (event.key === Qt.Key_Backspace) { searchField.text = searchField.text.slice(0, -1); event.accepted = true; return; }
                 if (event.text.length > 0 && !event.modifiers) { searchField.text += event.text; event.accepted = true; }
             }
@@ -149,15 +179,6 @@ Item {
             onSearchQueryChanged: filterList()
 
             Connections { target: scope; function onAllNodesChanged() { root.filterList(); } }
-
-            Process {
-                id: setNodeProc
-                running: false
-                onExited: {
-                    scope.refreshNodes();
-                    VpnLauncherState.close();
-                }
-            }
 
             HyprlandFocusGrab {
                 id: grab
@@ -208,7 +229,7 @@ Item {
                                 spacing: 5
 
                                 Text {
-                                    text: "Mullvad Exit Nodes"
+                                    text: root.step === "entry" ? "NymVPN Entry" : "NymVPN Exit"
                                     color: Theme.text
                                     font.family: Theme.fontFamily
                                     font.pixelSize: Theme.fontSize + 12
@@ -216,8 +237,10 @@ Item {
                                 }
 
                                 Text {
-                                    text: root.activeNode ? (root.activeNode.country + " / " + root.activeNode.city + " / " + root.activeNode.host) : "No exit node selected"
-                                    color: root.activeNode ? Theme.accent : Theme.muted
+                                    text: root.step === "exit"
+                                        ? "Entry " + root.pendingEntry.name + ", choose exit country"
+                                        : scope.vpnState + "   " + (scope.entryCountry || "random") + " -> " + (scope.exitCountry || "random")
+                                    color: scope.vpnState === "Connected" ? Theme.accent : Theme.muted
                                     font.family: Theme.fontFamily
                                     font.pixelSize: Theme.fontSize
                                     elide: Text.ElideRight
@@ -273,7 +296,7 @@ Item {
                                     Text {
                                         anchors.fill: parent
                                         verticalAlignment: Text.AlignVCenter
-                                        text: "Search country, city, host, IP..."
+                                        text: "Search country..."
                                         color: Theme.muted
                                         visible: searchField.text.length === 0
                                         font.family: searchField.font.family
@@ -300,7 +323,7 @@ Item {
                                 width: nodeList.width
                                 height: 72
                                 radius: 18
-                                color: modelData.selected
+                                color: root.isCurrent(modelData)
                                     ? Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.22)
                                     : index === root.selectedIndex
                                         ? Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.075)
@@ -314,17 +337,17 @@ Item {
                                     anchors.rightMargin: 18
                                     spacing: 16
 
-                                    Text { text: modelData.selected ? "\uf058" : "\uf132"; color: modelData.selected ? Theme.accent : Theme.muted; font.family: Theme.fontFamily; font.pixelSize: Theme.fontSize + 10; Layout.alignment: Qt.AlignVCenter }
+                                    Text { text: root.isCurrent(modelData) ? "\uf058" : "\uf132"; color: root.isCurrent(modelData) ? Theme.accent : Theme.muted; font.family: Theme.fontFamily; font.pixelSize: Theme.fontSize + 10; Layout.alignment: Qt.AlignVCenter }
 
                                     ColumnLayout {
                                         Layout.fillWidth: true
                                         spacing: 3
 
-                                        Text { text: modelData.country + " / " + modelData.city; color: Theme.text; font.family: Theme.fontFamily; font.pixelSize: Theme.fontSize + 1; font.weight: Font.Bold; elide: Text.ElideRight; Layout.fillWidth: true }
-                                        Text { text: modelData.host; color: Theme.muted; font.family: Theme.fontFamily; font.pixelSize: Theme.fontSize - 1; elide: Text.ElideRight; Layout.fillWidth: true }
+                                        Text { text: modelData.name; color: Theme.text; font.family: Theme.fontFamily; font.pixelSize: Theme.fontSize + 1; font.weight: Font.Bold; elide: Text.ElideRight; Layout.fillWidth: true }
+                                        Text { text: modelData.servers + (modelData.servers === 1 ? " server" : " servers"); color: Theme.muted; font.family: Theme.fontFamily; font.pixelSize: Theme.fontSize - 1; elide: Text.ElideRight; Layout.fillWidth: true }
                                     }
 
-                                    Text { text: modelData.ip; color: Theme.muted; font.family: Theme.fontFamily; font.pixelSize: Theme.fontSize - 1; Layout.alignment: Qt.AlignVCenter }
+                                    Text { text: modelData.code; color: Theme.muted; font.family: Theme.fontFamily; font.pixelSize: Theme.fontSize - 1; Layout.alignment: Qt.AlignVCenter }
                                 }
 
                                 MouseArea {
@@ -339,8 +362,8 @@ Item {
 
                         RowLayout {
                             Layout.fillWidth: true
-                            Text { text: "j/k navigate   enter select   o off   esc close"; color: Theme.muted; font.family: Theme.fontFamily; font.pixelSize: Theme.fontSize - 1; Layout.fillWidth: true }
-                            Text { text: root.filteredNodes.length + " nodes"; color: Theme.muted; font.family: Theme.fontFamily; font.pixelSize: Theme.fontSize - 1 }
+                            Text { text: "j/k navigate   enter select   backspace back   o off   esc close"; color: Theme.muted; font.family: Theme.fontFamily; font.pixelSize: Theme.fontSize - 1; Layout.fillWidth: true }
+                            Text { text: root.filteredNodes.length + " countries"; color: Theme.muted; font.family: Theme.fontFamily; font.pixelSize: Theme.fontSize - 1 }
                         }
                     }
                 }

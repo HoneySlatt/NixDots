@@ -8,6 +8,9 @@ Item {
     id: scope
 
     property var allNodes: []
+    property string vpnState: ""
+    property string entryCountry: ""
+    property string exitCountry: ""
 
     function refreshNodes() {
         nodesProc.buffer = "";
@@ -16,7 +19,7 @@ Item {
 
     Process {
         id: nodesProc
-        command: ["bash", "/home/honey/NixOS/modules/home/niri/quickshell/config/scripts/tailscale-exit-nodes.sh"]
+        command: ["/etc/profiles/per-user/honey/bin/nym-countries"]
         running: false
         property string buffer: ""
 
@@ -24,7 +27,11 @@ Item {
 
         onExited: {
             try {
-                scope.allNodes = JSON.parse(nodesProc.buffer);
+                const data = JSON.parse(nodesProc.buffer);
+                scope.vpnState = data.state;
+                scope.entryCountry = data.entry;
+                scope.exitCountry = data.exit;
+                scope.allNodes = data.countries;
             } catch (e) {
                 scope.allNodes = [];
             }
@@ -50,7 +57,13 @@ Item {
             property int selectedIndex: 0
             property var filteredNodes: []
             readonly property var selectedNode: filteredNodes.length > 0 ? filteredNodes[selectedIndex] : null
-            readonly property var activeNode: scope.allNodes.find(n => n.selected) ?? null
+            // Entry is picked first, then exit
+            property string step: "entry"
+            property var pendingEntry: null
+
+            function isCurrent(node) {
+                return step === "entry" ? node.entry : node.exit;
+            }
 
             color: "transparent"
             WlrLayershell.namespace: "quickshell:tui:vpnlauncher"
@@ -62,7 +75,7 @@ Item {
                 const q = searchQuery.toLowerCase();
                 filteredNodes = q.length === 0
                     ? scope.allNodes
-                    : scope.allNodes.filter(n => (n.host + " " + n.country + " " + n.city + " " + n.ip).toLowerCase().includes(q));
+                    : scope.allNodes.filter(n => (n.name + " " + n.code).toLowerCase().includes(q));
                 selectedIndex = Math.max(0, Math.min(selectedIndex, filteredNodes.length - 1));
                 nodeList.currentIndex = selectedIndex;
                 Qt.callLater(centerSelection);
@@ -74,6 +87,8 @@ Item {
             }
 
             function initializeLauncher() {
+                step = "entry";
+                pendingEntry = null;
                 searchField.text = "";
                 searchQuery = "";
                 selectedIndex = 0;
@@ -84,13 +99,27 @@ Item {
 
             function setSelectedNode() {
                 if (!selectedNode) return;
-                setNodeProc.command = ["bash", "/home/honey/NixOS/modules/home/niri/quickshell/config/scripts/toggle-tailscale-exit-node.sh", selectedNode.host];
-                setNodeProc.running = true;
+                if (step === "entry") {
+                    pendingEntry = selectedNode;
+                    step = "exit";
+                    searchField.text = "";
+                    selectedIndex = Math.max(0, scope.allNodes.findIndex(n => n.exit));
+                    return;
+                }
+                // Connecting takes several seconds, so detach and close right away
+                Quickshell.execDetached(["/etc/profiles/per-user/honey/bin/toggle-nym", "set", pendingEntry.code, selectedNode.code]);
+                TuiVpnLauncherState.close();
             }
 
             function clearNode() {
-                setNodeProc.command = ["bash", "/home/honey/NixOS/modules/home/niri/quickshell/config/scripts/toggle-tailscale-exit-node.sh", "off"];
-                setNodeProc.running = true;
+                Quickshell.execDetached(["/etc/profiles/per-user/honey/bin/toggle-nym", "off"]);
+                TuiVpnLauncherState.close();
+            }
+
+            function previousStep() {
+                step = "entry";
+                selectedIndex = Math.max(0, scope.allNodes.findIndex(n => n.code === pendingEntry.code));
+                pendingEntry = null;
             }
 
             function handleKey(event) {
@@ -107,6 +136,7 @@ Item {
                     event.accepted = true;
                     return;
                 }
+                if (event.key === Qt.Key_Backspace && searchField.text.length === 0 && step === "exit") { previousStep(); event.accepted = true; return; }
                 if (event.key === Qt.Key_Backspace) { searchField.text = searchField.text.slice(0, -1); event.accepted = true; return; }
                 if (event.text.length > 0 && !event.modifiers) { searchField.text += event.text; event.accepted = true; }
             }
@@ -118,15 +148,6 @@ Item {
             onSearchQueryChanged: filterList()
 
             Connections { target: scope; function onAllNodesChanged() { root.filterList(); } }
-
-            Process {
-                id: setNodeProc
-                running: false
-                onExited: {
-                    scope.refreshNodes();
-                    TuiVpnLauncherState.close();
-                }
-            }
 
             Timer { id: focusTimer; interval: 80; repeat: false; onTriggered: panel.forceActiveFocus() }
 
@@ -174,7 +195,7 @@ Item {
                             Text {
                                 width: 230
                                 height: parent.height
-                                text: "VPN EXIT NODES"
+                                text: root.step === "entry" ? "NYM ENTRY" : "NYM EXIT"
                                 color: TuiTheme.highlight
                                 font.family: TuiTheme.fontFamily
                                 font.pixelSize: TuiTheme.fontSize + 3
@@ -185,8 +206,10 @@ Item {
                             Text {
                                 width: parent.width - 400
                                 height: parent.height
-                                text: root.activeNode ? (root.activeNode.country + " / " + root.activeNode.city + " / " + root.activeNode.host) : "NO EXIT NODE SELECTED"
-                                color: root.activeNode ? TuiTheme.accent : TuiTheme.barMuted
+                                text: root.step === "exit"
+                                    ? "ENTRY " + root.pendingEntry.code + ", CHOOSE EXIT"
+                                    : (scope.vpnState + "   " + (scope.entryCountry || "random") + " -> " + (scope.exitCountry || "random")).toUpperCase()
+                                color: scope.vpnState === "Connected" ? TuiTheme.accent : TuiTheme.barMuted
                                 font.family: TuiTheme.fontFamily
                                 font.pixelSize: TuiTheme.fontSize
                                 font.weight: TuiTheme.fontWeight
@@ -261,7 +284,7 @@ Item {
                                 Text {
                                     anchors.fill: parent
                                     verticalAlignment: Text.AlignVCenter
-                                    text: "search country / city / host / ip..."
+                                    text: "search country..."
                                     color: TuiTheme.barMuted
                                     font.family: searchField.font.family
                                     font.pixelSize: searchField.font.pixelSize
@@ -285,10 +308,9 @@ Item {
                             anchors.rightMargin: 12
 
                             Text { width: 36; height: parent.height; text: "ST"; color: TuiTheme.barMuted; font.family: TuiTheme.fontFamily; font.pixelSize: TuiTheme.fontSize; font.weight: TuiTheme.fontWeight; verticalAlignment: Text.AlignVCenter }
-                            Text { width: 170; height: parent.height; text: "COUNTRY"; color: TuiTheme.barMuted; font.family: TuiTheme.fontFamily; font.pixelSize: TuiTheme.fontSize; font.weight: TuiTheme.fontWeight; verticalAlignment: Text.AlignVCenter }
-                            Text { width: 180; height: parent.height; text: "CITY"; color: TuiTheme.barMuted; font.family: TuiTheme.fontFamily; font.pixelSize: TuiTheme.fontSize; font.weight: TuiTheme.fontWeight; verticalAlignment: Text.AlignVCenter }
-                            Text { width: parent.width - 620; height: parent.height; text: "HOST"; color: TuiTheme.barMuted; font.family: TuiTheme.fontFamily; font.pixelSize: TuiTheme.fontSize; font.weight: TuiTheme.fontWeight; verticalAlignment: Text.AlignVCenter }
-                            Text { width: 180; height: parent.height; text: "IP"; color: TuiTheme.barMuted; font.family: TuiTheme.fontFamily; font.pixelSize: TuiTheme.fontSize; font.weight: TuiTheme.fontWeight; verticalAlignment: Text.AlignVCenter }
+                            Text { width: parent.width - 432; height: parent.height; text: "COUNTRY"; color: TuiTheme.barMuted; font.family: TuiTheme.fontFamily; font.pixelSize: TuiTheme.fontSize; font.weight: TuiTheme.fontWeight; verticalAlignment: Text.AlignVCenter }
+                            Text { width: 180; height: parent.height; text: "CODE"; color: TuiTheme.barMuted; font.family: TuiTheme.fontFamily; font.pixelSize: TuiTheme.fontSize; font.weight: TuiTheme.fontWeight; verticalAlignment: Text.AlignVCenter }
+                            Text { width: 180; height: parent.height; text: "SERVERS"; color: TuiTheme.barMuted; font.family: TuiTheme.fontFamily; font.pixelSize: TuiTheme.fontSize; font.weight: TuiTheme.fontWeight; verticalAlignment: Text.AlignVCenter }
                         }
                     }
 
@@ -308,7 +330,7 @@ Item {
 
                             width: nodeList.width
                             height: 38
-                            color: modelData.selected
+                            color: root.isCurrent(modelData)
                                 ? TuiTheme.highlight
                                 : index === root.selectedIndex
                                     ? TuiTheme.dim
@@ -321,11 +343,10 @@ Item {
                                 anchors.leftMargin: 12
                                 anchors.rightMargin: 12
 
-                                Text { width: 36; height: parent.height; text: modelData.selected ? "*" : "-"; color: modelData.selected ? TuiTheme.bg : TuiTheme.fg; font.family: TuiTheme.fontFamily; font.pixelSize: TuiTheme.fontSize; font.weight: TuiTheme.fontWeight; verticalAlignment: Text.AlignVCenter }
-                                Text { width: 170; height: parent.height; text: modelData.country; color: modelData.selected ? TuiTheme.bg : TuiTheme.fg; font.family: TuiTheme.fontFamily; font.pixelSize: TuiTheme.fontSize; font.weight: TuiTheme.fontWeight; verticalAlignment: Text.AlignVCenter; elide: Text.ElideRight }
-                                Text { width: 180; height: parent.height; text: modelData.city; color: modelData.selected ? TuiTheme.bg : TuiTheme.fg; font.family: TuiTheme.fontFamily; font.pixelSize: TuiTheme.fontSize; font.weight: TuiTheme.fontWeight; verticalAlignment: Text.AlignVCenter; elide: Text.ElideRight }
-                                Text { width: parent.width - 620; height: parent.height; text: modelData.host; color: modelData.selected ? TuiTheme.bg : TuiTheme.fg; font.family: TuiTheme.fontFamily; font.pixelSize: TuiTheme.fontSize; font.weight: TuiTheme.fontWeight; verticalAlignment: Text.AlignVCenter; elide: Text.ElideRight }
-                                Text { width: 180; height: parent.height; text: modelData.ip; color: modelData.selected ? TuiTheme.bg : TuiTheme.barMuted; font.family: TuiTheme.fontFamily; font.pixelSize: TuiTheme.fontSize; font.weight: TuiTheme.fontWeight; verticalAlignment: Text.AlignVCenter; elide: Text.ElideRight }
+                                Text { width: 36; height: parent.height; text: root.isCurrent(modelData) ? "*" : "-"; color: root.isCurrent(modelData) ? TuiTheme.bg : TuiTheme.fg; font.family: TuiTheme.fontFamily; font.pixelSize: TuiTheme.fontSize; font.weight: TuiTheme.fontWeight; verticalAlignment: Text.AlignVCenter }
+                                Text { width: parent.width - 432; height: parent.height; text: modelData.name; color: root.isCurrent(modelData) ? TuiTheme.bg : TuiTheme.fg; font.family: TuiTheme.fontFamily; font.pixelSize: TuiTheme.fontSize; font.weight: TuiTheme.fontWeight; verticalAlignment: Text.AlignVCenter; elide: Text.ElideRight }
+                                Text { width: 180; height: parent.height; text: modelData.code; color: root.isCurrent(modelData) ? TuiTheme.bg : TuiTheme.fg; font.family: TuiTheme.fontFamily; font.pixelSize: TuiTheme.fontSize; font.weight: TuiTheme.fontWeight; verticalAlignment: Text.AlignVCenter; elide: Text.ElideRight }
+                                Text { width: 180; height: parent.height; text: modelData.servers; color: root.isCurrent(modelData) ? TuiTheme.bg : TuiTheme.barMuted; font.family: TuiTheme.fontFamily; font.pixelSize: TuiTheme.fontSize; font.weight: TuiTheme.fontWeight; verticalAlignment: Text.AlignVCenter; elide: Text.ElideRight }
                             }
 
                             MouseArea {
@@ -353,6 +374,7 @@ Item {
 
                             Text { text: "j/k navigate"; color: TuiTheme.fg; font.family: TuiTheme.fontFamily; font.pixelSize: TuiTheme.fontSize; font.weight: TuiTheme.fontWeight }
                             Text { text: "enter select"; color: TuiTheme.fg; font.family: TuiTheme.fontFamily; font.pixelSize: TuiTheme.fontSize; font.weight: TuiTheme.fontWeight }
+                            Text { text: "bksp back"; color: TuiTheme.fg; font.family: TuiTheme.fontFamily; font.pixelSize: TuiTheme.fontSize; font.weight: TuiTheme.fontWeight }
                             Text { text: "o off"; color: TuiTheme.fg; font.family: TuiTheme.fontFamily; font.pixelSize: TuiTheme.fontSize; font.weight: TuiTheme.fontWeight }
                             Text { text: "q/esc close"; color: TuiTheme.fg; font.family: TuiTheme.fontFamily; font.pixelSize: TuiTheme.fontSize; font.weight: TuiTheme.fontWeight }
                         }
@@ -361,7 +383,7 @@ Item {
                             anchors.right: parent.right
                             anchors.rightMargin: 14
                             anchors.verticalCenter: parent.verticalCenter
-                            text: root.filteredNodes.length + " NODES"
+                            text: root.filteredNodes.length + " COUNTRIES"
                             color: TuiTheme.barMuted
                             font.family: TuiTheme.fontFamily
                             font.pixelSize: TuiTheme.fontSize

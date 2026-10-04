@@ -85,7 +85,7 @@ Item {
                 switch (index) {
                 case 0: return "Wi-Fi";
                 case 1: return "Bluetooth";
-                case 2: return "Tailscale";
+                case 2: return "NymVPN";
                 case 3: return "DND";
                 case 4: return "Volume";
                 case 5: return "Brightness";
@@ -270,7 +270,7 @@ Item {
                 stdout: StdioCollector { onStreamFinished: { let value = parseInt(this.text.trim()); if (!isNaN(value)) root.brightness = Math.max(0, Math.min(100, value)); } }
             }
             Process { id: brightnessSetProc; running: false; onExited: brightnessProc.running = true }
-            Process { id: vpnToggleProc; command: ["bash", "/home/honey/NixOS/modules/home/niri/quickshell/config/scripts/toggle-tailscale-exit-node.sh"]; running: false }
+            Process { id: vpnToggleProc; command: ["/etc/profiles/per-user/honey/bin/toggle-nym"]; running: false }
             Process { id: nightLightProc; command: ["pgrep", "-x", "wlsunset"]; running: false; onExited: exitCode => root.nightLightEnabled = exitCode === 0 }
             Process { id: nightLightToggleProc; command: ["bash", "-c", "if pgrep -x wlsunset >/dev/null; then pkill wlsunset; else wlsunset -T 6001 -t 6000 >/dev/null 2>&1 & fi"]; running: false; onExited: nightLightProc.running = true }
             Process {

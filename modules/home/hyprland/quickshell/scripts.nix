@@ -353,17 +353,18 @@ in
     })
 
     (pkgs.writeShellApplication {
-      name = "toggle-tailscale";
+      name = "toggle-nym";
       text = ''
-        ${pkgs.bash}/bin/bash "$HOME/NixOS/modules/home/hyprland/quickshell/config/scripts/toggle-tailscale-exit-node.sh" "$@"
+        ${pkgs.bash}/bin/bash "$HOME/NixOS/modules/home/hyprland/quickshell/config/scripts/nym-vpn.sh" "$@"
       '';
     })
 
     (pkgs.writeShellApplication {
-      name = "tailscale-exit-nodes";
+      name = "nym-countries";
       runtimeInputs = [ pkgs.jq ];
       text = ''
-        ${pkgs.bash}/bin/bash "$HOME/NixOS/modules/home/hyprland/quickshell/config/scripts/tailscale-exit-nodes.sh"
+        NYM_ISO_3166="${pkgs.isocodes}/share/iso-codes/json/iso_3166-1.json" \
+          ${pkgs.bash}/bin/bash "$HOME/NixOS/modules/home/hyprland/quickshell/config/scripts/nym-countries.sh"
       '';
     })
 

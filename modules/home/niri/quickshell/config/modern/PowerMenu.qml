@@ -342,7 +342,7 @@ Item {
                 switch (index) {
                 case 0: return "Wi-Fi";
                 case 1: return "Bluetooth";
-                case 2: return "Tailscale";
+                case 2: return "NymVPN";
                 case 3: return "DND";
                 case 4: return "Volume";
                 case 5: return "Brightness";
@@ -602,7 +602,7 @@ Item {
 
             Process {
                 id: vpnToggleProc
-                command: ["bash", "/home/honey/NixOS/modules/home/niri/quickshell/config/scripts/toggle-tailscale-exit-node.sh"]
+                command: ["/etc/profiles/per-user/honey/bin/toggle-nym"]
                 running: false
             }
 

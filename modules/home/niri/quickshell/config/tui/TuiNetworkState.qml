@@ -74,7 +74,7 @@ QtObject {
     }
 
     readonly property var _vpnIfaceProc: Process {
-        command: ["sh", "-c", "case \"$(/run/current-system/sw/bin/tailscale debug prefs 2>/dev/null)\" in *'\"ExitNodeID\": \"\"'*|*'\"ExitNodeID\":\"\"'*) printf false ;; *'\"ExitNodeID\": \"'*) printf true ;; *'\"ExitNodeID\":\"'*) printf true ;; *) printf false ;; esac"]
+        command: ["sh", "-c", "/run/current-system/sw/bin/nym-vpnc status 2>/dev/null | grep -q '^State: Connected' && printf true || printf false"]
         running: false
         stdout: StdioCollector {
             onStreamFinished: { root.vpnConnected = this.text.trim() === "true"; }
