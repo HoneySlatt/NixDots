@@ -575,7 +575,7 @@ Item {
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
                                 icon: "\uf132"
-                                title: "NymVPN"
+                                title: "VPN"
                                 subtitle: NetworkState.vpnConnected ? "On" : "Off"
                                 active: NetworkState.vpnConnected
                                 onClicked: vpnToggleProc.running = true

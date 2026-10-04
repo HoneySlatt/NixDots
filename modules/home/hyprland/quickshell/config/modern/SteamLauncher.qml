@@ -253,12 +253,12 @@ Item {
                         event.accepted = true;
                         return;
                     }
-                    if (event.key === Qt.Key_H || event.key === Qt.Key_Left) {
+                    if ((event.key === Qt.Key_H && event.modifiers & Qt.ControlModifier) || event.key === Qt.Key_Left) {
                         if (root.selectedIndex > 0) root.selectedIndex--;
                         event.accepted = true;
                         return;
                     }
-                    if (event.key === Qt.Key_L || event.key === Qt.Key_Right) {
+                    if ((event.key === Qt.Key_L && event.modifiers & Qt.ControlModifier) || event.key === Qt.Key_Right) {
                         if (root.selectedIndex < root.filteredGames.length - 1) root.selectedIndex++;
                         event.accepted = true;
                         return;

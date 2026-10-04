@@ -125,15 +125,15 @@ Item {
             }
 
             function handleKey(event) {
-                if (event.key === Qt.Key_Escape || event.key === Qt.Key_Q) { TuiVpnLauncherState.close(); event.accepted = true; return; }
-                if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter || event.key === Qt.Key_A) { setSelectedNode(); event.accepted = true; return; }
-                if (event.key === Qt.Key_O || event.key === Qt.Key_Delete) { clearNode(); event.accepted = true; return; }
-                if (event.key === Qt.Key_J || event.key === Qt.Key_Down) {
+                if (event.key === Qt.Key_Escape) { TuiVpnLauncherState.close(); event.accepted = true; return; }
+                if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) { setSelectedNode(); event.accepted = true; return; }
+                if (event.key === Qt.Key_Delete) { clearNode(); event.accepted = true; return; }
+                if ((event.key === Qt.Key_J && event.modifiers & Qt.ControlModifier) || event.key === Qt.Key_Down) {
                     if (selectedIndex < filteredNodes.length - 1) selectedIndex++;
                     event.accepted = true;
                     return;
                 }
-                if (event.key === Qt.Key_K || event.key === Qt.Key_Up) {
+                if ((event.key === Qt.Key_K && event.modifiers & Qt.ControlModifier) || event.key === Qt.Key_Up) {
                     if (selectedIndex > 0) selectedIndex--;
                     event.accepted = true;
                     return;
@@ -390,11 +390,11 @@ Item {
                             anchors.verticalCenter: parent.verticalCenter
                             spacing: 26
 
-                            Text { text: "j/k navigate"; color: TuiTheme.fg; font.family: TuiTheme.fontFamily; font.pixelSize: TuiTheme.fontSize; font.weight: TuiTheme.fontWeight }
+                            Text { text: "ctrl+j/k navigate"; color: TuiTheme.fg; font.family: TuiTheme.fontFamily; font.pixelSize: TuiTheme.fontSize; font.weight: TuiTheme.fontWeight }
                             Text { text: "enter select"; color: TuiTheme.fg; font.family: TuiTheme.fontFamily; font.pixelSize: TuiTheme.fontSize; font.weight: TuiTheme.fontWeight }
                             Text { text: "bksp back"; color: TuiTheme.fg; font.family: TuiTheme.fontFamily; font.pixelSize: TuiTheme.fontSize; font.weight: TuiTheme.fontWeight }
-                            Text { text: "o off"; color: TuiTheme.fg; font.family: TuiTheme.fontFamily; font.pixelSize: TuiTheme.fontSize; font.weight: TuiTheme.fontWeight }
-                            Text { text: "q/esc close"; color: TuiTheme.fg; font.family: TuiTheme.fontFamily; font.pixelSize: TuiTheme.fontSize; font.weight: TuiTheme.fontWeight }
+                            Text { text: "del off"; color: TuiTheme.fg; font.family: TuiTheme.fontFamily; font.pixelSize: TuiTheme.fontSize; font.weight: TuiTheme.fontWeight }
+                            Text { text: "esc close"; color: TuiTheme.fg; font.family: TuiTheme.fontFamily; font.pixelSize: TuiTheme.fontSize; font.weight: TuiTheme.fontWeight }
                         }
 
                         Text {

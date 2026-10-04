@@ -21,8 +21,9 @@ in
 
   systemd.services.nym-vpnd = {
     description = "NymVPN daemon";
-    wants = [ "network-pre.target" ];
-    after = [ "network-pre.target" "NetworkManager.service" "systemd-resolved.service" ];
+    # Started offline, the daemon keeps refusing to pick gateways for ~40s after the network is up
+    wants = [ "network-online.target" ];
+    after = [ "network-online.target" "NetworkManager.service" "systemd-resolved.service" ];
     wantedBy = [ "multi-user.target" ];
     # The daemon shells out to ip (tunnel IPv6 setup) and resolvconf (DNS)
     path = [ pkgs.iproute2 config.networking.resolvconf.package ];

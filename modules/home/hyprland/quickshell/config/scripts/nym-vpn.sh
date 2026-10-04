@@ -26,18 +26,18 @@ connect() {
   "$nymvpnc" connect --wait >/dev/null 2>&1 || true
 
   if connected; then
-    notify_user "NymVPN on: $(route)"
+    notify_user "VPN on: $(route)"
   else
     # Leaving the daemon in its error state would keep the kill switch blocking all traffic
     "$nymvpnc" disconnect --wait >/dev/null 2>&1 || true
-    notify_user "NymVPN connection failed"
+    notify_user "VPN connection failed"
     exit 1
   fi
 }
 
 disconnect() {
   "$nymvpnc" disconnect --wait >/dev/null 2>&1 || true
-  notify_user "NymVPN off"
+  notify_user "VPN off"
 }
 
 case "${1:-toggle}" in

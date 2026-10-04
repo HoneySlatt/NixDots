@@ -18,8 +18,8 @@
     "Mod+Alt+M".action.spawn = "toggle-music-launcher";
     "Mod+P".action.spawn = "toggle-power-launcher";
     "Mod+Tab".action.toggle-overview = { };
-    "Mod+B".action.spawn = "toggle-browser";
-    "Mod+Shift+B".action.spawn = "toggle-secondary-browser";
+    "Mod+B".action.spawn = "brave-origin";
+    "Mod+Shift+B".action.spawn = "firefox";
     "Mod+M".action.spawn = "cider-2";
     "Mod+Shift+M".action.spawn = "kopuz";
     "Mod+Shift+T".action.spawn = "toggle-quickshell";

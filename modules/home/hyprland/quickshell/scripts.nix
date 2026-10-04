@@ -31,6 +31,7 @@ in
         grid_dir="$steam_dir/userdata/303776471/config/grid"
         cache_dir="$steam_dir/appcache/librarycache"
         heroic_dir="$HOME/.config/heroic"
+        overrides_file="$heroic_dir/store/game-overrides.json"
         lines=()
 
         add_game() {
@@ -102,6 +103,9 @@ in
 
           title=$(jq -r '.title // empty' <<< "$metadata")
           art_url=$(jq -r '.art_square // .art_cover // empty' <<< "$metadata")
+          # Custom covers set in Heroic (only the portrait one fits the launcher cards)
+          override_art=$(jq -r --arg id "$app_name" '.overrides[$id].art_square // empty' "$overrides_file" 2>/dev/null || true)
+          [[ -n "$override_art" ]] && art_url="$override_art"
           [[ -z "$title" ]] && title="$fallback_title"
           [[ -z "$title" ]] && title="$app_name"
           art=$(resolve_heroic_art "$art_url")
@@ -522,16 +526,6 @@ in
           hyprctl eval 'hl.plugin.hymission.toggle("onlycurrentworkspace")'
         fi
       '';
-    })
-
-    (pkgs.writeShellApplication {
-      name = "toggle-browser";
-      text = qsIpc ''brave-origin'' ''firefox'';
-    })
-
-    (pkgs.writeShellApplication {
-      name = "toggle-secondary-browser";
-      text = qsIpc ''firefox'' ''brave-origin'';
     })
 
     (pkgs.writeShellApplication {

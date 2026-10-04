@@ -342,7 +342,7 @@ Item {
                 switch (index) {
                 case 0: return "Wi-Fi";
                 case 1: return "Bluetooth";
-                case 2: return "NymVPN";
+                case 2: return "VPN";
                 case 3: return "DND";
                 case 4: return "Volume";
                 case 5: return "Brightness";

@@ -287,7 +287,7 @@ Item {
                         event.accepted = true;
                         return;
                     }
-                    if (event.key === Qt.Key_Space) {
+                    if (event.key === Qt.Key_Space && event.modifiers & Qt.ControlModifier) {
                         MusicService.togglePause();
                         event.accepted = true;
                         return;
@@ -297,37 +297,37 @@ Item {
                         event.accepted = true;
                         return;
                     }
-                    if (event.key === Qt.Key_N) {
+                    if (event.key === Qt.Key_N && event.modifiers & Qt.ControlModifier) {
                         MusicService.next();
                         event.accepted = true;
                         return;
                     }
-                    if (event.key === Qt.Key_P) {
+                    if (event.key === Qt.Key_P && event.modifiers & Qt.ControlModifier) {
                         MusicService.previous();
                         event.accepted = true;
                         return;
                     }
-                    if (event.key === Qt.Key_Minus) {
+                    if (event.key === Qt.Key_Minus && event.modifiers & Qt.ControlModifier) {
                         MusicService.adjustVolume(-10);
                         event.accepted = true;
                         return;
                     }
-                    if (event.key === Qt.Key_Equal) {
+                    if (event.key === Qt.Key_Equal && event.modifiers & Qt.ControlModifier) {
                         MusicService.adjustVolume(10);
                         event.accepted = true;
                         return;
                     }
-                    if (event.key >= Qt.Key_1 && event.key <= Qt.Key_5) {
+                    if (event.modifiers & Qt.ControlModifier && event.key >= Qt.Key_1 && event.key <= Qt.Key_5) {
                         root.sectionIndex = event.key - Qt.Key_1;
                         event.accepted = true;
                         return;
                     }
-                    if (event.key === Qt.Key_H || event.key === Qt.Key_Left || event.key === Qt.Key_K || event.key === Qt.Key_Up) {
+                    if ((event.key === Qt.Key_H && event.modifiers & Qt.ControlModifier) || event.key === Qt.Key_Left || (event.key === Qt.Key_K && event.modifiers & Qt.ControlModifier) || event.key === Qt.Key_Up) {
                         root.moveSelection(-1);
                         event.accepted = true;
                         return;
                     }
-                    if (event.key === Qt.Key_L || event.key === Qt.Key_Right || event.key === Qt.Key_J || event.key === Qt.Key_Down) {
+                    if ((event.key === Qt.Key_L && event.modifiers & Qt.ControlModifier) || event.key === Qt.Key_Right || (event.key === Qt.Key_J && event.modifiers & Qt.ControlModifier) || event.key === Qt.Key_Down) {
                         root.moveSelection(1);
                         event.accepted = true;
                         return;

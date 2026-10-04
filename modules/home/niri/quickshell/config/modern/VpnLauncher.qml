@@ -154,13 +154,13 @@ Item {
             function handleKey(event) {
                 if (event.key === Qt.Key_Escape) { VpnLauncherState.close(); event.accepted = true; return; }
                 if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) { setSelectedNode(); event.accepted = true; return; }
-                if (event.key === Qt.Key_O || event.key === Qt.Key_Delete) { clearNode(); event.accepted = true; return; }
-                if (event.key === Qt.Key_J || event.key === Qt.Key_Down) {
+                if (event.key === Qt.Key_Delete) { clearNode(); event.accepted = true; return; }
+                if ((event.key === Qt.Key_J && event.modifiers & Qt.ControlModifier) || event.key === Qt.Key_Down) {
                     if (selectedIndex < filteredNodes.length - 1) selectedIndex++;
                     event.accepted = true;
                     return;
                 }
-                if (event.key === Qt.Key_K || event.key === Qt.Key_Up) {
+                if ((event.key === Qt.Key_K && event.modifiers & Qt.ControlModifier) || event.key === Qt.Key_Up) {
                     if (selectedIndex > 0) selectedIndex--;
                     event.accepted = true;
                     return;
@@ -344,7 +344,7 @@ Item {
 
                         RowLayout {
                             Layout.fillWidth: true
-                            Text { text: "j/k navigate   enter select   backspace back   o off   esc close"; color: Theme.muted; font.family: Theme.fontFamily; font.pixelSize: Theme.fontSize - 1; Layout.fillWidth: true }
+                            Text { text: "ctrl+j/k navigate   enter select   backspace back   del off   esc close"; color: Theme.muted; font.family: Theme.fontFamily; font.pixelSize: Theme.fontSize - 1; Layout.fillWidth: true }
                             Text { text: root.filteredNodes.length + " countries"; color: Theme.muted; font.family: Theme.fontFamily; font.pixelSize: Theme.fontSize - 1 }
                         }
                     }
