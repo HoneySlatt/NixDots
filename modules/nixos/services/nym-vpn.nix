@@ -34,4 +34,35 @@ in
       RestartSec = 5;
     };
   };
+
+  # Not a oneshot so a slow connection never holds back the login screen
+  systemd.services.nym-vpn-autoconnect = {
+    description = "Connect NymVPN at boot";
+    wants = [ "network-online.target" ];
+    after = [ "nym-vpnd.service" "network-online.target" ];
+    requires = [ "nym-vpnd.service" ];
+    wantedBy = [ "multi-user.target" ];
+    path = [ nym-vpnd ];
+    serviceConfig = {
+      # Runs as the user the polkit rule above authorizes
+      User = "honey";
+      # Wi-Fi may come up after this service starts
+      Restart = "on-failure";
+      RestartSec = 10;
+    };
+    script = ''
+      for _ in $(seq 1 30); do
+        nym-vpnc status >/dev/null 2>&1 && break
+        sleep 1
+      done
+
+      timeout 60 nym-vpnc connect --wait || true
+
+      # Leaving the daemon in its error state would keep the kill switch blocking all traffic
+      if ! nym-vpnc status | grep -q '^State: Connected'; then
+        nym-vpnc disconnect --wait
+        exit 1
+      fi
+    '';
+  };
 }
