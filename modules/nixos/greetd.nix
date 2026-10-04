@@ -5,7 +5,7 @@
     enable = true;
     settings = {
       default_session = {
-        command = "start-hyprland";
+        command = "niri-session";
         user = "honey";
       };
     };
