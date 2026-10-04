@@ -22,6 +22,7 @@
 
     # Web Browsers
     firefox
+    ladybird
     brave-origin
 
     # Desktop Apps

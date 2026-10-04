@@ -4,7 +4,7 @@ zed_reload() {
     pastelglow)    zf="pastelglow" ;;
     rosepine)      zf="rosepine" ;;
     gruvbox)       zf="gruvbox" ;;
-    gruvbox-light) zf="gruvbox" ;;
+    gruvbox-light) zf="gruvbox-light" ;;
     carbonfox)     zf="carbonfox" ;;
     everforest)    zf="everforest" ;;
     *)             zf="gruvbox" ;;

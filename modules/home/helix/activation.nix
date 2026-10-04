@@ -1,7 +1,7 @@
 { lib, ... }:
 
 {
-  home.activation.helixThemeSync = lib.hm.dag.entryAfter ["writeBoundary"] ''
+  home.activation.helixThemeSync = lib.hm.dag.entryAfter ["linkGeneration"] ''
     cfg="$HOME/.config/helix/config.toml"
     if [ -L "$cfg" ]; then
       cp "$cfg" "$cfg.tmp" && rm "$cfg" && mv "$cfg.tmp" "$cfg"
@@ -13,7 +13,7 @@
         pastelglow)    hx_theme="pastelglow" ;;
         rosepine)      hx_theme="rose_pine" ;;
         gruvbox)       hx_theme="gruvbox_dark" ;;
-        gruvbox-light) hx_theme="gruvbox_dark" ;;
+        gruvbox-light) hx_theme="gruvbox_light" ;;
         carbonfox)     hx_theme="carbonfox" ;;
         everforest)    hx_theme="everforest_dark" ;;
         *)             hx_theme="gruvbox_dark" ;;

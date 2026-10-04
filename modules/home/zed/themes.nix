@@ -8,6 +8,12 @@ let
       red = "#fb4934"; green = "#b8bb26"; yellow = "#fabd2f";
       blue = "#83a598"; purple = "#d3869b"; aqua = "#8ec07c"; orange = "#fe8019";
     };
+    gruvbox-light = {
+      bg = "#fbf1c7"; bg1 = "#ebdbb2"; bg2 = "#d5c4a1"; bg3 = "#bdae93";
+      fg = "#3c3836"; fg2 = "#7c6f64";
+      red = "#9d0006"; green = "#79740e"; yellow = "#b57614";
+      blue = "#076678"; purple = "#8f3f71"; aqua = "#427b58"; orange = "#af3a03";
+    };
     rose-pine = {
       bg = "#191724"; bg1 = "#1f1d2e"; bg2 = "#26233a"; bg3 = "#6e6a86";
       fg = "#e0def4"; fg2 = "#908caa";
@@ -97,14 +103,10 @@ in
   # Deploy palette files for dynamic theme switching
   xdg.configFile = {
     "zed/theme-overrides/gruvbox.json".text = builtins.toJSON (mkOverride palettes.gruvbox);
+    "zed/theme-overrides/gruvbox-light.json".text = builtins.toJSON (mkOverride palettes.gruvbox-light);
     "zed/theme-overrides/rosepine.json".text = builtins.toJSON (mkOverride palettes.rose-pine);
     "zed/theme-overrides/everforest.json".text = builtins.toJSON (mkOverride palettes.everforest);
     "zed/theme-overrides/carbonfox.json".text = builtins.toJSON (mkOverride palettes.carbonfox);
     "zed/theme-overrides/pastelglow.json".text = builtins.toJSON (mkOverride palettes.pastel);
-  };
-
-  # Use One Dark as base + theme_overrides for dynamic switching
-  programs.zed-editor.userSettings.theme_overrides = {
-    "One Dark" = mkOverride palettes.gruvbox;
   };
 }

@@ -5,6 +5,7 @@
     ./common.nix
     ./config
     ./zed
+    ./helix
     ./neovim
     ./niri
     ./niri/quickshell
