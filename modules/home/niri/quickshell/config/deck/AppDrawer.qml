@@ -67,6 +67,13 @@ PanelWindow {
                 M3.IconButton {
                     size: 48
                     variant: "tonal"
+                    icon: "keyboard"
+                    onClicked: DeckState.toggleKeyboard()
+                }
+
+                M3.IconButton {
+                    size: 48
+                    variant: "tonal"
                     icon: "close"
                     onClicked: DeckState.closeAll()
                 }

@@ -10,6 +10,7 @@
   home.packages = with pkgs; [
     quickshell
     brightnessctl
+    wvkbd
   ];
 
   xdg.configFile."quickshell".source =
@@ -40,6 +41,7 @@
     spawn-at-startup = [
       { argv = [ "steam" "-silent" ]; }
       { argv = [ "qs" "-p" "${config.xdg.configHome}/quickshell/deck.qml" ]; }
+      { argv = [ "wvkbd-mobintl" "--hidden" "-L" "300" ]; }
     ];
 
     binds = {

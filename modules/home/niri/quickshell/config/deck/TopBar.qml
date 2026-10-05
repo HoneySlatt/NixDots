@@ -56,6 +56,12 @@ Variants {
                 onClicked: DeckState.niri(["close-window"])
             }
 
+            M3.IconButton {
+                icon: "keyboard"
+                size: 36
+                onClicked: DeckState.toggleKeyboard()
+            }
+
             Item { Layout.fillWidth: true }
 
             Row {

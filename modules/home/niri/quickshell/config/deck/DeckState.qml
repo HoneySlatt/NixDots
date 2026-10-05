@@ -22,6 +22,10 @@ Singleton {
         drawer = false;
     }
 
+    function toggleKeyboard() {
+        Quickshell.execDetached(["pkill", "-RTMIN", "-x", "wvkbd-mobintl"]);
+    }
+
     function niri(args) {
         Quickshell.execDetached(["niri", "msg", "action"].concat(args));
     }
