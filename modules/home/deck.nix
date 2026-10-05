@@ -11,6 +11,7 @@
     quickshell
     brightnessctl
     wvkbd
+    awww
   ];
 
   xdg.configFile."quickshell".source =
@@ -39,7 +40,8 @@
     hotkey-overlay.skip-at-startup = true;
 
     spawn-at-startup = [
-      { argv = [ "steam" "-silent" ]; }
+      { argv = [ "awww-daemon" ]; }
+      { sh = "until awww query >/dev/null 2>&1; do sleep 0.2; done; awww img ${config.home.homeDirectory}/Pictures/berserk.png"; }
       { argv = [ "qs" "-p" "${config.xdg.configHome}/quickshell/deck.qml" ]; }
       { argv = [ "wvkbd-mobintl" "--hidden" "-L" "300" ]; }
     ];
