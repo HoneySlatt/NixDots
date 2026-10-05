@@ -12,9 +12,11 @@ Item {
         anchors.centerIn: parent
         color: Theme.text
         font.family: Theme.fontFamily
+        font.variableAxes: ({ "wdth": Theme.barFontWidth })
+        scale: Theme.barTextScale
         font.pixelSize: Theme.fontSize
         font.weight: Theme.fontWeight
-        text: Qt.formatDateTime(new Date(), "hh:mm AP\u2009 -\u2009\u2009ddd dd")
+        text: Qt.formatDateTime(new Date(), "hh:mm AP\u2003-\u2003ddd dd")
     }
 
     opacity: mouseArea.containsMouse ? 0.6 : 1.0
@@ -38,7 +40,7 @@ Item {
         running: true
         repeat: false
         onTriggered: {
-            clockText.text = Qt.formatDateTime(new Date(), "hh:mm AP\u2009 -\u2009\u2009ddd dd");
+            clockText.text = Qt.formatDateTime(new Date(), "hh:mm AP\u2003-\u2003ddd dd");
             minuteTimer.start();
         }
     }
@@ -48,6 +50,6 @@ Item {
         interval: 60000
         running: false
         repeat: true
-        onTriggered: clockText.text = Qt.formatDateTime(new Date(), "hh:mm AP\u2009 -\u2009\u2009ddd dd")
+        onTriggered: clockText.text = Qt.formatDateTime(new Date(), "hh:mm AP\u2003-\u2003ddd dd")
     }
 }

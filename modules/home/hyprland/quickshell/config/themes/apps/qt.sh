@@ -88,7 +88,8 @@ switch_qt() {
 theme=quickshell-theme
 EOF
 
-  local font_str="JetBrainsMono Nerd Font,10,-1,5,50,0,0,0,0,0"
+  local font_str="Google Sans Flex,10,-1,5,50,0,0,0,0,0"
+  local fixed_str="Google Sans Code,10,-1,5,50,0,0,0,0,0"
   for ct_dir in "$HOME/.config/qt5ct" "$HOME/.config/qt6ct"; do
     mkdir -p "$ct_dir"
     cat > "$ct_dir/$(basename "$ct_dir").conf" << EOF
@@ -100,7 +101,7 @@ standard_dialogs=default
 style=kvantum
 
 [Fonts]
-fixed="$font_str"
+fixed="$fixed_str"
 general="$font_str"
 EOF
   done

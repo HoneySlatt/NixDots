@@ -29,11 +29,11 @@ Item {
             property bool pendingAutoPlayCollection: false
 
             readonly property var sectionTabs: [
-                { label: "Playlists", icon: "\u{f0cb8}" },
-                { label: "Albums", icon: "\u{f0025}" },
-                { label: "Artists", icon: "\u{f0803}" },
-                { label: "Songs", icon: "\u{f0387}" },
-                { label: "Favorites", icon: "\u{f02d1}" }
+                { label: "Playlists", icon: "queue_music" },
+                { label: "Albums", icon: "album" },
+                { label: "Artists", icon: "artist" },
+                { label: "Songs", icon: "music_note" },
+                { label: "Favorites", icon: "favorite" }
             ]
 
             color: "transparent"
@@ -333,7 +333,7 @@ Item {
                     anchors.verticalCenter: cardList.verticalCenter
                     size: 48
                     variant: "tonal"
-                    icon: "\u{f0141}"
+                    icon: "chevron_left"
                     onClicked: root.moveSelection(-1)
                 }
 
@@ -343,7 +343,7 @@ Item {
                     anchors.verticalCenter: cardList.verticalCenter
                     size: 48
                     variant: "tonal"
-                    icon: "\u{f0142}"
+                    icon: "chevron_right"
                     onClicked: root.moveSelection(1)
                 }
 
@@ -392,7 +392,7 @@ Item {
                                 anchors.centerIn: parent
                                 anchors.verticalCenterOffset: -20
                                 visible: cardArt.status !== Image.Ready
-                                icon: card.modelData.itemType === "artist" ? "\u{f0803}" : "\u{f0387}"
+                                icon: card.modelData.itemType === "artist" ? "artist" : "music_note"
                                 size: 56
                                 color: Theme.textOnSurfaceVariant
                             }
@@ -477,7 +477,7 @@ Item {
                         M3.Icon {
                             anchors.centerIn: parent
                             visible: nowCover.status !== Image.Ready
-                            icon: "\u{f075a}"
+                            icon: "music_note"
                             size: 64
                             color: Theme.textOnSurfaceVariant
                         }
@@ -511,7 +511,7 @@ Item {
                             M3.Chip {
                                 clickable: false
                                 selected: MusicService.ready
-                                icon: "\u{f0156}"
+                                icon: "close"
                                 text: MusicService.ready ? "Navidrome" : "Disconnected"
                             }
                         }
@@ -560,11 +560,11 @@ Item {
                             Layout.topMargin: 6
                             spacing: 10
 
-                            M3.IconButton { size: 48; variant: "tonal"; toggle: true; checked: MusicService.shuffleEnabled; icon: "\u{f049d}"; onClicked: MusicService.toggleShuffle() }
-                            M3.IconButton { size: 56; variant: "tonal"; icon: "\u{f04ae}"; onClicked: MusicService.previous() }
-                            M3.IconButton { size: 72; implicitWidth: 104; variant: "filled"; toggle: true; checked: MusicService.playing; icon: MusicService.playing ? "\u{f03e4}" : "\u{f040a}"; onClicked: MusicService.togglePause() }
-                            M3.IconButton { size: 56; variant: "tonal"; icon: "\u{f04ad}"; onClicked: MusicService.next() }
-                            M3.IconButton { size: 48; variant: "tonal"; toggle: true; checked: MusicService.currentTrackFavorite; icon: MusicService.currentTrackFavorite ? "\u{f02d1}" : "\u{f02d5}"; onClicked: MusicService.toggleCurrentFavorite() }
+                            M3.IconButton { size: 48; variant: "tonal"; toggle: true; checked: MusicService.shuffleEnabled; icon: "shuffle"; onClicked: MusicService.toggleShuffle() }
+                            M3.IconButton { size: 56; variant: "tonal"; icon: "skip_previous"; onClicked: MusicService.previous() }
+                            M3.IconButton { size: 72; implicitWidth: 104; variant: "filled"; toggle: true; checked: MusicService.playing; icon: MusicService.playing ? "pause" : "play_arrow"; onClicked: MusicService.togglePause() }
+                            M3.IconButton { size: 56; variant: "tonal"; icon: "skip_next"; onClicked: MusicService.next() }
+                            M3.IconButton { size: 48; variant: "tonal"; toggle: true; checked: MusicService.currentTrackFavorite; icon: MusicService.currentTrackFavorite ? "favorite" : "favorite"; onClicked: MusicService.toggleCurrentFavorite() }
                         }
                     }
                 }

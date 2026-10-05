@@ -195,7 +195,7 @@ Item {
 
                                 M3.Icon {
                                     anchors.centerIn: parent
-                                    icon: "\u{f099d}"
+                                    icon: "shield_lock"
                                     size: 28
                                     color: scope.vpnState === "Connected" ? Theme.textOnPrimary : Theme.textOnSurfaceVariant
                                 }
@@ -220,7 +220,7 @@ Item {
 
                             M3.Button {
                                 variant: "error"
-                                icon: "\u{f0425}"
+                                icon: "power_settings_new"
                                 text: "Disconnect"
                                 onClicked: root.clearNode()
                             }
@@ -233,13 +233,13 @@ Item {
                             M3.Chip {
                                 clickable: root.step === "exit"
                                 selected: root.step === "entry"
-                                icon: "\u{f01e7}"
+                                icon: "public"
                                 text: root.step === "exit" ? "Entry: " + root.pendingEntry.name : "Entry"
                                 onClicked: root.previousStep()
                             }
 
                             M3.Icon {
-                                icon: "\u{f0142}"
+                                icon: "chevron_right"
                                 size: 18
                                 color: Theme.textOnSurfaceVariant
                             }
@@ -247,7 +247,7 @@ Item {
                             M3.Chip {
                                 clickable: false
                                 selected: root.step === "exit"
-                                icon: "\u{f0343}"
+                                icon: "logout"
                                 text: "Exit"
                             }
 
@@ -317,7 +317,7 @@ Item {
                                         M3.Icon {
                                             anchors.centerIn: parent
                                             visible: row.current
-                                            icon: "\u{f012c}"
+                                            icon: "check"
                                             size: 20
                                             color: Theme.textOnPrimary
                                         }
@@ -344,7 +344,7 @@ Item {
                                     }
 
                                     M3.Icon {
-                                        icon: "\u{f0142}"
+                                        icon: "chevron_right"
                                         size: 20
                                         color: Theme.textOnSecondaryContainer
                                         opacity: row.selected ? 1 : 0

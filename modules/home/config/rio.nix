@@ -10,7 +10,8 @@
       navigation."hide-if-single" = true;
       fonts = {
         size = 15;
-        family = "JetBrainsMono Nerd Font";
+        family = "Google Sans Code";
+        extras = [ { family = "Symbols Nerd Font Mono"; } ];
       };
       bindings = {
         keys = [

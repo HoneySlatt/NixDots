@@ -68,6 +68,8 @@ PanelWindow {
                     text: "HDR"
                     color: Theme.text
                     font.family: Theme.fontFamily
+                    font.variableAxes: ({ "wdth": Theme.barFontWidth })
+                    scale: Theme.barTextScale
                     font.pixelSize: Theme.fontSize
                     font.weight: Theme.fontWeight
                     Layout.alignment: Qt.AlignVCenter
@@ -90,6 +92,8 @@ PanelWindow {
                     text: "|"
                     color: Theme.text
                     font.family: Theme.fontFamily
+                    font.variableAxes: ({ "wdth": Theme.barFontWidth })
+                    scale: Theme.barTextScale
                     font.pixelSize: Theme.fontSize
                     font.weight: Theme.fontWeight
                     Layout.alignment: Qt.AlignVCenter

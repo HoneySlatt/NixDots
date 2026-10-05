@@ -5,7 +5,7 @@ switch_swaync() {
 * {
   all: unset;
   font-size: 14px;
-  font-family: "JetBrainsMono Nerd Font";
+  font-family: "Google Sans Flex";
   transition: 200ms;
 }
 

@@ -560,12 +560,12 @@ in
             BOLD_ITALIC="IosevkaTerm Nerd Font Mono"
             ;;
           *)
-            FONT="JetBrainsMono Nerd Font"
-            FONT_NAME="JetBrainsMono Nerd Font 10"
+            FONT="Google Sans Code"
+            FONT_NAME="Google Sans Flex 10"
             FSIZE=11
-            BOLD="JetBrainsMono Nerd Font"
-            ITALIC="JetBrainsMono Nerd Font"
-            BOLD_ITALIC="JetBrainsMono Nerd Font"
+            BOLD="Google Sans Code"
+            ITALIC="Google Sans Code"
+            BOLD_ITALIC="Google Sans Code"
             ;;
         esac
 

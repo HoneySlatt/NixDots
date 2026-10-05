@@ -385,7 +385,7 @@ Item {
 
                                 M3.Icon {
                                     anchors.centerIn: parent
-                                    icon: "\u{f012c}"
+                                    icon: "check"
                                     size: 16
                                     color: Theme.contentOn(themeCell.palette.accent)
                                 }

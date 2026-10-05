@@ -290,7 +290,7 @@ Item {
                         anchors.verticalCenter: parent.verticalCenter
                         size: 48
                         variant: "tonal"
-                        icon: "\u{f0141}"
+                        icon: "chevron_left"
                         onClicked: if (root.selectedIndex > 0) root.selectedIndex--
                     }
 
@@ -366,7 +366,7 @@ Item {
 
                                     M3.Icon {
                                         anchors.centerIn: parent
-                                        icon: "\u{f012c}"
+                                        icon: "check"
                                         size: 16
                                         color: Theme.textOnPrimary
                                     }
@@ -390,7 +390,7 @@ Item {
                         anchors.verticalCenter: parent.verticalCenter
                         size: 48
                         variant: "tonal"
-                        icon: "\u{f0142}"
+                        icon: "chevron_right"
                         onClicked: if (root.selectedIndex < launcherScope.wallpapers.length - 1) root.selectedIndex++
                     }
                 }
@@ -426,7 +426,7 @@ Item {
                     M3.Button {
                         size: 56
                         variant: "tonal"
-                        icon: "\u{f049d}"
+                        icon: "shuffle"
                         text: "Shuffle"
                         onClicked: root.shuffleSelection()
                     }
@@ -434,7 +434,7 @@ Item {
                     M3.Button {
                         size: 56
                         variant: "filled"
-                        icon: "\u{f012c}"
+                        icon: "check"
                         text: "Apply"
                         onClicked: if (root.currentWallpaper() !== "") launcherScope.applyWallpaper(root.currentWallpaper())
                     }

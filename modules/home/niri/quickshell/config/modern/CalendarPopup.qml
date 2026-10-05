@@ -53,9 +53,9 @@ Item {
     }
 
     readonly property var tabItems: [
-        { label: "Media", icon: "\u{f075a}", idx: 1 },
-        { label: "Walls", icon: "\u{f0e09}", idx: 2 },
-        { label: "Themes", icon: "\u{f03d8}", idx: 3 }
+        { label: "Media", icon: "music_note", idx: 1 },
+        { label: "Walls", icon: "wallpaper", idx: 2 },
+        { label: "Themes", icon: "palette", idx: 3 }
     ]
 
     function formatTime(seconds) {
@@ -199,7 +199,7 @@ Item {
         id: roundImage
 
         property string source: ""
-        property string fallbackIcon: "\u{f075a}"
+        property string fallbackIcon: "music_note"
         property color backgroundColor: Theme.surfaceContainerHighest
 
         Rectangle {
@@ -477,7 +477,7 @@ Item {
                                             Layout.preferredWidth: 56
                                             Layout.preferredHeight: 56
                                             source: "file:///home/honey/Pictures/Others/Honey.png"
-                                            fallbackIcon: "\u{f0004}"
+                                            fallbackIcon: "person"
                                         }
 
                                         ColumnLayout {
@@ -503,7 +503,7 @@ Item {
 
                                             M3.IconButton {
                                                 anchors.verticalCenter: parent.verticalCenter
-                                                icon: "\u{f04ae}"
+                                                icon: "skip_previous"
                                                 onClicked: if (calendarPopup.player) calendarPopup.player.previous()
                                             }
 
@@ -513,13 +513,13 @@ Item {
                                                 variant: "filled"
                                                 toggle: true
                                                 checked: calendarPopup.player !== null && calendarPopup.player.playbackState === MprisPlaybackState.Playing
-                                                icon: checked ? "\u{f03e4}" : "\u{f040a}"
+                                                icon: checked ? "pause" : "play_arrow"
                                                 onClicked: if (calendarPopup.player) calendarPopup.player.togglePlaying()
                                             }
 
                                             M3.IconButton {
                                                 anchors.verticalCenter: parent.verticalCenter
-                                                icon: "\u{f04ad}"
+                                                icon: "skip_next"
                                                 onClicked: if (calendarPopup.player) calendarPopup.player.next()
                                             }
                                         }
@@ -613,12 +613,12 @@ Item {
                         }
 
                         M3.IconButton {
-                            icon: "\u{f0141}"
+                            icon: "chevron_left"
                             onClicked: calendarCard.prevMonth()
                         }
 
                         M3.IconButton {
-                            icon: "\u{f0142}"
+                            icon: "chevron_right"
                             onClicked: calendarCard.nextMonth()
                         }
                     }
@@ -723,9 +723,9 @@ Item {
                     Row {
                         anchors.horizontalCenter: parent.horizontalCenter
                         spacing: 10
-                        StatBar { icon: "\u{f0ee0}"; label: Math.round(CpuState.usage) + "%"; value: CpuState.usage / 100; accentColor: CpuState.usage >= 90 ? Theme.error : Theme.primary }
-                        StatBar { icon: "\u{f050f}"; label: GpuState.tempC + "°"; value: Math.min(GpuState.tempC / 100, 1); accentColor: GpuState.tempC >= 80 ? Theme.error : Theme.tertiary }
-                        StatBar { icon: "\u{f035b}"; label: Math.round(RamState.percentage) + "%"; value: RamState.percentage / 100; accentColor: RamState.percentage >= 90 ? Theme.error : Theme.misc }
+                        StatBar { icon: "memory"; label: Math.round(CpuState.usage) + "%"; value: CpuState.usage / 100; accentColor: CpuState.usage >= 90 ? Theme.error : Theme.primary }
+                        StatBar { icon: "thermostat"; label: GpuState.tempC + "°"; value: Math.min(GpuState.tempC / 100, 1); accentColor: GpuState.tempC >= 80 ? Theme.error : Theme.tertiary }
+                        StatBar { icon: "memory_alt"; label: Math.round(RamState.percentage) + "%"; value: RamState.percentage / 100; accentColor: RamState.percentage >= 90 ? Theme.error : Theme.misc }
                     }
                 }
             }
@@ -876,7 +876,7 @@ Item {
                             anchors.verticalCenter: parent.verticalCenter
                             size: 56
                             variant: "tonal"
-                            icon: "\u{f04ae}"
+                            icon: "skip_previous"
                             onClicked: if (calendarPopup.player) calendarPopup.player.previous()
                         }
 
@@ -887,7 +887,7 @@ Item {
                             variant: "filled"
                             toggle: true
                             checked: calendarPopup.player !== null && calendarPopup.player.playbackState === MprisPlaybackState.Playing
-                            icon: checked ? "\u{f03e4}" : "\u{f040a}"
+                            icon: checked ? "pause" : "play_arrow"
                             onClicked: if (calendarPopup.player) calendarPopup.player.togglePlaying()
                         }
 
@@ -895,7 +895,7 @@ Item {
                             anchors.verticalCenter: parent.verticalCenter
                             size: 56
                             variant: "tonal"
-                            icon: "\u{f04ad}"
+                            icon: "skip_next"
                             onClicked: if (calendarPopup.player) calendarPopup.player.next()
                         }
                     }
@@ -981,7 +981,7 @@ Item {
 
                                 M3.Icon {
                                     anchors.centerIn: parent
-                                    icon: "\u{f012c}"
+                                    icon: "check"
                                     size: 16
                                     color: Theme.textOnPrimary
                                 }
@@ -1006,7 +1006,7 @@ Item {
 
                     M3.Chip {
                         text: "NSFW"
-                        icon: "\u{f0209}"
+                        icon: "visibility_off"
                         selected: Theme.nsfwEnabled
                         onClicked: Theme.toggleNsfw()
                     }
@@ -1022,7 +1022,7 @@ Item {
                     M3.IconButton {
                         size: 36
                         variant: "tonal"
-                        icon: "\u{f0141}"
+                        icon: "chevron_left"
                         opacity: calendarPopup.wallpaperPage > 0 ? 1 : 0.38
                         onClicked: calendarPopup.wallpaperPage = Math.max(0, calendarPopup.wallpaperPage - 1)
                     }
@@ -1030,7 +1030,7 @@ Item {
                     M3.IconButton {
                         size: 36
                         variant: "tonal"
-                        icon: "\u{f0142}"
+                        icon: "chevron_right"
                         opacity: calendarPopup.wallpaperPage < calendarPopup.wallpaperTotalPages - 1 ? 1 : 0.38
                         onClicked: calendarPopup.wallpaperPage = Math.min(calendarPopup.wallpaperTotalPages - 1, calendarPopup.wallpaperPage + 1)
                     }
@@ -1133,7 +1133,7 @@ Item {
 
                                     M3.Icon {
                                         visible: themeCell.active
-                                        icon: "\u{f05e0}"
+                                        icon: "check_circle"
                                         size: 24
                                         color: themeCell.palette.accent
                                     }

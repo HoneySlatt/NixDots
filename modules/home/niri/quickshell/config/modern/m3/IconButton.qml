@@ -59,6 +59,7 @@ Rectangle {
         icon: button.icon
         size: button.iconSize
         color: button.contentColor
+        filled: button.selected
     }
 
     MouseArea {

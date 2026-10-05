@@ -13,7 +13,7 @@ Item {
         anchors.horizontalCenterOffset: -3
         text: "\u23fb"
         color: Theme.text
-        font.family: Theme.fontFamily
+        font.family: Theme.symbolFontFamily
         font.pixelSize: 13
         font.weight: Theme.fontWeight
     }

@@ -14,7 +14,7 @@ Item {
         anchors.horizontalCenterOffset: 6
         text: DistroState.icon
         color: Theme.text
-        font.family: Theme.fontFamily
+        font.family: Theme.symbolFontFamily
         font.pixelSize: 18
         font.weight: Theme.fontWeight
     }

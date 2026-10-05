@@ -9,10 +9,10 @@ Item {
     id: volumePopup
 
     function volumeIcon(volume, muted) {
-        if (muted) return "\u{f0581}";
-        if (volume <= 30) return "\u{f057f}";
-        if (volume <= 65) return "\u{f0580}";
-        return "\u{f057e}";
+        if (muted) return "volume_off";
+        if (volume <= 30) return "volume_mute";
+        if (volume <= 65) return "volume_down";
+        return "volume_up";
     }
 
     component Section: M3.ListSegment {
@@ -82,7 +82,7 @@ Item {
                 }
 
                 M3.Icon {
-                    icon: "\u{f0140}"
+                    icon: "expand_more"
                     size: 20
                     color: Theme.textOnSurfaceVariant
                     rotation: section.expanded ? 180 : 0
@@ -245,7 +245,7 @@ Item {
                             Section {
                                 width: parent.width
                                 first: true
-                                icon: "\u{f04c3}"
+                                icon: "speaker"
                                 title: "Output device"
                                 summary: VolumeState.sinks.find(s => s.active)?.label ?? ""
                                 expanded: root.showDevices
@@ -279,7 +279,7 @@ Item {
                                             spacing: 12
 
                                             M3.Icon {
-                                                icon: sinkRow.modelData.label.toLowerCase().includes("head") ? "\u{f02cb}" : "\u{f04c3}"
+                                                icon: sinkRow.modelData.label.toLowerCase().includes("head") ? "headphones" : "speaker"
                                                 size: 18
                                                 color: sinkRow.modelData.active ? Theme.textOnSecondaryContainer : Theme.textOnSurfaceVariant
                                             }
@@ -293,7 +293,7 @@ Item {
 
                                             M3.Icon {
                                                 visible: sinkRow.modelData.active
-                                                icon: "\u{f012c}"
+                                                icon: "check"
                                                 size: 18
                                                 color: Theme.textOnSecondaryContainer
                                             }
@@ -313,7 +313,7 @@ Item {
                             Section {
                                 width: parent.width
                                 last: true
-                                icon: "\u{f1542}"
+                                icon: "tune"
                                 title: "App volumes"
                                 summary: VolumeState.appStreams.length + (VolumeState.appStreams.length === 1 ? " stream" : " streams")
                                 expanded: root.showApps
@@ -343,7 +343,7 @@ Item {
 
                                         M3.Icon {
                                             Layout.leftMargin: 8
-                                            icon: "\u{f08c6}"
+                                            icon: "apps"
                                             size: 18
                                             color: Theme.textOnSurfaceVariant
                                         }
@@ -366,7 +366,7 @@ Item {
                                             size: 32
                                             toggle: true
                                             checked: streamRow.modelData.muted
-                                            icon: streamRow.modelData.muted ? "\u{f0581}" : "\u{f057e}"
+                                            icon: streamRow.modelData.muted ? "volume_off" : "volume_up"
                                             onClicked: VolumeState.toggleAppMute(streamRow.modelData.streamId)
                                         }
                                     }

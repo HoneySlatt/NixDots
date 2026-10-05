@@ -235,7 +235,7 @@ Item {
                                             M3.Icon {
                                                 anchors.centerIn: parent
                                                 visible: appIcon.status !== Image.Ready
-                                                icon: "\u{f08c6}"
+                                                icon: "apps"
                                                 size: 36
                                                 color: Theme.primary
                                             }

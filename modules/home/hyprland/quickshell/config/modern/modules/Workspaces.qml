@@ -57,7 +57,7 @@ Item {
                             return Theme.text;
                         return Theme.caution;
                     }
-                    font.family: Theme.fontFamily
+                    font.family: Theme.symbolFontFamily
                     font.pixelSize: Theme.fontSize
                     font.weight: Theme.fontWeight
                     font.italic: true
@@ -110,6 +110,8 @@ Item {
                         return Theme.caution;
                     }
                     font.family: Theme.fontFamily
+                    font.variableAxes: ({ "wdth": Theme.barFontWidth })
+                    scale: Theme.barTextScale
                     font.pixelSize: Theme.fontSize
                     font.weight: Theme.fontWeight
                     font.italic: true

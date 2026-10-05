@@ -151,6 +151,16 @@ switch_cider() {
     }
     body .nav-button-content.active :is(.nav-icon, .nav-text) { color: var(--qs-cider-on-accent) !important; }
     body .nav-button-content:active { border-radius: 12px; }
+    /* Informational chips use flat, opaque Material surfaces. */
+    body .meta-chip {
+      background: var(--qs-cider-accent) !important;
+      color: var(--qs-cider-on-accent) !important;
+      border: 0 !important;
+      outline: 0 !important;
+      box-shadow: none !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+    }
     /* Album and playlist actions use Quasar buttons, not CBtn surfaces. */
     body:is(.body--dark, .body--light) :is(.album-actions, .album-playback-actions) .q-btn {
       --textColor1: var(--qs-cider-text);

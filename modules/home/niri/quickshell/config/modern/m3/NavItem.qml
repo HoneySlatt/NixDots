@@ -45,6 +45,7 @@ Item {
             anchors.centerIn: parent
             icon: item.icon
             size: 20
+            filled: item.active
             color: item.active ? Theme.textOnSecondaryContainer : Theme.textOnSurfaceVariant
         }
     }

@@ -52,7 +52,7 @@ Item {
 
         Icon {
             anchors.centerIn: parent
-            icon: "\u{f012c}"
+            icon: "check"
             size: 14
             color: Theme.primary
             opacity: toggleSwitch.checked ? 1 : 0

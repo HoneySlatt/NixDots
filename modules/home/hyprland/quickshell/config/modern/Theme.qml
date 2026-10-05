@@ -238,7 +238,17 @@ QtObject {
     readonly property string wallpaperDir: "/home/honey/Pictures/Wallpapers/" + (wallpaperDirs[currentTheme] || "PastelGlow")
 
     // ── Font settings ──
-    readonly property string fontFamily: "JetBrainsMono Nerd Font"
+    readonly property string fontFamily: "Google Sans Flex"
+    readonly property string iconFontFamily: "Material Symbols Rounded"
+    readonly property string symbolFontFamily: "Symbols Nerd Font"
+    // Width axis that gives the bar the footprint it had with a monospace font
+    readonly property int barFontWidth: 118
+    readonly property real barTextScale: 0.96
+
+    // Nerd Font glyph inside rich text that otherwise uses fontFamily
+    function glyph(g) {
+        return "<span style=\"font-family:'" + symbolFontFamily + "'\">" + g + "</span>&nbsp;";
+    }
     readonly property int fontSize: 13
     readonly property int fontWeight: Font.DemiBold
 

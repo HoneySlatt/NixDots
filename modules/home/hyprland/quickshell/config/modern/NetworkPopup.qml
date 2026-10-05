@@ -8,7 +8,7 @@ import "m3" as M3
 Item {
     id: networkPopup
 
-    readonly property var wifiIcons: ["\u{f092f}", "\u{f091f}", "\u{f0922}", "\u{f0925}", "\u{f0928}"]
+    readonly property var wifiIcons: ["signal_wifi_0_bar", "network_wifi_1_bar", "network_wifi_2_bar", "network_wifi_3_bar", "signal_wifi_4_bar"]
 
     function signalIcon(signal) {
         return wifiIcons[Math.max(0, Math.min(4, Math.floor(signal / 20)))];
@@ -69,7 +69,7 @@ Item {
 
             M3.Icon {
                 visible: networkRow.secured
-                icon: "\u{f033e}"
+                icon: "lock"
                 size: 16
                 color: Theme.textOnSurfaceVariant
             }
@@ -211,7 +211,7 @@ Item {
 
                                 M3.Icon {
                                     anchors.centerIn: parent
-                                    icon: NetworkState.wifiEnabled ? "\u{f05a9}" : "\u{f05aa}"
+                                    icon: NetworkState.wifiEnabled ? "wifi" : "wifi_off"
                                     size: 24
                                     color: NetworkState.wifiEnabled ? Theme.textOnPrimaryContainer : Theme.textOnSurfaceVariant
                                 }
@@ -315,7 +315,7 @@ Item {
                         spacing: 10
 
                         M3.IconButton {
-                            icon: "\u{f004d}"
+                            icon: "arrow_back"
                             onClicked: root.selectedSsid = ""
                         }
 
@@ -386,7 +386,7 @@ Item {
                             anchors.right: parent.right
                             anchors.rightMargin: 8
                             anchors.verticalCenter: parent.verticalCenter
-                            icon: root.showPassword ? "\u{f0209}" : "\u{f0208}"
+                            icon: root.showPassword ? "visibility_off" : "visibility"
                             onClicked: root.showPassword = !root.showPassword
                         }
                     }

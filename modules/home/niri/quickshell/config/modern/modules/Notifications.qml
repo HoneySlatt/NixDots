@@ -17,7 +17,7 @@ Item {
         anchors.centerIn: parent
         text: notifIcon
         color: Theme.text
-        font.family: Theme.fontFamily
+        font.family: Theme.symbolFontFamily
         font.pixelSize: Theme.fontSize
         font.weight: Theme.fontWeight
     }

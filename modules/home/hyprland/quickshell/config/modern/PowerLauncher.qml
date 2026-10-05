@@ -251,7 +251,7 @@ Item {
                             M3.Chip {
                                 visible: root.batteryText !== "--"
                                 clickable: false
-                                icon: "\u{f0079}"
+                                icon: "battery_full"
                                 text: root.batteryText
                             }
 
@@ -260,7 +260,7 @@ Item {
                                 variant: "error"
                                 toggle: true
                                 checked: root.showPowerActions
-                                icon: "\u{f0425}"
+                                icon: "power_settings_new"
                                 onClicked: root.showPowerActions = !root.showPowerActions
                             }
                         }
@@ -283,10 +283,10 @@ Item {
                                 Repeater {
                                     id: powerRepeater
                                     model: [
-                                        { label: "Lock", icon: "\u{f033e}", command: "lock-screen" },
-                                        { label: "Logout", icon: "\u{f0343}", command: "hyprctl dispatch 'hl.dsp.exit()'" },
-                                        { label: "Reboot", icon: "\u{f0709}", command: "systemctl reboot" },
-                                        { label: "Shutdown", icon: "\u{f0425}", command: "systemctl poweroff" }
+                                        { label: "Lock", icon: "lock", command: "lock-screen" },
+                                        { label: "Logout", icon: "logout", command: "hyprctl dispatch 'hl.dsp.exit()'" },
+                                        { label: "Reboot", icon: "restart_alt", command: "systemctl reboot" },
+                                        { label: "Shutdown", icon: "power_settings_new", command: "systemctl poweroff" }
                                     ]
 
                                     delegate: M3.Button {
@@ -315,7 +315,7 @@ Item {
 
                             M3.QuickTile {
                                 Layout.fillWidth: true
-                                icon: NetworkState.netType === "ethernet" ? "\u{f0200}" : NetworkState.netType === "offline" ? "\u{f05aa}" : "\u{f05a9}"
+                                icon: NetworkState.netType === "ethernet" ? "lan" : NetworkState.netType === "offline" ? "wifi_off" : "wifi"
                                 title: NetworkState.netType === "ethernet" ? "Ethernet" : "Wi-Fi"
                                 subtitle: NetworkState.netType === "wifi" ? NetworkState.connectionName : NetworkState.netType === "ethernet" ? "Connected" : "Off"
                                 active: NetworkState.netType !== "offline"
@@ -324,7 +324,7 @@ Item {
 
                             M3.QuickTile {
                                 Layout.fillWidth: true
-                                icon: root.bluetoothPowered ? "\u{f00af}" : "\u{f00b2}"
+                                icon: root.bluetoothPowered ? "bluetooth" : "bluetooth_disabled"
                                 title: "Bluetooth"
                                 subtitle: root.bluetoothPowered ? "On" : "Off"
                                 active: root.bluetoothPowered
@@ -333,7 +333,7 @@ Item {
 
                             M3.QuickTile {
                                 Layout.fillWidth: true
-                                icon: "\u{f099d}"
+                                icon: "shield_lock"
                                 title: "VPN"
                                 subtitle: NetworkState.vpnConnected ? "Connected" : "Off"
                                 active: NetworkState.vpnConnected
@@ -342,7 +342,7 @@ Item {
 
                             M3.QuickTile {
                                 Layout.fillWidth: true
-                                icon: "\u{f009b}"
+                                icon: "do_not_disturb_on"
                                 title: "Do not disturb"
                                 subtitle: root.dndEnabled ? "On" : "Off"
                                 active: root.dndEnabled
@@ -352,7 +352,7 @@ Item {
                             M3.QuickTile {
                                 Layout.fillWidth: true
                                 Layout.columnSpan: 2
-                                icon: "\u{f0594}"
+                                icon: "nightlight"
                                 title: "Night light"
                                 subtitle: root.nightLightEnabled ? "On" : "Off"
                                 active: root.nightLightEnabled
@@ -364,7 +364,7 @@ Item {
                             width: parent.width
                             trackHeight: 36
                             handleHeight: 48
-                            icon: VolumeState.muted ? "\u{f0581}" : "\u{f057e}"
+                            icon: VolumeState.muted ? "volume_off" : "volume_up"
                             iconClickable: true
                             value: VolumeState.volume
                             muted: VolumeState.muted
@@ -376,7 +376,7 @@ Item {
                             width: parent.width
                             trackHeight: 36
                             handleHeight: 48
-                            icon: "\u{f00df}"
+                            icon: "brightness_6"
                             value: root.brightness
                             onMoved: value => {
                                 root.brightness = value;
@@ -405,7 +405,7 @@ Item {
                                     M3.Icon {
                                         anchors.centerIn: parent
                                         visible: cover.status !== Image.Ready
-                                        icon: "\u{f075a}"
+                                        icon: "music_note"
                                         size: 28
                                         color: Theme.textOnSurfaceVariant
                                     }
@@ -439,7 +439,7 @@ Item {
                                 }
 
                                 M3.IconButton {
-                                    icon: "\u{f04ae}"
+                                    icon: "skip_previous"
                                     onClicked: if (root.player) root.player.previous()
                                 }
 
@@ -448,12 +448,12 @@ Item {
                                     variant: "filled"
                                     toggle: true
                                     checked: root.player !== null && root.player.playbackState === MprisPlaybackState.Playing
-                                    icon: checked ? "\u{f03e4}" : "\u{f040a}"
+                                    icon: checked ? "pause" : "play_arrow"
                                     onClicked: if (root.player) root.player.togglePlaying()
                                 }
 
                                 M3.IconButton {
-                                    icon: "\u{f04ad}"
+                                    icon: "skip_next"
                                     onClicked: if (root.player) root.player.next()
                                 }
                             }

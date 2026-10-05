@@ -11,12 +11,15 @@ Item {
     Text {
         id: ramText
         anchors.centerIn: parent
-        text: "\uefc5 " + RamState.percentage + "%"
+        textFormat: Text.RichText
+        text: Theme.glyph("\uefc5") + RamState.percentage + "%"
         color: {
             if (RamState.percentage >= 95) return RamState.blinkState ? Theme.warning : Theme.separator;
             return Theme.text;
         }
         font.family: Theme.fontFamily
+        font.variableAxes: ({ "wdth": Theme.barFontWidth })
+        scale: Theme.barTextScale
         font.pixelSize: Theme.fontSize
         font.weight: Theme.fontWeight
     }

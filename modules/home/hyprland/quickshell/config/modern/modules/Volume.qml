@@ -11,6 +11,7 @@ Item {
     Text {
         id: volumeText
         anchors.centerIn: parent
+        textFormat: Text.RichText
         text: {
             let icon;
             if (VolumeState.muted) {
@@ -20,10 +21,12 @@ Item {
             } else {
                 icon = "\uf028";
             }
-            return icon + " " + VolumeState.volume + "%";
+            return Theme.glyph(icon) + VolumeState.volume + "%";
         }
         color: VolumeState.muted ? Theme.separator : Theme.text
         font.family: Theme.fontFamily
+        font.variableAxes: ({ "wdth": Theme.barFontWidth })
+        scale: Theme.barTextScale
         font.pixelSize: Theme.fontSize
         font.weight: Theme.fontWeight
     }

@@ -245,7 +245,7 @@ Item {
                                         M3.Icon {
                                             anchors.centerIn: parent
                                             visible: appIcon.status !== Image.Ready
-                                            icon: "\u{f08c6}"
+                                            icon: "apps"
                                             size: 24
                                             color: Theme.primary
                                         }
@@ -260,7 +260,7 @@ Item {
                                     }
 
                                     M3.Icon {
-                                        icon: "\u{f0142}"
+                                        icon: "chevron_right"
                                         size: 20
                                         color: Theme.textOnSecondaryContainer
                                         opacity: appRow.selected ? 1 : 0

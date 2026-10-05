@@ -134,10 +134,10 @@ EOF
 .visual-refresh .theme-dark,
 .visual-refresh.theme-light,
 .visual-refresh .theme-light {
-    --font-primary: 'JetBrainsMono Nerd Font';
-    --font-display: 'JetBrainsMono Nerd Font';
-    --font-headline: 'JetBrainsMono Nerd Font';
-    --font-code: 'JetBrainsMono Nerd Font';
+    --font-primary: 'Google Sans Flex';
+    --font-display: 'Google Sans Flex';
+    --font-headline: 'Google Sans Flex';
+    --font-code: 'Google Sans Code';
 
     --brand-100: color-mix(in srgb, ${C[accent]} 10%, white) !important;
     --brand-130: color-mix(in srgb, ${C[accent]} 15%, white) !important;

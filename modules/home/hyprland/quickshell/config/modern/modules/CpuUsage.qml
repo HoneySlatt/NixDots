@@ -11,12 +11,15 @@ Item {
     Text {
         id: cpuText
         anchors.centerIn: parent
-        text: "\uf2db " + CpuState.usage + "%"
+        textFormat: Text.RichText
+        text: Theme.glyph("\uf2db") + CpuState.usage + "%"
         color: {
             if (CpuState.usage >= 95) return CpuState.blinkState ? Theme.warning : Theme.separator;
             return Theme.text;
         }
         font.family: Theme.fontFamily
+        font.variableAxes: ({ "wdth": Theme.barFontWidth })
+        scale: Theme.barTextScale
         font.pixelSize: Theme.fontSize
         font.weight: Theme.fontWeight
     }

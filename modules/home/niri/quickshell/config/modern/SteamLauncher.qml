@@ -199,7 +199,7 @@ Item {
                 anchors.verticalCenter: carousel.verticalCenter
                 size: 64
                 variant: "tonal"
-                icon: "\u{f0141}"
+                icon: "chevron_left"
                 onClicked: if (root.selectedIndex > 0) root.selectedIndex--
             }
 
@@ -210,7 +210,7 @@ Item {
                 anchors.verticalCenter: carousel.verticalCenter
                 size: 64
                 variant: "tonal"
-                icon: "\u{f0142}"
+                icon: "chevron_right"
                 onClicked: if (root.selectedIndex < root.filteredGames.length - 1) root.selectedIndex++
             }
 
@@ -279,7 +279,7 @@ Item {
                         M3.Icon {
                             anchors.centerIn: parent
                             visible: art.status !== Image.Ready
-                            icon: "\u{f0297}"
+                            icon: "sports_esports"
                             size: 64
                             color: Theme.textOnSurfaceVariant
                         }
@@ -328,7 +328,7 @@ Item {
                 size: 64
                 implicitWidth: 220
                 variant: "filled"
-                icon: "\u{f040a}"
+                icon: "play_arrow"
                 iconSize: 26
                 text: "Play"
                 labelSize: Theme.typeTitleL

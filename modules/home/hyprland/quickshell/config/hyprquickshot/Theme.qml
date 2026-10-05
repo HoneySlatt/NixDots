@@ -49,7 +49,7 @@ QtObject {
     readonly property color accent: _current.accent
     readonly property color process: _current.process
 
-    readonly property string fontFamily: "JetBrainsMono Nerd Font"
+    readonly property string fontFamily: "Google Sans Flex"
     readonly property int fontSize: 12
     readonly property int fontWeight: Font.DemiBold
 

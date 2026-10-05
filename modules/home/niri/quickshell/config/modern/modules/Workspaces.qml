@@ -40,7 +40,7 @@ Item {
                             return Theme.text;
                         return Theme.caution;
                     }
-                    font.family: Theme.fontFamily
+                    font.family: Theme.symbolFontFamily
                     font.pixelSize: Theme.fontSize
                     font.weight: Theme.fontWeight
                     font.italic: true

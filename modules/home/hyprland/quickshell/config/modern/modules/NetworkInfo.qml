@@ -32,7 +32,7 @@ Item {
                 if (NetworkState.netType === "wifi" && NetworkState.signalStrength < 25) return Theme.warning;
                 return Theme.text;
             }
-            font.family: Theme.fontFamily
+            font.family: Theme.symbolFontFamily
             font.pixelSize: Theme.fontSize
             font.weight: Theme.fontWeight
         }
@@ -43,6 +43,8 @@ Item {
             text: "VPN"
             color: Theme.text
             font.family: Theme.fontFamily
+            font.variableAxes: ({ "wdth": Theme.barFontWidth })
+            scale: Theme.barTextScale
             font.pixelSize: Theme.fontSize
             font.weight: Theme.fontWeight
         }

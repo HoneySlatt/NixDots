@@ -11,9 +11,12 @@ Item {
     Text {
         id: gpuText
         anchors.centerIn: parent
-        text: "\uf2c8 " + GpuState.tempC + "\u00b0C"
+        textFormat: Text.RichText
+        text: Theme.glyph("\uf2c8") + GpuState.tempC + "\u00b0C"
         color: Theme.text
         font.family: Theme.fontFamily
+        font.variableAxes: ({ "wdth": Theme.barFontWidth })
+        scale: Theme.barTextScale
         font.pixelSize: Theme.fontSize
         font.weight: Theme.fontWeight
     }

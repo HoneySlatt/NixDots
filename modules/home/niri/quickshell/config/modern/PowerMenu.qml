@@ -141,20 +141,20 @@ Item {
 
             function entryIcon(index) {
                 switch (index) {
-                case 0: return "\u{f05a9}";
-                case 1: return "\u{f00af}";
-                case 2: return "\u{f099d}";
-                case 3: return "\u{f009b}";
-                case 4: return VolumeState.muted ? "\u{f0581}" : "\u{f057e}";
-                case 5: return "\u{f00df}";
-                case 6: return "\u{f04ae}";
-                case 7: return player && player.playbackState === MprisPlaybackState.Playing ? "\u{f03e4}" : "\u{f040a}";
-                case 8: return "\u{f04ad}";
-                case 9: return "\u{f0594}";
-                case 10: return "\u{f033e}";
-                case 11: return "\u{f0343}";
-                case 12: return "\u{f0709}";
-                case 13: return "\u{f0425}";
+                case 0: return "wifi";
+                case 1: return "bluetooth";
+                case 2: return "shield_lock";
+                case 3: return "do_not_disturb_on";
+                case 4: return VolumeState.muted ? "volume_off" : "volume_up";
+                case 5: return "brightness_6";
+                case 6: return "skip_previous";
+                case 7: return player && player.playbackState === MprisPlaybackState.Playing ? "pause" : "play_arrow";
+                case 8: return "skip_next";
+                case 9: return "nightlight";
+                case 10: return "lock";
+                case 11: return "logout";
+                case 12: return "restart_alt";
+                case 13: return "power_settings_new";
                 default: return "";
                 }
             }
@@ -470,7 +470,7 @@ Item {
                         M3.Chip {
                             visible: root.batteryText !== "--"
                             clickable: false
-                            icon: "\u{f0079}"
+                            icon: "battery_full"
                             text: root.batteryText
                         }
                     }
@@ -537,7 +537,7 @@ Item {
                                 M3.Icon {
                                     anchors.centerIn: parent
                                     visible: menuCover.status !== Image.Ready
-                                    icon: "\u{f075a}"
+                                    icon: "music_note"
                                     size: 26
                                     color: Theme.textOnSurfaceVariant
                                 }

@@ -8,7 +8,7 @@ FocusScope {
     property alias text: input.text
     property alias input: input
     property string placeholder: "Search"
-    property string icon: "\u{f0349}"
+    property string icon: "search"
     property bool readOnly: false
     property color color: Theme.surfaceContainerHigh
 

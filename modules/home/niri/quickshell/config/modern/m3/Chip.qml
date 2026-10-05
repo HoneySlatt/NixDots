@@ -11,7 +11,7 @@ Rectangle {
     property bool clickable: true
     signal clicked()
 
-    readonly property string shownIcon: selected ? "\u{f012c}" : icon
+    readonly property string shownIcon: selected ? "check" : icon
 
     implicitHeight: 32
     implicitWidth: row.implicitWidth + (shownIcon !== "" ? 24 : 32)

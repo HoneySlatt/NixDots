@@ -159,7 +159,7 @@ Item {
 
             M3.IconButton {
                 size: 30
-                icon: "\u{f0156}"
+                icon: "close"
                 opacity: processMouse.containsMouse || hovered ? 1 : 0.45
                 onClicked: SystemMonitorState.killProcess(processRow.processData.pid)
 
@@ -251,7 +251,7 @@ Item {
                             MetricCard {
                                 width: parent.width
                                 first: true
-                                icon: "\u{f0ee0}"
+                                icon: "memory"
                                 label: "CPU"
                                 value: CpuState.usage + "%"
                                 history: CpuState.history
@@ -260,7 +260,7 @@ Item {
 
                             MetricCard {
                                 width: parent.width
-                                icon: "\u{f08ae}"
+                                icon: "developer_board"
                                 label: "GPU"
                                 value: GpuState.tempC + "°C"
                                 history: GpuState.history
@@ -270,7 +270,7 @@ Item {
                             MetricCard {
                                 width: parent.width
                                 last: true
-                                icon: "\u{f035b}"
+                                icon: "memory_alt"
                                 label: "RAM"
                                 value: RamState.percentage + "%"
                                 history: RamState.history
