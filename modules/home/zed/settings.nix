@@ -11,7 +11,7 @@
     cursor_blink = false;
     buffer_font_family = "Google Sans Code";
     buffer_font_size = 14;
-    ui_font_family = "Google Sans Flex";
+    ui_font_family = "Google Sans Code";
     ui_font_size = 14;
     auto_signature_help = true;
     indent_guides = { enabled = true; };

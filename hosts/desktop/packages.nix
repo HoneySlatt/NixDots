@@ -5,6 +5,7 @@
     #inputs.millennium.overlays.default
     (final: prev: {
       steam-metadata-editor = final.callPackage ../../modules/home/pkgs/steam-metadata-editor.nix { };
+      nuvio = final.callPackage ../../modules/home/pkgs/nuvio.nix { };
 
       # Sort library by overridden title when set
       heroic-unwrapped = prev.heroic-unwrapped.overrideAttrs (old: {
@@ -106,6 +107,7 @@
 
     # Custom pkgs
     steam-metadata-editor
+    nuvio
 
     # Discord
     (discord.override {

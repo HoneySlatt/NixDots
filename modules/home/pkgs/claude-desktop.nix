@@ -1,7 +1,7 @@
-{ claudeDesktop, nodejs }:
+{ claudeDesktop, nodejs, makeWrapper }:
 
 claudeDesktop.overrideAttrs (old: {
-  nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ nodejs ];
+  nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ nodejs makeWrapper ];
 
   postInstall = (old.postInstall or "") + ''
     themeRoot="$TMPDIR/claude-quickshell"
@@ -44,5 +44,10 @@ claudeDesktop.overrideAttrs (old: {
     JS
 
     asar pack --unpack "*.node" "$themeRoot" "$out/lib/claude-desktop/resources/app.asar"
+  '';
+
+  postFixup = (old.postFixup or "") + ''
+    wrapProgram "$out/bin/claude-desktop" \
+      --set FONTCONFIG_FILE ${./google-sans-code-fonts.conf}
   '';
 })

@@ -9,6 +9,7 @@
     discord
     protonplus
     moonlight-qt
+    nautilus
 
     # Gaming
     heroic

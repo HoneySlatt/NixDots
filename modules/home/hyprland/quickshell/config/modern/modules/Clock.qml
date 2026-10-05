@@ -3,6 +3,10 @@ import QtQuick.Layouts
 import ".."
 
 Item {
+    id: clock
+
+    property date now: new Date()
+
     Layout.alignment: Qt.AlignVCenter
     implicitWidth: clockText.implicitWidth
     implicitHeight: Theme.barHeight
@@ -16,7 +20,7 @@ Item {
         scale: Theme.barTextScale
         font.pixelSize: Theme.fontSize
         font.weight: Theme.fontWeight
-        text: Qt.formatDateTime(new Date(), "hh:mm AP\u2003-\u2003ddd dd")
+        text: Qt.formatDateTime(clock.now, "hh:mm AP\u2003-\u2003ddd dd")
     }
 
     opacity: mouseArea.containsMouse ? 0.6 : 1.0
@@ -30,26 +34,11 @@ Item {
         onClicked: CalendarPopupState.toggle()
     }
 
-    // Fire once at the next minute boundary, then every 60s
+    // Long Qt timers are coarse and can fire seconds early, so poll instead
     Timer {
-        id: syncTimer
-        interval: {
-            let now = new Date();
-            return (60 - now.getSeconds()) * 1000 - now.getMilliseconds();
-        }
+        interval: 1000
         running: true
-        repeat: false
-        onTriggered: {
-            clockText.text = Qt.formatDateTime(new Date(), "hh:mm AP\u2003-\u2003ddd dd");
-            minuteTimer.start();
-        }
-    }
-
-    Timer {
-        id: minuteTimer
-        interval: 60000
-        running: false
         repeat: true
-        onTriggered: clockText.text = Qt.formatDateTime(new Date(), "hh:mm AP\u2003-\u2003ddd dd")
+        onTriggered: clock.now = new Date()
     }
 }

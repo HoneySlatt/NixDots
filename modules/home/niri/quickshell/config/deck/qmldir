@@ -1,0 +1,7 @@
+singleton DeckState 1.0 DeckState.qml
+singleton SystemStatus 1.0 SystemStatus.qml
+Swipe 1.0 Swipe.qml
+TopBar 1.0 TopBar.qml
+GestureHandle 1.0 GestureHandle.qml
+QuickSettings 1.0 QuickSettings.qml
+AppDrawer 1.0 AppDrawer.qml

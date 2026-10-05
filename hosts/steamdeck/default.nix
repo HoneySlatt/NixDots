@@ -6,6 +6,7 @@
     ./packages.nix
     ../../modules/nixos/common.nix
     ../../modules/nixos/audio.nix
+    ../../modules/nixos/niri.nix
     inputs.jovian.nixosModules.default
   ];
 
@@ -19,7 +20,7 @@
       enable = true;
       user = "honey";
       autoStart = true;
-      desktopSession = "plasma";
+      desktopSession = "niri";
     };
 
     decky-loader = {
@@ -30,10 +31,7 @@
 
   programs.gamemode.enable = true;
 
-  services = {
-    xserver.enable = true;
-    desktopManager.plasma6.enable = true;
-  };
+  services.upower.enable = true;
 
   boot = {
     loader = {

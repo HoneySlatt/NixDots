@@ -84,6 +84,15 @@
         specialArgs = { inherit inputs; };
         modules = [
           ./hosts/steamdeck
+          inputs.niri.nixosModules.niri
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.backupCommand = ''rm -f "$1"'';
+            home-manager.extraSpecialArgs = { inherit inputs; };
+            home-manager.users.honey = import ./modules/home/deck.nix;
+          }
         ];
       };
     };
