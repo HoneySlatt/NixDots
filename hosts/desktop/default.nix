@@ -11,6 +11,7 @@
       ../../modules/nixos/greetd.nix
       ../../modules/nixos/audio.nix
       ../../modules/nixos/niri.nix
+      ../../modules/nixos/win11-vm.nix
     ];
 
   boot = {
