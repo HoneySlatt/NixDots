@@ -1,7 +1,8 @@
 { pkgs, ... }:
 
 {
-  home.packages = [ pkgs.zsh ];
+  # Tools the aliases and initContent below rely on
+  home.packages = with pkgs; [ zsh eza bat ripgrep fastfetch ];
 
   programs.atuin = {
     enable = true;

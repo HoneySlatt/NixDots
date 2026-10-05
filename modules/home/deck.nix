@@ -4,6 +4,7 @@
   imports = [
     ./common.nix
     ./config/ghostty.nix
+    ./config/zsh.nix
     ./zed
   ];
 
