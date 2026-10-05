@@ -104,10 +104,10 @@ xdg.desktopEntries = {
       categories = [ "System" "Documentation" ];
     };
 
-    rio = {
-      name       = "Rio";
-      exec       = "rio";
-      icon       = "rio";
+    "com.mitchellh.ghostty" = {
+      name       = "Ghostty";
+      exec       = "ghostty +new-window";
+      icon       = "com.mitchellh.ghostty";
       comment    = "A terminal emulator";
       categories = [ "System" "TerminalEmulator" ];
     };
@@ -116,7 +116,7 @@ xdg.desktopEntries = {
 
     nvim = {
       name       = "Neovim";
-      exec       = "rio -e nvim %F";
+      exec       = "ghostty +new-window -e nvim %F";
       icon       = "nvim";
       comment    = "Hyperextensible Vim-based text editor";
       categories = [ "Utility" "TextEditor" ];
@@ -124,7 +124,7 @@ xdg.desktopEntries = {
 
     yazi = {
       name       = "Yazi";
-      exec       = "rio -e yazi %F";
+      exec       = "ghostty +new-window -e yazi %F";
       icon       = "/home/honey/Pictures/Icons/yazi.png";
       comment    = "Blazing fast terminal file manager";
       noDisplay  = true;
@@ -153,7 +153,7 @@ xdg.desktopEntries = {
 
     btop = {
       name      = "Btop";
-      exec      = "rio -e btop";
+      exec      = "ghostty +new-window -e btop";
       icon      = "btop";
       comment   = "Resource monitor";
       noDisplay = true;

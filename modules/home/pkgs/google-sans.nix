@@ -1,7 +1,6 @@
 { lib
 , stdenvNoCC
 , fetchurl
-, python3Packages
 }:
 
 # Google Sans Flex (Material 3 Expressive UI font) and Google Sans Code,
@@ -28,27 +27,9 @@ stdenvNoCC.mkDerivation {
 
   dontUnpack = true;
 
-  nativeBuildInputs = [ python3Packages.fonttools ];
-
-  # Google Sans Code ships as a variable font, which Rio cannot load: split it into static weights
   installPhase = ''
-    dest="$out/share/fonts/truetype"
     for src in $srcs; do
-      name="$(stripHash "$src")"
-      case "$name" in
-        GoogleSansCode*)
-          mkdir -p "$dest"
-          for weight in 300:Light 400:Regular 500:Medium 600:SemiBold 700:Bold 800:ExtraBold; do
-            style="''${weight#*:}"
-            case "$name" in *Italic*) style="''${style%Regular}Italic" ;; esac
-            fonttools varLib.instancer --update-name-table -q \
-              -o "$dest/GoogleSansCode-$style.ttf" "$src" "wght=''${weight%%:*}"
-          done
-          ;;
-        *)
-          install -Dm444 "$src" "$dest/$name"
-          ;;
-      esac
+      install -Dm444 "$src" "$out/share/fonts/truetype/$(stripHash "$src")"
     done
   '';
 
