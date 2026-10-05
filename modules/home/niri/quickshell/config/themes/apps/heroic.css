@@ -1,7 +1,5 @@
 /* Heroic 2.22.x: shared layout; all colors come from switch_heroic. */
 body.quickshell {
-  --primary-font-family: "Inter", "Noto Sans", sans-serif;
-  --secondary-font-family: var(--primary-font-family);
   --qs-link: color-mix(in srgb, var(--accent) 55%, var(--text-default));
   --navbar-inactive: var(--text-secondary);
   --navbar-active: var(--qs-link);
@@ -353,4 +351,330 @@ body.quickshell {
   @media (prefers-reduced-motion: reduce) {
     .gameCard, .gameCard > .icons { transition: none; }
   }
+
+  /* Material 3 Expressive details: tonal containers, full-round shapes that
+     morph on press, state layers and spring motion. Layout stays unchanged. */
+  --m3-spring: cubic-bezier(.42, 1.67, .21, .9);
+  --m3-effects: cubic-bezier(.34, .8, .34, 1);
+  --m3-tonal: color-mix(in srgb, var(--accent) 24%, var(--navbar-background));
+  --m3-container: color-mix(in srgb, var(--text-default) 6%, var(--background));
+  --m3-state: color-mix(in srgb, var(--text-default) 8%, transparent);
+
+  /* Rail: pill indicator growing from the center, state layer on hover. */
+  .App > .Sidebar { padding-inline: 8px; }
+  .Sidebar .Sidebar__item:not(.SidebarLinks__subItem) {
+    width: 56px;
+    height: 36px;
+    margin: 0 0 14px;
+    border-radius: 18px;
+    isolation: isolate;
+    background: none;
+    transition: color .2s var(--m3-effects), background-color .2s var(--m3-effects);
+  }
+  .Sidebar .Sidebar__item:not(.SidebarLinks__subItem)::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background: var(--m3-tonal);
+    opacity: 0;
+    transform: scaleX(.4);
+    transition: transform .35s var(--m3-spring), opacity .2s var(--m3-effects);
+  }
+  .Sidebar .Sidebar__item:not(.SidebarLinks__subItem):is(:hover, :focus-visible) { background: var(--m3-state); }
+  .Sidebar .Sidebar__item.active { color: var(--qs-link); background: none; }
+  .Sidebar .Sidebar__item.active::before { opacity: 1; transform: scaleX(1); }
+  .Sidebar .SidebarItemWithSubmenu:is(:hover, :focus-within) .SidebarSubmenu {
+    padding: 8px;
+    border: 0;
+    border-radius: 20px;
+    background: var(--m3-container);
+  }
+  .Sidebar .SidebarSubmenu .Sidebar__item { border-radius: 12px; }
+
+  /* Profile avatar and its menu. */
+  .GogProfile__button {
+    border: 0;
+    background: var(--m3-tonal);
+    transition: border-radius .35s var(--m3-spring), box-shadow .2s var(--m3-effects);
+  }
+  .GogProfile__button:is(:hover, [aria-expanded='true']) { box-shadow: 0 0 0 3px var(--accent); }
+  .GogProfile__button:active { border-radius: 16px; }
+  .GogProfile__menu.MuiPaper-root {
+    border: 0;
+    border-radius: 24px;
+    background: var(--m3-container);
+  }
+  .GogProfile__menu .MuiList-root { padding: 8px; }
+  .GogProfile__menu .MuiMenuItem-root {
+    border-radius: 12px;
+    transition: background-color .2s var(--m3-effects);
+  }
+  .GogProfile__menu .MuiMenuItem-root:is(:hover, .Mui-focusVisible) { background: var(--m3-tonal); }
+  .GogProfile__header { border-bottom: 0; padding-bottom: 10px; }
+
+  /* Search bar and the floating library toolbar. */
+  .SearchBar {
+    border-radius: 28px;
+    background: var(--m3-container);
+    transition: background-color .2s var(--m3-effects);
+  }
+  .SearchBar:focus-within { background: var(--m3-tonal); }
+  .Header:focus-within { z-index: 12; }
+  .SearchBar .autoComplete {
+    top: calc(100% + 6px);
+    left: 0;
+    margin: 0;
+    max-height: 320px;
+    padding: 8px;
+    border-radius: 20px;
+    background: var(--m3-container);
+    box-shadow: 0 8px 24px #0005;
+    z-index: 30;
+  }
+  .SearchBar .autoComplete li {
+    padding: 8px 12px;
+    border-radius: 12px;
+    transition: background-color .2s var(--m3-effects);
+  }
+  .SearchBar .autoComplete li:hover { background: var(--m3-tonal); color: var(--text-default); }
+  .libraryHeaderWrapper .ActionIcons {
+    border: 0;
+    border-radius: 28px;
+    background: var(--m3-container);
+  }
+  .libraryHeaderWrapper .ActionIcons .FormControl > button {
+    border-radius: 18px;
+    transition: border-radius .35s var(--m3-spring), background-color .2s var(--m3-effects);
+  }
+  .libraryHeaderWrapper .ActionIcons .FormControl > button:is(:hover, :focus-visible, .active) { background: var(--m3-tonal); }
+  .libraryHeaderWrapper .ActionIcons .FormControl > button:active { border-radius: 10px; }
+
+  /* Common buttons are full-round and square up while pressed. */
+  .button {
+    border-radius: 999px;
+    transition: border-radius .35s var(--m3-spring), filter .2s var(--m3-effects);
+  }
+  .button:hover { filter: brightness(1.08); }
+  .button:active { border-radius: 14px; }
+
+  /* Cards morph to a rounder shape when hovered or focused. */
+  .gameCard { border-radius: 16px; transition: border-radius .35s var(--m3-spring), outline-color .2s var(--m3-effects); }
+  .gameCard:is(:hover, :focus-within) { border-radius: 28px; outline-width: 3px; }
+
+  /* Game page: round icon buttons and a split Play button. */
+  .gameConfigContainer :is(.backButton, .settings-icon, .game-actions .toggle) {
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--m3-container) 92%, transparent);
+    transition: border-radius .35s var(--m3-spring), background-color .2s var(--m3-effects);
+  }
+  .gameConfigContainer :is(.backButton, .settings-icon, .game-actions .toggle):hover { background: var(--m3-tonal); }
+  .gameConfigContainer :is(.backButton, .settings-icon, .game-actions .toggle):active { border-radius: 14px; }
+  .gameConfigContainer .playButtons { gap: 2px; align-items: stretch; }
+  .gameConfigContainer .mainBtn { min-height: 56px; max-height: none; border-radius: 28px; padding-inline: 32px; }
+  .gameConfigContainer .mainBtn:has(+ .altPlay) { border-radius: 28px 8px 8px 28px; }
+  .gameConfigContainer .playButtons .altPlay {
+    height: auto;
+    max-height: none;
+    min-width: 48px;
+    margin: 0;
+    border-radius: 8px 28px 28px 8px;
+  }
+  .gameConfigContainer .mainBtn:active,
+  .gameConfigContainer .playButtons .altPlay:active { border-radius: 16px; }
+
+  /* Info panel and tabs. */
+  .gameConfigContainer .extraInfoWrapper .extraInfo {
+    border: 0;
+    border-radius: 28px;
+    background: color-mix(in srgb, var(--m3-container) 94%, transparent);
+  }
+  .gameConfigContainer .gameInfoTabs .tabButton { border-radius: 999px; padding-inline: 14px; }
+  .gameConfigContainer .gameInfoTabs .tabButton.Mui-selected { background: var(--m3-tonal); }
+
+  /* Dialogs, fields and checkboxes. */
+  .Dialog__element { border: 0; border-radius: 28px; background: var(--m3-container); }
+  :is(.MuiOutlinedInput-root, .MuiOutlinedInput-notchedOutline, .textInputFieldWrapper input) { border-radius: 14px; }
+
+  /* Checkboxes become M3 switches: the track is ::before, the thumb ::after. */
+  .toggleSwitchWrapper:not(.dropdown .toggleSwitchWrapper) {
+    position: relative;
+    min-height: 40px;
+  }
+  .toggleSwitchWrapper:not(.dropdown .toggleSwitchWrapper)::before {
+    content: "";
+    width: 52px;
+    height: 32px;
+    box-sizing: border-box;
+    margin-inline: 4px 14px;
+    border: 2px solid var(--text-secondary);
+    border-radius: 16px;
+    background: var(--m3-container);
+    font-size: 0;
+    transition: background-color .2s var(--m3-effects), border-color .2s var(--m3-effects);
+  }
+  .toggleSwitchWrapper:not(.dropdown .toggleSwitchWrapper)::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 12px;
+    width: 16px;
+    height: 16px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--text-secondary);
+    color: var(--accent);
+    font: 700 14px/1 sans-serif;
+    transform: translateY(-50%);
+    transition: left .35s var(--m3-spring), width .35s var(--m3-spring), height .35s var(--m3-spring),
+      background-color .2s var(--m3-effects), box-shadow .2s var(--m3-effects);
+  }
+  .toggleSwitchWrapper:not(.dropdown .toggleSwitchWrapper):hover::after { box-shadow: 0 0 0 8px var(--m3-state); }
+  .toggleSwitchWrapper:not(.dropdown .toggleSwitchWrapper):active::after { left: 6px; width: 28px; height: 28px; }
+  .hiddenCheckbox:checked + .toggleSwitchWrapper:not(.dropdown .toggleSwitchWrapper)::before {
+    border-color: var(--accent);
+    background: var(--accent);
+  }
+  .hiddenCheckbox:checked + .toggleSwitchWrapper:not(.dropdown .toggleSwitchWrapper)::after {
+    content: "✓";
+    left: 28px;
+    width: 24px;
+    height: 24px;
+    background: var(--qs-on-accent);
+  }
+  .hiddenCheckbox:checked + .toggleSwitchWrapper:not(.dropdown .toggleSwitchWrapper):active::after { left: 26px; width: 28px; height: 28px; }
+  .hiddenCheckbox:focus-visible + .toggleSwitchWrapper::before { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .hiddenCheckbox[disabled] + .toggleSwitchWrapper::before,
+  .hiddenCheckbox[disabled] + .toggleSwitchWrapper::after { opacity: .38; }
+
+  /* Card hover strip: round icon buttons, Play/Install as filled buttons. */
+  .gameCard > .icons .svg-button {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border-radius: 999px;
+    transition: border-radius .35s var(--m3-spring), background-color .2s var(--m3-effects);
+  }
+  .gameCard > .icons .svg-button > svg { height: 22px; }
+  .gameCard > .icons .svg-button:hover { background: var(--m3-state); }
+  .gameCard > .icons .svg-button:has(circle) { width: 48px; background: var(--accent); }
+  .gameCard > .icons .svg-button:has(circle):hover { background: var(--accent-overlay); }
+  .gameCard > .icons .svg-button circle { fill: transparent; }
+  .gameCard > .icons .svg-button:has(circle) path { fill: var(--qs-on-accent); }
+  .gameCard > .icons .svg-button:has(circle) > svg { height: 30px; }
+  .gameCard > .icons .svg-button:active { border-radius: 12px; }
+
+  /* Library header: count badge and the Add game button. */
+  .libraryHeaderWrapper .numberOfgames {
+    padding: 2px 10px;
+    border-radius: 999px;
+    background: var(--m3-tonal);
+    color: var(--qs-link);
+    font-size: 13px;
+  }
+  .libraryHeaderWrapper .libraryTitle > .sideloadGameButton {
+    height: 32px;
+    padding: 0 16px;
+    text-transform: none;
+    font-weight: 600;
+  }
+  .libraryHeaderWrapper .libraryTitle > .sideloadGameButton::before { content: "+"; margin-inline-end: 6px; font-weight: 700; }
+  .button.is-text {
+    height: 32px;
+    padding: 0 16px;
+    background: var(--m3-tonal);
+    color: var(--qs-link);
+    text-transform: none;
+  }
+
+  /* Zoom slider: thick split track with a bar handle. React keeps the value attribute in sync. */
+  .rangeWrapper input[type="range"] {
+    --fill: 0%;
+    appearance: none;
+    height: 40px;
+    background: none;
+    cursor: pointer;
+  }
+  .rangeWrapper input[type="range"]::-webkit-slider-runnable-track {
+    height: 16px;
+    border-radius: 8px;
+    background: linear-gradient(90deg,
+      var(--accent) calc(var(--fill) - 6px), transparent calc(var(--fill) - 6px),
+      transparent calc(var(--fill) + 6px), var(--m3-tonal) calc(var(--fill) + 6px));
+  }
+  .rangeWrapper input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    width: 4px;
+    height: 40px;
+    margin-top: -12px;
+    border-radius: 2px;
+    background: var(--accent);
+    transition: width .2s var(--m3-effects);
+  }
+  .rangeWrapper input[type="range"]:active::-webkit-slider-thumb { width: 2px; }
+  .rangeWrapper input[value="70"] { --fill: 7.14%; }
+  .rangeWrapper input[value="80"] { --fill: 14.29%; }
+  .rangeWrapper input[value="90"] { --fill: 21.43%; }
+  .rangeWrapper input[value="100"] { --fill: 28.57%; }
+  .rangeWrapper input[value="110"] { --fill: 35.71%; }
+  .rangeWrapper input[value="120"] { --fill: 42.86%; }
+  .rangeWrapper input[value="130"] { --fill: 50%; }
+  .rangeWrapper input[value="140"] { --fill: 57.14%; }
+  .rangeWrapper input[value="150"] { --fill: 64.29%; }
+  .rangeWrapper input[value="160"] { --fill: 71.43%; }
+  .rangeWrapper input[value="170"] { --fill: 78.57%; }
+  .rangeWrapper input[value="180"] { --fill: 85.71%; }
+  .rangeWrapper input[value="190"] { --fill: 92.86%; }
+  .rangeWrapper input[value="200"] { --fill: 100%; }
+
+  /* Context menus, popovers and tooltips. */
+  :is(.MuiMenu-paper, .MuiPopover-paper).MuiPaper-root {
+    border-radius: 20px;
+    background: var(--m3-container);
+    background-image: none;
+    box-shadow: 0 8px 24px #0005;
+  }
+  .MuiMenu-list { padding: 8px; }
+  .MuiMenuItem-root {
+    min-height: 40px;
+    border-radius: 12px;
+    transition: background-color .2s var(--m3-effects);
+  }
+  .MuiMenuItem-root:is(:hover, .Mui-focusVisible) { background: var(--m3-tonal); }
+  .MuiTooltip-tooltip {
+    padding: 6px 10px;
+    border-radius: 8px;
+    background: var(--text-default);
+    color: var(--background);
+    font-size: 12px;
+  }
+
+  /* Downloads and Wine Manager. */
+  :is(.progressHeader, .dmItemList) { border-radius: 24px; }
+  .MuiTab-root {
+    min-height: 36px;
+    border-radius: 999px;
+    text-transform: none;
+    transition: background-color .2s var(--m3-effects);
+  }
+  .MuiTab-root.Mui-selected { background: var(--m3-tonal); color: var(--qs-link); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .Sidebar__item, .Sidebar__item::before, .button, .gameCard, .SearchBar, .GogProfile__button,
+    .toggleSwitchWrapper::after, .gameCard > .icons .svg-button { transition: none; }
+  }
 }
+
+/* Thin pill scrollbars, including the document one. */
+:is(html:has(body.quickshell), html:has(body.quickshell) *)::-webkit-scrollbar { width: 12px; height: 12px; }
+:is(html:has(body.quickshell), html:has(body.quickshell) *)::-webkit-scrollbar-track { background: transparent; }
+:is(html:has(body.quickshell), html:has(body.quickshell) *)::-webkit-scrollbar-thumb {
+  border: 4px solid transparent;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--text-default, #888) 28%, transparent) padding-box;
+}
+:is(html:has(body.quickshell), html:has(body.quickshell) *)::-webkit-scrollbar-thumb:hover { background-color: var(--accent, #999); }

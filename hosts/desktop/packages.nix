@@ -13,6 +13,9 @@
           substituteInPlace src/frontend/screens/Library/index.tsx \
             --replace-fail "a.title.toUpperCase()" "(a.overrides?.title || a.title).toUpperCase()" \
             --replace-fail "b.title.toUpperCase()" "(b.overrides?.title || b.title).toUpperCase()"
+          # Game page background uses the (possibly overridden) cover art first
+          substituteInPlace src/frontend/screens/Game/GamePage/index.tsx \
+            --replace-fail "src={art_background || art_cover}" "src={art_cover || art_background}"
         '';
       });
     })
