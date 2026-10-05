@@ -16,10 +16,7 @@
     config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/NixOS/modules/home/niri/quickshell/config";
 
   programs.niri.settings = {
-    outputs."eDP-1" = {
-      transform.rotation = 270;
-      scale = 1.0;
-    };
+    outputs."eDP-1".scale = 1.0;
 
     input = {
       keyboard.xkb.layout = "ca";
