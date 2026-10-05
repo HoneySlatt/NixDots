@@ -13,6 +13,7 @@ PanelWindow {
 
     // Hide bar when certain launchers are open on this monitor
     readonly property HyprlandMonitor barMonitor: Hyprland.monitorFor(bar.screen)
+    readonly property bool isFocused: Hyprland.focusedMonitor?.id === barMonitor?.id
     property bool powerMenuOnThisScreen: PowerMenuState.visible && (Hyprland.focusedMonitor?.id === barMonitor?.id)
     property bool steamLauncherOnThisScreen: SteamLauncherState.visible && (Hyprland.focusedMonitor?.id === barMonitor?.id)
     visible: !steamLauncherOnThisScreen
@@ -40,9 +41,11 @@ PanelWindow {
     Rectangle {
         id: barBackground
         anchors.fill: parent
-        color: Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, isTop ? Theme.barOpacity : 1.0)
+        color: Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, isTop && !bar.isFocused ? Theme.barOpacity : 1.0)
         radius: isTop ? Theme.borderRadius : 0
         clip: true
+
+        Behavior on color { ColorAnimation { duration: 200 } }
 
         Modules.Clock {
             anchors.centerIn: parent

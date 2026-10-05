@@ -3,52 +3,18 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Wayland
 import "services" as Services
+import "m3" as M3
 
 Item {
     id: systemMonitorPopup
-
-    component GlassPanel: Rectangle {
-        property color fillColor: Theme.card
-
-        radius: 20
-        color: "transparent"
-        border.color: Qt.tint(Theme.separator, Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.34))
-        border.width: 1
-        gradient: Gradient {
-            GradientStop { position: 0.0; color: Qt.tint(fillColor, Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.055)) }
-            GradientStop { position: 0.58; color: fillColor }
-            GradientStop { position: 1.0; color: Qt.tint(fillColor, Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, 0.20)) }
-        }
-
-        Rectangle {
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.top: parent.top
-            anchors.leftMargin: 22
-            anchors.rightMargin: 22
-            anchors.topMargin: 1
-            height: 1
-            radius: 1
-            color: Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.16)
-        }
-
-        Rectangle {
-            anchors.fill: parent
-            anchors.margins: 1
-            radius: parent.radius - 1
-            color: "transparent"
-            border.color: Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.10)
-            border.width: 1
-        }
-    }
 
     component Sparkline: Canvas {
         id: sparkline
 
         property var values: []
         property int scaleMax: 100
-        property color lineColor: Theme.accent
-        property color areaColor: Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.12)
+        property color lineColor: Theme.primary
+        property color areaColor: Theme.alpha(Theme.primary, 0.16)
 
         renderTarget: Canvas.FramebufferObject
         onValuesChanged: requestPaint()
@@ -68,15 +34,15 @@ Item {
             for (let i = 0; i < values.length; i++)
                 maxValue = Math.max(maxValue, values[i]);
 
-            function pointX(index) { return 1 + index * (width - 2) / (values.length - 1); }
-            function pointY(value) { return height - 2 - Math.max(0, Math.min(1, value / maxValue)) * (height - 5); }
+            function pointX(index) { return 2 + index * (width - 4) / (values.length - 1); }
+            function pointY(value) { return height - 3 - Math.max(0, Math.min(1, value / maxValue)) * (height - 7); }
 
             ctx.beginPath();
             ctx.moveTo(pointX(0), pointY(values[0]));
             for (let i = 1; i < values.length; i++)
                 ctx.lineTo(pointX(i), pointY(values[i]));
-            ctx.lineTo(width - 1, height - 1);
-            ctx.lineTo(1, height - 1);
+            ctx.lineTo(width - 2, height);
+            ctx.lineTo(2, height);
             ctx.closePath();
             ctx.fillStyle = areaColor;
             ctx.fill();
@@ -85,7 +51,7 @@ Item {
             ctx.moveTo(pointX(0), pointY(values[0]));
             for (let i = 1; i < values.length; i++)
                 ctx.lineTo(pointX(i), pointY(values[i]));
-            ctx.lineWidth = 2;
+            ctx.lineWidth = 3;
             ctx.lineCap = "round";
             ctx.lineJoin = "round";
             ctx.strokeStyle = lineColor;
@@ -93,75 +59,64 @@ Item {
         }
     }
 
-    component MetricRow: Rectangle {
-        id: metricRow
+    component MetricCard: M3.ListSegment {
+        id: metricCard
 
         property string icon: ""
         property string label: ""
         property string value: ""
         property var history: []
-        property color accentColor: Theme.accent
+        property color accentColor: Theme.primary
 
-        height: 38
-        radius: 12
-        color: metricMouse.containsMouse ? Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.045) : "transparent"
+        interactive: false
+        height: 64
+        clip: true
 
         RowLayout {
             anchors.fill: parent
-            anchors.leftMargin: 8
-            anchors.rightMargin: 8
-            spacing: 10
+            anchors.leftMargin: 16
+            anchors.rightMargin: 16
+            spacing: 14
 
             Rectangle {
-                Layout.preferredWidth: 24
-                Layout.preferredHeight: 24
-                radius: 8
-                color: Qt.rgba(metricRow.accentColor.r, metricRow.accentColor.g, metricRow.accentColor.b, 0.15)
-                border.color: Qt.rgba(metricRow.accentColor.r, metricRow.accentColor.g, metricRow.accentColor.b, 0.32)
-                border.width: 1
+                Layout.preferredWidth: 40
+                Layout.preferredHeight: 40
+                radius: Theme.shapeM
+                color: Theme.mix(Theme.surfaceContainerHigh, metricCard.accentColor, 0.28)
 
-                Text {
+                M3.Icon {
                     anchors.centerIn: parent
-                    text: metricRow.icon
-                    color: metricRow.accentColor
-                    font.family: Theme.fontFamily
-                    font.pixelSize: Theme.fontSize + 1
+                    icon: metricCard.icon
+                    size: 24
+                    color: metricCard.accentColor
                 }
             }
 
-            Text {
-                text: metricRow.label
-                color: Theme.text
-                font.family: Theme.fontFamily
-                font.pixelSize: Theme.fontSize
-                font.weight: Font.Bold
-                Layout.alignment: Qt.AlignVCenter
-            }
+            ColumnLayout {
+                Layout.preferredWidth: 84
+                spacing: 0
 
-            Text {
-                text: metricRow.value
-                color: Theme.text
-                font.family: Theme.fontFamily
-                font.pixelSize: Theme.fontSize
-                font.weight: Font.Bold
-                Layout.alignment: Qt.AlignVCenter
+                M3.Label {
+                    text: metricCard.label
+                    color: Theme.textOnSurfaceVariant
+                    font.pixelSize: Theme.typeLabel
+                    font.weight: Font.Bold
+                }
+
+                M3.Label {
+                    text: metricCard.value
+                    font.pixelSize: Theme.typeTitleL
+                    font.weight: Font.Bold
+                }
             }
 
             Sparkline {
                 Layout.fillWidth: true
-                Layout.preferredHeight: 26
-                Layout.alignment: Qt.AlignVCenter
-                values: metricRow.history
-                lineColor: metricRow.accentColor
-                areaColor: Qt.rgba(metricRow.accentColor.r, metricRow.accentColor.g, metricRow.accentColor.b, 0.12)
+                Layout.preferredHeight: 40
+                values: metricCard.history
+                lineColor: metricCard.accentColor
+                areaColor: Theme.alpha(metricCard.accentColor, 0.16)
             }
-        }
-
-        MouseArea {
-            id: metricMouse
-            anchors.fill: parent
-            hoverEnabled: true
-            acceptedButtons: Qt.NoButton
         }
     }
 
@@ -170,66 +125,45 @@ Item {
 
         property var processData
 
-        height: 24
-        radius: 8
-        color: processMouse.containsMouse ? Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.045) : "transparent"
+        height: 36
+        radius: height / 2
+        color: "transparent"
+
+        M3.StateLayer {
+            hovered: processMouse.containsMouse
+        }
 
         RowLayout {
             anchors.fill: parent
-            anchors.leftMargin: 8
-            anchors.rightMargin: 8
+            anchors.leftMargin: 14
+            anchors.rightMargin: 4
             spacing: 12
 
-            Text {
+            M3.Label {
                 Layout.fillWidth: true
                 text: processRow.processData.name
-                color: Theme.text
-                font.family: Theme.fontFamily
-                font.pixelSize: Theme.fontSize
-                font.weight: Theme.fontWeight
-                elide: Text.ElideRight
-                Layout.alignment: Qt.AlignVCenter
             }
 
-            Text {
+            M3.Label {
                 Layout.preferredWidth: 54
                 text: processRow.processData.cpu
-                color: Theme.text
-                font.family: Theme.fontFamily
-                font.pixelSize: Theme.fontSize
-                font.weight: Theme.fontWeight
                 horizontalAlignment: Text.AlignRight
-                Layout.alignment: Qt.AlignVCenter
             }
 
-            Text {
+            M3.Label {
                 Layout.preferredWidth: 54
                 text: processRow.processData.mem
-                color: Theme.text
-                font.family: Theme.fontFamily
-                font.pixelSize: Theme.fontSize
-                font.weight: Theme.fontWeight
+                color: Theme.textOnSurfaceVariant
                 horizontalAlignment: Text.AlignRight
-                Layout.alignment: Qt.AlignVCenter
             }
 
-            Text {
-                Layout.preferredWidth: 24
-                text: "\uf00d"
-                color: killMouse.containsMouse ? Theme.warning : Theme.muted
-                opacity: killMouse.containsMouse ? 1.0 : 0.8
-                font.family: Theme.fontFamily
-                font.pixelSize: Theme.fontSize
-                horizontalAlignment: Text.AlignHCenter
-                Layout.alignment: Qt.AlignVCenter
+            M3.IconButton {
+                size: 30
+                icon: "\u{f0156}"
+                opacity: processMouse.containsMouse || hovered ? 1 : 0.45
+                onClicked: SystemMonitorState.killProcess(processRow.processData.pid)
 
-                MouseArea {
-                    id: killMouse
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: SystemMonitorState.killProcess(processRow.processData.pid)
-                }
+                Behavior on opacity { M3.Effect {} }
             }
         }
 
@@ -253,7 +187,7 @@ Item {
 
             readonly property bool monitorIsFocused: Services.NiriData.activeWorkspace !== null && Services.NiriData.activeWorkspace.output === root.screen.name
             onMonitorIsFocusedChanged: if (!monitorIsFocused) SystemMonitorPopupState.close()
-            
+
 
             color: "transparent"
 
@@ -287,23 +221,17 @@ Item {
                     }
                 }
 
-                Item {
-                    id: popupClip
+                M3.Surface {
+                    id: popup
                     anchors.top: BarState.isTop ? parent.top : undefined
                     anchors.bottom: BarState.isTop ? undefined : parent.bottom
+                    anchors.topMargin: Theme.popupGap
                     anchors.left: parent.left
+                    anchors.leftMargin: BarState.isTop ? Theme.margin : 0
                     width: Math.min(790, parent.width)
-                    height: contentRow.implicitHeight + 28
-                    clip: true
-
-                    GlassPanel {
-                        anchors.fill: parent
-                        anchors.topMargin: 0
-                        anchors.bottomMargin: BarState.isTop ? 0 : -radius
-                        height: parent.height + radius
-                        radius: BarState.isTop ? 20 : 0
-                        fillColor: Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, Theme.popupOpacity)
-                    }
+                    height: contentRow.implicitHeight + 32
+                    flushBottom: !BarState.isTop
+                    growFrom: BarState.isTop ? "top" : "bottom"
 
                     MouseArea { anchors.fill: parent }
 
@@ -313,33 +241,36 @@ Item {
                         anchors.left: parent.left
                         anchors.right: parent.right
                         anchors.margins: 16
-                        spacing: 18
+                        spacing: 16
 
                         Column {
-                            Layout.preferredWidth: 350
-                            spacing: 10
+                            Layout.preferredWidth: 360
+                            Layout.alignment: Qt.AlignTop
+                            spacing: 2
 
-                            MetricRow {
+                            MetricCard {
                                 width: parent.width
-                                icon: "\uf013"
+                                first: true
+                                icon: "\u{f0ee0}"
                                 label: "CPU"
                                 value: CpuState.usage + "%"
                                 history: CpuState.history
-                                accentColor: Theme.accent
+                                accentColor: Theme.primary
                             }
 
-                            MetricRow {
+                            MetricCard {
                                 width: parent.width
-                                icon: "\uf2db"
+                                icon: "\u{f08ae}"
                                 label: "GPU"
                                 value: GpuState.tempC + "°C"
                                 history: GpuState.history
-                                accentColor: Theme.process
+                                accentColor: Theme.tertiary
                             }
 
-                            MetricRow {
+                            MetricCard {
                                 width: parent.width
-                                icon: "\uefc5"
+                                last: true
+                                icon: "\u{f035b}"
                                 label: "RAM"
                                 value: RamState.percentage + "%"
                                 history: RamState.history
@@ -348,70 +279,72 @@ Item {
                         }
 
                         Rectangle {
-                            Layout.preferredWidth: 1
-                            Layout.fillHeight: true
-                            color: Theme.separator
-                        }
-
-                        Column {
                             Layout.fillWidth: true
-                            Layout.preferredHeight: 220
-                            spacing: 8
+                            Layout.preferredHeight: 196
+                            Layout.alignment: Qt.AlignTop
+                            radius: Theme.shapeLI
+                            color: Theme.surfaceContainerHigh
 
-                            RowLayout {
-                                width: parent.width
-                                height: 22
-                                spacing: 12
+                            Column {
+                                anchors.fill: parent
+                                anchors.margins: 8
+                                anchors.topMargin: 12
+                                spacing: 6
 
-                                Text { Layout.fillWidth: true; text: "Process"; color: Theme.accent; font.family: Theme.fontFamily; font.pixelSize: Theme.fontSize; font.weight: Font.Bold }
-                                Text { Layout.preferredWidth: 54; text: "CPU%"; color: Theme.accent; font.family: Theme.fontFamily; font.pixelSize: Theme.fontSize; font.weight: Font.Bold; horizontalAlignment: Text.AlignRight }
-                                Text { Layout.preferredWidth: 54; text: "MEM%"; color: Theme.accent; font.family: Theme.fontFamily; font.pixelSize: Theme.fontSize; font.weight: Font.Bold; horizontalAlignment: Text.AlignRight }
-                                Text { Layout.preferredWidth: 24; text: "" }
-                            }
+                                RowLayout {
+                                    width: parent.width
+                                    height: 20
+                                    spacing: 12
 
-                            Flickable {
-                                id: processFlick
+                                    M3.Label { Layout.fillWidth: true; leftPadding: 14; text: "Process"; color: Theme.primary; font.pixelSize: Theme.typeLabel; font.weight: Font.Bold }
+                                    M3.Label { Layout.preferredWidth: 54; text: "CPU"; color: Theme.primary; font.pixelSize: Theme.typeLabel; font.weight: Font.Bold; horizontalAlignment: Text.AlignRight }
+                                    M3.Label { Layout.preferredWidth: 54; text: "MEM"; color: Theme.primary; font.pixelSize: Theme.typeLabel; font.weight: Font.Bold; horizontalAlignment: Text.AlignRight }
+                                    Item { Layout.preferredWidth: 34 }
+                                }
 
-                                width: parent.width
-                                height: 190
-                                contentWidth: width
-                                contentHeight: processList.implicitHeight
-                                clip: true
-                                boundsBehavior: Flickable.StopAtBounds
+                                Flickable {
+                                    id: processFlick
 
-                                Column {
-                                    id: processList
+                                    width: parent.width
+                                    height: parent.height - 26
+                                    contentWidth: width
+                                    contentHeight: processList.implicitHeight
+                                    clip: true
+                                    boundsBehavior: Flickable.StopAtBounds
 
-                                    width: processFlick.width
-                                    spacing: 3
+                                    Column {
+                                        id: processList
 
-                                    Repeater {
-                                        model: SystemMonitorState.processes
-                                        delegate: ProcessRow {
-                                            required property var modelData
-                                            width: parent.width
-                                            processData: modelData
+                                        width: processFlick.width - 8
+                                        spacing: 0
+
+                                        Repeater {
+                                            model: SystemMonitorState.processes
+                                            delegate: ProcessRow {
+                                                required property var modelData
+                                                width: parent.width
+                                                processData: modelData
+                                            }
                                         }
+                                    }
+
+                                    Rectangle {
+                                        visible: processFlick.contentHeight > processFlick.height
+                                        anchors.right: parent.right
+                                        width: 4
+                                        height: Math.max(24, processFlick.height * processFlick.height / processFlick.contentHeight)
+                                        y: processFlick.contentY * (processFlick.height - height) / Math.max(1, processFlick.contentHeight - processFlick.height)
+                                        radius: 2
+                                        color: Theme.outlineVariant
                                     }
                                 }
 
-                                Rectangle {
-                                    visible: processFlick.contentHeight > processFlick.height
-                                    anchors.right: parent.right
-                                    width: 3
-                                    height: Math.max(24, processFlick.height * processFlick.height / processFlick.contentHeight)
-                                    y: processFlick.contentY * (processFlick.height - height) / Math.max(1, processFlick.contentHeight - processFlick.height)
-                                    radius: 2
-                                    color: Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.45)
+                                M3.Label {
+                                    visible: SystemMonitorState.processes.length === 0
+                                    leftPadding: 14
+                                    text: "No process data"
+                                    color: Theme.textOnSurfaceVariant
                                 }
-                            }
-
-                            Text {
-                                visible: SystemMonitorState.processes.length === 0
-                                text: "No process data"
-                                color: Theme.muted
-                                font.family: Theme.fontFamily
-                                font.pixelSize: Theme.fontSize
                             }
                         }
                     }

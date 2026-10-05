@@ -3,80 +3,11 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Wayland
 import "services" as Services
+import "m3" as M3
 
 Item {
     id: launcherScope
 
-    component GlowPanel: Rectangle {
-        radius: 34
-        color: "transparent"
-        border.color: Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.42)
-        border.width: 2
-
-        gradient: Gradient {
-            GradientStop { position: 0.0; color: Qt.tint(Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, Theme.popupOpacity), Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.10)) }
-            GradientStop { position: 0.55; color: Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, Theme.popupOpacity) }
-            GradientStop { position: 1.0; color: Qt.tint(Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, Theme.popupOpacity), Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.08)) }
-        }
-
-        Rectangle {
-            anchors.fill: parent
-            anchors.margins: 2
-            radius: parent.radius - 2
-            color: "transparent"
-            border.color: Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.10)
-            border.width: 1
-        }
-
-        Rectangle {
-            anchors.fill: parent
-            anchors.margins: 18
-            radius: parent.radius - 10
-            color: Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.035)
-        }
-    }
-
-    component RoundButton: Rectangle {
-        id: button
-
-        property string icon: ""
-        property bool primary: false
-        signal clicked()
-
-        width: primary ? 60 : 46
-        height: primary ? 60 : 46
-        radius: width / 2
-        color: primary
-            ? Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, mouse.containsMouse ? 0.34 : 0.24)
-            : Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, mouse.containsMouse ? 0.58 : 0.36)
-        border.color: primary ? Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.92) : Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.34)
-        border.width: primary ? 2 : 1
-
-        Rectangle {
-            anchors.fill: parent
-            anchors.margins: primary ? -7 : -4
-            radius: width / 2
-            color: Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, primary ? 0.12 : 0.06)
-            visible: button.primary || mouse.containsMouse
-        }
-
-        Text {
-            anchors.centerIn: parent
-            text: button.icon
-            color: Theme.text
-            font.family: Theme.fontFamily
-            font.pixelSize: button.primary ? Theme.fontSize + 10 : Theme.fontSize + 5
-            font.weight: Font.Bold
-        }
-
-        MouseArea {
-            id: mouse
-            anchors.fill: parent
-            hoverEnabled: true
-            cursorShape: Qt.PointingHandCursor
-            onClicked: button.clicked()
-        }
-    }
 
     Variants {
         model: Quickshell.screens
@@ -98,11 +29,11 @@ Item {
             property bool pendingAutoPlayCollection: false
 
             readonly property var sectionTabs: [
-                { label: "Playlists", icon: "\uf03a" },
-                { label: "Albums", icon: "\uf51f" },
-                { label: "Artists", icon: "\uf007" },
-                { label: "Songs", icon: "\uf001" },
-                { label: "Favorites", icon: "\uf005" }
+                { label: "Playlists", icon: "\u{f0cb8}" },
+                { label: "Albums", icon: "\u{f0025}" },
+                { label: "Artists", icon: "\u{f0803}" },
+                { label: "Songs", icon: "\u{f0387}" },
+                { label: "Favorites", icon: "\u{f02d1}" }
             ]
 
             color: "transparent"
@@ -230,17 +161,7 @@ Item {
 
             Rectangle {
                 anchors.fill: parent
-                color: Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, 0.70)
-            }
-
-            Rectangle {
-                anchors.fill: parent
-                opacity: 0.24
-                gradient: Gradient {
-                    GradientStop { position: 0.0; color: Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.34) }
-                    GradientStop { position: 0.48; color: Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, 0.06) }
-                    GradientStop { position: 1.0; color: Qt.rgba(Theme.highlight.r, Theme.highlight.g, Theme.highlight.b, 0.18) }
-                }
+                color: Theme.scrim
             }
 
             MouseArea {
@@ -316,180 +237,86 @@ Item {
                 }
             }
 
-            GlowPanel {
+            M3.Surface {
                 id: panel
                 anchors.centerIn: parent
                 width: Math.min(parent.width - 96, 1360)
                 height: Math.min(parent.height - 126, 800)
+                radius: Theme.shapeXLI
+                growFrom: "center"
 
                 MouseArea { anchors.fill: parent; onClicked: keyLayer.forceActiveFocus() }
 
-                Rectangle {
-                    id: searchBox
+                M3.SearchField {
+                    id: searchField
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.top: parent.top
-                    anchors.topMargin: 34
-                    width: Math.min(parent.width * 0.52, 660)
-                    height: 58
-                    radius: 22
-                    color: Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, 0.48)
-                    border.color: Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, searchMouse.containsMouse || searchField.activeFocus ? 0.54 : 0.22)
-                    border.width: 2
-
-                    RowLayout {
-                        anchors.fill: parent
-                        anchors.leftMargin: 22
-                        anchors.rightMargin: 22
-                        spacing: 14
-
-                        Text {
-                            text: "\uf002"
-                            color: Theme.accent
-                            font.family: Theme.fontFamily
-                            font.pixelSize: Theme.fontSize + 7
-                        }
-
-                        TextInput {
-                            id: searchField
-                            Layout.fillWidth: true
-                            Layout.fillHeight: true
-                            verticalAlignment: TextInput.AlignVCenter
-                            color: Theme.text
-                            selectionColor: Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.62)
-                            selectedTextColor: Theme.background
-                            clip: true
-                            font.family: Theme.fontFamily
-                            font.pixelSize: Theme.fontSize + 3
-                            onTextChanged: {
-                                root.searchQuery = text;
-                                root.selectedIndex = 0;
-                            }
-
-                            Text {
-                                anchors.fill: parent
-                                verticalAlignment: Text.AlignVCenter
-                                text: "Search music..."
-                                color: Qt.rgba(Theme.muted.r, Theme.muted.g, Theme.muted.b, 0.78)
-                                font.family: searchField.font.family
-                                font.pixelSize: searchField.font.pixelSize
-                                visible: searchField.text.length === 0
-                            }
-                        }
-                    }
-
-                    MouseArea {
-                        id: searchMouse
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        acceptedButtons: Qt.NoButton
+                    anchors.topMargin: 28
+                    width: Math.min(parent.width * 0.5, 640)
+                    placeholder: "Search music"
+                    onTextChanged: {
+                        root.searchQuery = text;
+                        root.selectedIndex = 0;
                     }
                 }
-                RowLayout {
+
+                Row {
                     id: tabs
                     anchors.horizontalCenter: parent.horizontalCenter
-                    anchors.top: searchBox.bottom
-                    anchors.topMargin: 32
-                    spacing: 26
+                    anchors.top: searchField.bottom
+                    anchors.topMargin: 20
+                    spacing: 2
 
                     Repeater {
+                        id: tabRepeater
                         model: root.sectionTabs
 
-                        Rectangle {
+                        M3.Button {
                             required property var modelData
                             required property int index
 
-                            Layout.preferredWidth: Math.max(132, tabLabel.implicitWidth + 54)
-                            Layout.preferredHeight: 44
-                            radius: 16
-                            color: root.sectionIndex === index ? Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.24) : "transparent"
-                            border.color: root.sectionIndex === index ? Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.58) : Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, tabMouse.containsMouse ? 0.30 : 0.08)
-                            border.width: 1
-
-                            RowLayout {
-                                anchors.centerIn: parent
-                                spacing: 10
-
-                                Text {
-                                    text: modelData.icon
-                                    color: root.sectionIndex === index ? Theme.text : Theme.muted
-                                    font.family: Theme.fontFamily
-                                    font.pixelSize: Theme.fontSize
-                                }
-
-                                Text {
-                                    id: tabLabel
-                                    text: modelData.label
-                                    color: root.sectionIndex === index ? Theme.text : Theme.muted
-                                    font.family: Theme.fontFamily
-                                    font.pixelSize: Theme.fontSize + 1
-                                    font.weight: Font.Bold
-                                }
-                            }
-
-                            MouseArea {
-                                id: tabMouse
-                                anchors.fill: parent
-                                hoverEnabled: true
-                                cursorShape: Qt.PointingHandCursor
-                                onClicked: root.sectionIndex = index
-                            }
+                            width: 150
+                            size: 48
+                            variant: "tonal"
+                            toggle: true
+                            checked: root.sectionIndex === index
+                            grouped: true
+                            groupStart: index === 0
+                            groupEnd: index === tabRepeater.count - 1
+                            icon: modelData.icon
+                            text: modelData.label
+                            onClicked: root.sectionIndex = index
                         }
                     }
                 }
 
-                Rectangle {
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    anchors.top: tabs.bottom
-                    anchors.leftMargin: 170
-                    anchors.rightMargin: 170
-                    anchors.topMargin: 18
-                    height: 1
-                    color: Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.10)
-                }
-
-                Text {
+                M3.Label {
                     anchors.left: cardList.left
                     anchors.bottom: cardList.top
                     anchors.bottomMargin: 8
                     text: root.currentItems().length + " items"
-                    color: Qt.rgba(Theme.muted.r, Theme.muted.g, Theme.muted.b, 0.72)
-                    font.family: Theme.fontFamily
-                    font.pixelSize: Theme.fontSize - 2
+                    color: Theme.textOnSurfaceVariant
+                    font.pixelSize: Theme.typeLabel
                 }
 
-                Text {
+                M3.IconButton {
                     anchors.left: parent.left
-                    anchors.leftMargin: 52
+                    anchors.leftMargin: 40
                     anchors.verticalCenter: cardList.verticalCenter
-                    text: "\uf104"
-                    color: Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.86)
-                    font.family: Theme.fontFamily
-                    font.pixelSize: Theme.fontSize + 24
-
-                    MouseArea {
-                        anchors.fill: parent
-                        anchors.margins: -18
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: root.moveSelection(-1)
-                    }
+                    size: 48
+                    variant: "tonal"
+                    icon: "\u{f0141}"
+                    onClicked: root.moveSelection(-1)
                 }
 
-                Text {
+                M3.IconButton {
                     anchors.right: parent.right
-                    anchors.rightMargin: 52
+                    anchors.rightMargin: 40
                     anchors.verticalCenter: cardList.verticalCenter
-                    text: "\uf105"
-                    color: Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.86)
-                    font.family: Theme.fontFamily
-                    font.pixelSize: Theme.fontSize + 24
-
-                    MouseArea {
-                        anchors.fill: parent
-                        anchors.margins: -18
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: root.moveSelection(1)
-                    }
+                    size: 48
+                    variant: "tonal"
+                    icon: "\u{f0142}"
+                    onClicked: root.moveSelection(1)
                 }
 
                 ListView {
@@ -497,262 +324,219 @@ Item {
                     anchors.left: parent.left
                     anchors.right: parent.right
                     anchors.top: tabs.bottom
-                    anchors.leftMargin: 118
-                    anchors.rightMargin: 118
-                    anchors.topMargin: 64
-                    height: 258
+                    anchors.leftMargin: 112
+                    anchors.rightMargin: 112
+                    anchors.topMargin: 48
+                    height: 262
                     orientation: ListView.Horizontal
-                    spacing: 26
+                    spacing: 20
                     clip: true
                     model: root.currentItems()
                     currentIndex: root.selectedIndex
                     highlightMoveDuration: 160
 
-                    delegate: Rectangle {
+                    delegate: Item {
                         id: card
                         required property var modelData
                         required property int index
 
                         readonly property bool selected: root.selectedIndex === index
+                        readonly property string art: root.artFor(modelData)
 
-                        width: selected ? 226 : 176
-                        height: selected ? 250 : 212
-                        y: selected ? 0 : 24
-                        radius: 0
-                        color: Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, selected ? 0.86 : 0.66)
-                        border.color: selected ? Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.96) : Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, mouse.containsMouse ? 0.38 : 0.14)
-                        border.width: selected ? 2 : 1
+                        width: selected ? 236 : 184
+                        height: cardList.height
 
-                        Behavior on width { NumberAnimation { duration: 140; easing.type: Easing.OutCubic } }
-                        Behavior on height { NumberAnimation { duration: 140; easing.type: Easing.OutCubic } }
-                        Behavior on y { NumberAnimation { duration: 140; easing.type: Easing.OutCubic } }
-
-                        Image {
-                            anchors.fill: parent
-                            source: root.artFor(modelData)
-                            fillMode: Image.PreserveAspectCrop
-                            smooth: true
-                            asynchronous: true
-                            sourceSize: Qt.size(520, 520)
-                            opacity: root.artFor(modelData).length > 0 ? 1.0 : 0.0
-                        }
+                        Behavior on width { M3.Spring {} }
 
                         Rectangle {
-                            anchors.fill: parent
-                            gradient: Gradient {
-                                GradientStop { position: 0.0; color: Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, 0.10) }
-                                GradientStop { position: 0.52; color: Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, 0.20) }
-                                GradientStop { position: 1.0; color: Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, 0.90) }
-                            }
-                        }
-
-                        Text {
-                            anchors.centerIn: parent
-                            visible: root.artFor(modelData).length === 0
-                            text: modelData.itemType === "artist" ? "\uf007" : "\uf001"
-                            color: Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.42)
-                            font.family: Theme.fontFamily
-                            font.pixelSize: Theme.fontSize + 36
-                        }
-
-                        ColumnLayout {
+                            id: cardFrame
                             anchors.left: parent.left
                             anchors.right: parent.right
-                            anchors.bottom: parent.bottom
-                            anchors.leftMargin: selected ? 22 : 18
-                            anchors.rightMargin: selected ? 22 : 18
-                            anchors.bottomMargin: selected ? 22 : 18
-                            spacing: 5
+                            anchors.verticalCenter: parent.verticalCenter
+                            height: card.selected ? 258 : 214
+                            radius: card.selected ? Theme.shapeXL : Theme.shapeLI
+                            color: Theme.surfaceContainerHighest
 
-                            Text {
-                                Layout.fillWidth: true
-                                text: root.titleFor(modelData)
-                                color: Theme.text
-                                font.family: Theme.fontFamily
-                                font.pixelSize: selected ? Theme.fontSize + 5 : Theme.fontSize + 1
-                                font.weight: Font.Bold
-                                elide: Text.ElideRight
+                            Behavior on height { M3.Spring {} }
+                            Behavior on radius { M3.Spring {} }
+
+                            M3.Icon {
+                                anchors.centerIn: parent
+                                anchors.verticalCenterOffset: -20
+                                visible: cardArt.status !== Image.Ready
+                                icon: card.modelData.itemType === "artist" ? "\u{f0803}" : "\u{f0387}"
+                                size: 56
+                                color: Theme.textOnSurfaceVariant
                             }
 
-                            Text {
-                                Layout.fillWidth: true
-                                text: root.subtitleFor(modelData)
-                                color: Theme.muted
-                                font.family: Theme.fontFamily
-                                font.pixelSize: selected ? Theme.fontSize + 1 : Theme.fontSize - 2
-                                font.weight: Font.Bold
-                                elide: Text.ElideRight
+                            M3.RoundedImage {
+                                id: cardArt
+                                anchors.fill: parent
+                                radius: cardFrame.radius
+                                source: card.art
+                                sourceSize: Qt.size(520, 520)
+                            }
+
+                            Rectangle {
+                                anchors.fill: parent
+                                radius: parent.radius
+                                gradient: Gradient {
+                                    GradientStop { position: 0.45; color: Theme.alpha(Theme.surfaceContainerLowest, 0) }
+                                    GradientStop { position: 1.0; color: Theme.alpha(Theme.surfaceContainerLowest, 0.92) }
+                                }
+                            }
+
+                            M3.StateLayer {
+                                hovered: cardMouse.containsMouse
+                                pressed: cardMouse.pressed
+                            }
+
+                            M3.FocusRing {
+                                shown: card.selected
+                                border.color: Theme.primary
+                            }
+
+                            ColumnLayout {
+                                anchors.left: parent.left
+                                anchors.right: parent.right
+                                anchors.bottom: parent.bottom
+                                anchors.margins: card.selected ? 20 : 16
+                                spacing: 2
+
+                                M3.Label {
+                                    Layout.fillWidth: true
+                                    text: root.titleFor(card.modelData)
+                                    font.pixelSize: card.selected ? Theme.typeTitleL : Theme.typeBody + 1
+                                    font.weight: Font.Bold
+                                }
+
+                                M3.Label {
+                                    Layout.fillWidth: true
+                                    text: root.subtitleFor(card.modelData)
+                                    color: Theme.textOnSurfaceVariant
+                                    font.pixelSize: Theme.typeLabel
+                                }
                             }
                         }
 
                         MouseArea {
-                            id: mouse
-                            anchors.fill: parent
+                            id: cardMouse
+                            anchors.fill: cardFrame
                             hoverEnabled: true
                             cursorShape: Qt.PointingHandCursor
-                            onClicked: root.playSelected(index)
+                            onClicked: root.playSelected(card.index)
                         }
                     }
-                }
-
-                Rectangle {
-                    id: divider
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    anchors.top: cardList.bottom
-                    anchors.leftMargin: 36
-                    anchors.rightMargin: 36
-                    anchors.topMargin: 22
-                    height: 2
-                    color: Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.18)
                 }
 
                 RowLayout {
                     anchors.left: parent.left
                     anchors.right: parent.right
-                    anchors.top: divider.bottom
+                    anchors.top: cardList.bottom
                     anchors.bottom: parent.bottom
-                    anchors.leftMargin: 116
-                    anchors.rightMargin: 116
-                    anchors.topMargin: 18
-                    anchors.bottomMargin: 24
-                    spacing: 32
+                    anchors.leftMargin: 112
+                    anchors.rightMargin: 112
+                    anchors.topMargin: 36
+                    anchors.bottomMargin: 28
+                    spacing: 36
 
                     Rectangle {
-                        Layout.preferredWidth: 178
-                        Layout.preferredHeight: 178
-                        radius: 0
-                        color: Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, 0.72)
-                        border.color: Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.92)
-                        border.width: 2
-                        clip: true
+                        Layout.preferredWidth: 184
+                        Layout.preferredHeight: 184
+                        radius: Theme.shapeXL
+                        color: Theme.surfaceContainerHighest
 
-                        Image {
-                            anchors.fill: parent
-                            anchors.margins: 2
-                            source: MusicService.currentTrack ? MusicService.coverUrl(MusicService.currentTrack.coverArt ?? MusicService.currentTrack.id) : ""
-                            fillMode: Image.PreserveAspectCrop
-                            smooth: true
-                            asynchronous: true
-                            sourceSize: Qt.size(540, 540)
+                        M3.Icon {
+                            anchors.centerIn: parent
+                            visible: nowCover.status !== Image.Ready
+                            icon: "\u{f075a}"
+                            size: 64
+                            color: Theme.textOnSurfaceVariant
                         }
 
-                        Text {
-                            anchors.centerIn: parent
-                            visible: MusicService.currentTrack === null
-                            text: "\uf001"
-                            color: Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.38)
-                            font.family: Theme.fontFamily
-                            font.pixelSize: Theme.fontSize + 44
+                        M3.RoundedImage {
+                            id: nowCover
+                            anchors.fill: parent
+                            radius: parent.radius
+                            source: MusicService.currentTrack ? MusicService.coverUrl(MusicService.currentTrack.coverArt ?? MusicService.currentTrack.id) : ""
+                            sourceSize: Qt.size(540, 540)
                         }
                     }
 
                     ColumnLayout {
                         Layout.fillWidth: true
                         Layout.fillHeight: true
-                        spacing: 8
+                        spacing: 6
 
                         RowLayout {
                             Layout.fillWidth: true
-                            spacing: 12
+                            spacing: 8
 
-                            Text {
-                                text: MusicService.currentTrack ? "Now Playing" : (root.pendingAutoPlayCollection ? "Loading collection" : "Ready")
-                                color: Theme.muted
-                                font.family: Theme.fontFamily
-                                font.pixelSize: Theme.fontSize - 1
+                            M3.Label {
+                                Layout.fillWidth: true
+                                text: MusicService.currentTrack ? "Now playing" : (root.pendingAutoPlayCollection ? "Loading collection" : "Ready")
+                                color: Theme.primary
+                                font.pixelSize: Theme.typeLabel
                                 font.weight: Font.Bold
                             }
 
-                            Item { Layout.fillWidth: true }
-
-                            Text {
+                            M3.Chip {
+                                clickable: false
+                                selected: MusicService.ready
+                                icon: "\u{f0156}"
                                 text: MusicService.ready ? "Navidrome" : "Disconnected"
-                                color: MusicService.ready ? Theme.accent : Theme.warning
-                                font.family: Theme.fontFamily
-                                font.pixelSize: Theme.fontSize - 2
-                                font.weight: Font.Bold
                             }
                         }
 
-                        Text {
+                        M3.Label {
                             Layout.fillWidth: true
                             text: MusicService.currentTrack?.title ?? "Nothing playing"
-                            color: Theme.accent
-                            font.family: Theme.fontFamily
-                            font.pixelSize: Theme.fontSize + 18
-                            font.weight: Font.Bold
-                            elide: Text.ElideRight
+                            font.pixelSize: Theme.typeHeadline + 6
+                            font.weight: Font.ExtraBold
                         }
 
-                        Text {
+                        M3.Label {
                             Layout.fillWidth: true
                             text: MusicService.currentTrack ? [MusicService.currentTrack.artist, MusicService.currentTrack.album].filter(v => v && v.length > 0).join(" - ") : "Choose a playlist, album, artist, song, or favorite"
-                            color: Theme.muted
-                            font.family: Theme.fontFamily
-                            font.pixelSize: Theme.fontSize + 2
-                            font.weight: Font.Bold
-                            elide: Text.ElideRight
+                            color: Theme.textOnSurfaceVariant
+                            font.pixelSize: Theme.typeTitle
                         }
 
-                        Item { Layout.preferredHeight: 4 }
+                        Item { Layout.fillHeight: true }
 
                         RowLayout {
                             Layout.fillWidth: true
-                            spacing: 18
+                            spacing: 16
 
-                            Text {
+                            M3.Label {
                                 text: root.formatTime(MusicService.position)
-                                color: Theme.muted
-                                font.family: Theme.fontFamily
-                                font.pixelSize: Theme.fontSize - 1
-                                font.weight: Font.Bold
+                                color: Theme.textOnSurfaceVariant
+                                font.pixelSize: Theme.typeLabel
                             }
 
-                            Rectangle {
+                            M3.WavyProgress {
                                 Layout.fillWidth: true
-                                Layout.preferredHeight: 7
-                                radius: 4
-                                color: Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.10)
-
-                                Rectangle {
-                                    anchors.left: parent.left
-                                    anchors.top: parent.top
-                                    anchors.bottom: parent.bottom
-                                    width: parent.width * Math.max(0, Math.min(1, MusicService.duration > 0 ? MusicService.position / MusicService.duration : 0))
-                                    radius: parent.radius
-                                    color: Theme.accent
-                                }
-
-                                Rectangle {
-                                    width: 18
-                                    height: 18
-                                    radius: 9
-                                    x: Math.max(0, Math.min(parent.width - width, parent.width * Math.max(0, Math.min(1, MusicService.duration > 0 ? MusicService.position / MusicService.duration : 0)) - width / 2))
-                                    anchors.verticalCenter: parent.verticalCenter
-                                    color: Theme.accent
-                                }
+                                value: MusicService.duration > 0 ? MusicService.position / MusicService.duration : 0
+                                playing: MusicService.playing
                             }
 
-                            Text {
+                            M3.Label {
                                 text: root.formatTime(MusicService.duration)
-                                color: Theme.muted
-                                font.family: Theme.fontFamily
-                                font.pixelSize: Theme.fontSize - 1
-                                font.weight: Font.Bold
+                                color: Theme.textOnSurfaceVariant
+                                font.pixelSize: Theme.typeLabel
                             }
                         }
 
                         RowLayout {
                             Layout.alignment: Qt.AlignHCenter
-                            Layout.topMargin: 10
-                            spacing: 28
+                            Layout.topMargin: 6
+                            spacing: 10
 
-                            RoundButton { icon: "\uf074"; primary: MusicService.shuffleEnabled; onClicked: MusicService.toggleShuffle() }
-                            RoundButton { icon: "\uf048"; onClicked: MusicService.previous() }
-                            RoundButton { icon: MusicService.playing ? "\uf04c" : "\uf04b"; primary: true; onClicked: MusicService.togglePause() }
-                            RoundButton { icon: "\uf051"; onClicked: MusicService.next() }
-                            RoundButton { icon: MusicService.currentTrackFavorite ? "\uf004" : "\uf08a"; primary: MusicService.currentTrackFavorite; onClicked: MusicService.toggleCurrentFavorite() }
+                            M3.IconButton { size: 48; variant: "tonal"; toggle: true; checked: MusicService.shuffleEnabled; icon: "\u{f049d}"; onClicked: MusicService.toggleShuffle() }
+                            M3.IconButton { size: 56; variant: "tonal"; icon: "\u{f04ae}"; onClicked: MusicService.previous() }
+                            M3.IconButton { size: 72; implicitWidth: 104; variant: "filled"; toggle: true; checked: MusicService.playing; icon: MusicService.playing ? "\u{f03e4}" : "\u{f040a}"; onClicked: MusicService.togglePause() }
+                            M3.IconButton { size: 56; variant: "tonal"; icon: "\u{f04ad}"; onClicked: MusicService.next() }
+                            M3.IconButton { size: 48; variant: "tonal"; toggle: true; checked: MusicService.currentTrackFavorite; icon: MusicService.currentTrackFavorite ? "\u{f02d1}" : "\u{f02d5}"; onClicked: MusicService.toggleCurrentFavorite() }
                         }
                     }
                 }

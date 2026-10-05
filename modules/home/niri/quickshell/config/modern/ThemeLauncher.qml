@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Wayland
 import "services" as Services
+import "m3" as M3
 
 Item {
     id: launcherScope
@@ -10,193 +11,6 @@ Item {
     function applyTheme(key) {
         Theme.setTheme(key);
         ThemeLauncherState.close();
-    }
-
-    component GlassPanel: Rectangle {
-        property color fillColor: Theme.card
-        property color accentColor: Theme.accent
-
-        radius: 24
-        color: "transparent"
-        border.color: Qt.tint(Theme.separator, Qt.rgba(accentColor.r, accentColor.g, accentColor.b, 0.34))
-        border.width: 1
-        gradient: Gradient {
-            GradientStop { position: 0.0; color: Qt.tint(fillColor, Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.06)) }
-            GradientStop { position: 0.58; color: fillColor }
-            GradientStop { position: 1.0; color: Qt.tint(fillColor, Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, 0.20)) }
-        }
-
-        Rectangle {
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.top: parent.top
-            anchors.leftMargin: 28
-            anchors.rightMargin: 28
-            anchors.topMargin: 1
-            height: 1
-            radius: 1
-            color: Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.16)
-        }
-
-        Rectangle {
-            anchors.fill: parent
-            anchors.margins: 1
-            radius: parent.radius - 1
-            color: "transparent"
-            border.color: Qt.rgba(accentColor.r, accentColor.g, accentColor.b, 0.10)
-            border.width: 1
-        }
-    }
-
-    component ColorChip: Rectangle {
-        property color chipColor: Theme.accent
-
-        width: 28
-        height: 14
-        radius: 4
-        color: chipColor
-        border.color: Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.10)
-        border.width: 1
-    }
-
-    component ThemeCard: Rectangle {
-        id: themeCard
-
-        required property string themeKey
-        required property int cardIndex
-
-        property var themeData: Theme.themes[themeKey]
-        property color themeBg: themeData.background
-        property color themeText: themeData.text
-        property color themeSeparator: themeData.separator
-        property color themeWarning: themeData.warning
-        property color themeCaution: themeData.caution
-        property color themeMisc: themeData.misc
-        property color themeProcess: themeData.process
-        property color themeAccent: themeData.accent
-        property bool selected: root.selectedIndex === cardIndex
-        property bool active: Theme.currentTheme === themeKey
-
-        signal selectedClicked()
-        signal hovered()
-
-        width: root.cardW
-        height: root.cardH
-        radius: 18
-        color: Qt.rgba(themeBg.r, themeBg.g, themeBg.b, selected ? 0.76 : 0.58)
-        border.color: selected
-            ? Qt.rgba(themeAccent.r, themeAccent.g, themeAccent.b, 0.88)
-            : Qt.rgba(Theme.separator.r, Theme.separator.g, Theme.separator.b, 0.46)
-        border.width: selected ? 2 : 1
-
-        Behavior on color { ColorAnimation { duration: 120 } }
-        Behavior on border.color { ColorAnimation { duration: 120 } }
-
-        Rectangle {
-            visible: selected
-            anchors.fill: parent
-            anchors.margins: -5
-            radius: parent.radius + 5
-            color: "transparent"
-            border.color: Qt.rgba(themeAccent.r, themeAccent.g, themeAccent.b, 0.24)
-            border.width: 2
-        }
-
-        Rectangle {
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.top: parent.top
-            anchors.leftMargin: 18
-            anchors.rightMargin: 18
-            anchors.topMargin: 1
-            height: 1
-            radius: 1
-            color: Qt.rgba(themeText.r, themeText.g, themeText.b, 0.13)
-        }
-
-        Column {
-            anchors.fill: parent
-            anchors.margins: 18
-            spacing: 16
-
-            Text {
-                width: parent.width
-                text: themeData.name
-                color: themeText
-                font.family: Theme.fontFamily
-                font.pixelSize: Theme.fontSize + 1
-                font.weight: Font.Bold
-                elide: Text.ElideRight
-            }
-
-            Row {
-                spacing: 5
-                ColorChip { chipColor: themeBg }
-                ColorChip { chipColor: themeText }
-                ColorChip { chipColor: themeSeparator }
-                ColorChip { chipColor: themeWarning }
-            }
-
-            Rectangle {
-                width: parent.width
-                height: 30
-                radius: 8
-                color: Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, 0.42)
-
-                Row {
-                    anchors.centerIn: parent
-                    spacing: 7
-
-                    Text {
-                        text: "Aa"
-                        color: themeText
-                        font.family: Theme.fontFamily
-                        font.pixelSize: Theme.fontSize - 3
-                        font.weight: Font.Bold
-                        anchors.verticalCenter: parent.verticalCenter
-                    }
-
-                    Rectangle { width: 18; height: 9; radius: 3; color: themeProcess; anchors.verticalCenter: parent.verticalCenter }
-                    Rectangle { width: 18; height: 9; radius: 3; color: themeMisc; anchors.verticalCenter: parent.verticalCenter }
-                    Rectangle { width: 18; height: 9; radius: 3; color: themeWarning; anchors.verticalCenter: parent.verticalCenter }
-                    Rectangle { width: 18; height: 9; radius: 3; color: themeAccent; anchors.verticalCenter: parent.verticalCenter }
-                }
-            }
-
-            Item { width: 1; height: 18 }
-
-            Item {
-                width: parent.width
-                height: 38
-
-                Rectangle {
-                    anchors.centerIn: parent
-                    width: 24
-                    height: 24
-                    radius: 12
-                    color: "transparent"
-                    border.color: selected ? themeAccent : Qt.rgba(themeText.r, themeText.g, themeText.b, 0.34)
-                    border.width: selected ? 2 : 1
-
-                    Rectangle {
-                        visible: selected
-                        anchors.centerIn: parent
-                        width: 8
-                        height: 8
-                        radius: 4
-                        color: themeAccent
-                    }
-                }
-            }
-        }
-
-        MouseArea {
-            anchors.fill: parent
-            hoverEnabled: true
-            cursorShape: Qt.PointingHandCursor
-            onEntered: themeCard.hovered()
-            onClicked: themeCard.selectedClicked()
-        }
     }
 
     Variants {
@@ -224,7 +38,7 @@ Item {
 
             readonly property int cardW: 154
             readonly property int cardH: 210
-            readonly property int cardSpacing: 14
+            readonly property int cardSpacing: 16
             property int selectedIndex: 0
             readonly property string selectedKey: Theme.themeKeys[selectedIndex] ?? Theme.currentTheme
             readonly property var selectedTheme: Theme.themes[selectedKey] ?? Theme.themes[Theme.currentTheme]
@@ -262,7 +76,7 @@ Item {
 
             Rectangle {
                 anchors.fill: parent
-                color: Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, 0.58)
+                color: Theme.scrim
             }
 
             MouseArea {
@@ -300,28 +114,173 @@ Item {
                 }
             }
 
-            GlassPanel {
+            M3.Surface {
+                id: previewPanel
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.bottom: mainPanel.top
+                anchors.bottomMargin: 16
+                width: 470
+                height: 190
+                radius: Theme.shapeXLI
+                color: root.selectedBg
+                growFrom: "center"
+
+                MouseArea {
+                    anchors.fill: parent
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: launcherScope.applyTheme(root.selectedKey)
+                }
+
+                Column {
+                    anchors.fill: parent
+                    anchors.margins: 24
+                    spacing: 18
+
+                    RowLayout {
+                        width: parent.width
+                        spacing: 12
+
+                        M3.Label {
+                            Layout.fillWidth: true
+                            text: root.selectedTheme.name
+                            color: root.selectedText
+                            font.pixelSize: Theme.typeHeadline
+                            font.weight: Font.Bold
+                        }
+
+                        M3.Badge {
+                            visible: root.selectedKey === Theme.currentTheme
+                            text: "Active"
+                            color: root.selectedAccent
+                            contentColor: Theme.contentOn(root.selectedAccent)
+                        }
+                    }
+
+                    Row {
+                        spacing: 10
+
+                        Rectangle {
+                            width: applyLabel.implicitWidth + 40
+                            height: 40
+                            radius: 20
+                            color: root.selectedAccent
+
+                            M3.Label {
+                                id: applyLabel
+                                anchors.centerIn: parent
+                                text: "Apply"
+                                color: Theme.contentOn(root.selectedAccent)
+                                font.weight: Font.Bold
+                            }
+                        }
+
+                        Rectangle {
+                            width: tonalLabel.implicitWidth + 40
+                            height: 40
+                            radius: Theme.shapeM
+                            color: Theme.mix(root.selectedBg, root.selectedAccent, 0.22)
+
+                            M3.Label {
+                                id: tonalLabel
+                                anchors.centerIn: parent
+                                text: "Tonal"
+                                color: root.selectedText
+                                font.weight: Font.Bold
+                            }
+                        }
+
+                        Rectangle {
+                            anchors.verticalCenter: parent.verticalCenter
+                            width: 52
+                            height: 32
+                            radius: 16
+                            color: root.selectedAccent
+
+                            Rectangle {
+                                anchors.verticalCenter: parent.verticalCenter
+                                x: parent.width - width - 4
+                                width: 24
+                                height: 24
+                                radius: 12
+                                color: Theme.contentOn(root.selectedAccent)
+                            }
+                        }
+
+                        Repeater {
+                            model: [root.selectedProcess, root.selectedMisc, root.selectedWarning]
+                            delegate: Rectangle {
+                                required property var modelData
+                                anchors.verticalCenter: parent.verticalCenter
+                                width: 28
+                                height: 28
+                                radius: 14
+                                color: modelData
+                            }
+                        }
+                    }
+
+                    Row {
+                        width: parent.width
+                        spacing: 6
+
+                        Rectangle {
+                            anchors.verticalCenter: parent.verticalCenter
+                            width: parent.width * 0.62
+                            height: 14
+                            radius: 7
+                            color: root.selectedAccent
+                        }
+
+                        Rectangle {
+                            anchors.verticalCenter: parent.verticalCenter
+                            width: 4
+                            height: 32
+                            radius: 2
+                            color: root.selectedAccent
+                        }
+
+                        Rectangle {
+                            anchors.verticalCenter: parent.verticalCenter
+                            width: parent.width * 0.38 - 16
+                            height: 14
+                            radius: 7
+                            color: Theme.mix(root.selectedBg, root.selectedAccent, 0.22)
+                        }
+                    }
+                }
+            }
+
+            M3.Surface {
                 id: mainPanel
                 anchors.centerIn: parent
-                anchors.verticalCenterOffset: 42
+                anchors.verticalCenterOffset: 110
                 width: Math.min(parent.width - 80, 1080)
-                height: 360
-                radius: 24
-                fillColor: Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, 0.62)
-                accentColor: root.selectedAccent
+                height: 330
+                radius: Theme.shapeXLI
+                growFrom: "center"
 
                 MouseArea { anchors.fill: parent; onClicked: keyLayer.forceActiveFocus() }
 
-                Text {
+                RowLayout {
                     anchors.left: parent.left
+                    anchors.right: parent.right
                     anchors.top: parent.top
-                    anchors.leftMargin: 26
-                    anchors.topMargin: 32
-                    text: "Themes"
-                    color: Theme.text
-                    font.family: Theme.fontFamily
-                    font.pixelSize: Theme.fontSize + 4
-                    font.weight: Font.Bold
+                    anchors.leftMargin: 28
+                    anchors.rightMargin: 28
+                    anchors.topMargin: 22
+
+                    M3.Label {
+                        Layout.fillWidth: true
+                        text: "Themes"
+                        font.pixelSize: Theme.typeTitleL
+                        font.weight: Font.Bold
+                    }
+
+                    M3.Label {
+                        text: "←/→ browse  •  enter apply"
+                        color: Theme.textOnSurfaceVariant
+                        font.pixelSize: Theme.typeLabel
+                    }
                 }
 
                 ListView {
@@ -331,8 +290,8 @@ Item {
                     anchors.bottom: parent.bottom
                     anchors.leftMargin: 24
                     anchors.rightMargin: 24
-                    anchors.bottomMargin: 28
-                    height: root.cardH
+                    anchors.bottomMargin: 26
+                    height: root.cardH + 12
                     orientation: ListView.Horizontal
                     model: Theme.themeKeys
                     currentIndex: root.selectedIndex
@@ -341,110 +300,110 @@ Item {
                     boundsBehavior: Flickable.StopAtBounds
                     onCurrentIndexChanged: positionViewAtIndex(currentIndex, ListView.Center)
 
-                    delegate: ThemeCard {
+                    header: Item { width: Math.max(0, (themeList.width - Theme.themeKeys.length * (root.cardW + root.cardSpacing) + root.cardSpacing) / 2); height: 1 }
+
+                    delegate: Item {
+                        id: themeCell
+
                         required property string modelData
                         required property int index
 
-                        themeKey: modelData
-                        cardIndex: index
-                        onHovered: root.selectedIndex = index
-                        onSelectedClicked: {
-                            if (root.selectedIndex === index) launcherScope.applyTheme(modelData);
-                            else root.selectedIndex = index;
-                        }
-                    }
-                }
-            }
+                        readonly property var palette: Theme.themes[modelData]
+                        readonly property bool selected: root.selectedIndex === index
+                        readonly property bool active: Theme.currentTheme === modelData
 
-            GlassPanel {
-                id: previewPanel
-                anchors.horizontalCenter: parent.horizontalCenter
-                y: mainPanel.y - 86
-                width: 470
-                height: 190
-                radius: 24
-                fillColor: Qt.rgba(root.selectedBg.r, root.selectedBg.g, root.selectedBg.b, 0.82)
-                accentColor: root.selectedAccent
-
-                Column {
-                    anchors.fill: parent
-                    anchors.margins: 24
-                    spacing: 18
-
-                    RowLayout {
-                        width: parent.width
-                        height: 26
-                        spacing: 10
-
-                        Text {
-                            text: root.selectedTheme.name
-                            color: root.selectedText
-                            font.family: Theme.fontFamily
-                            font.pixelSize: Theme.fontSize + 6
-                            font.weight: Font.Bold
-                            Layout.alignment: Qt.AlignVCenter
-                        }
+                        width: root.cardW
+                        height: themeList.height
 
                         Rectangle {
-                            visible: root.selectedKey === Theme.currentTheme
-                            Layout.alignment: Qt.AlignVCenter
-                            width: activeLabel.implicitWidth + 16
-                            height: 22
-                            radius: 11
-                            color: root.selectedAccent
-
-                            Text {
-                                id: activeLabel
-                                anchors.centerIn: parent
-                                text: "active"
-                                color: root.selectedBg
-                                font.family: Theme.fontFamily
-                                font.pixelSize: Theme.fontSize - 3
-                                font.weight: Font.Bold
-                            }
-                        }
-                    }
-
-                    Row {
-                        spacing: 7
-                        ColorChip { width: 42; height: 16; chipColor: root.selectedBg }
-                        ColorChip { width: 42; height: 16; chipColor: root.selectedText }
-                        ColorChip { width: 42; height: 16; chipColor: root.selectedAccent }
-                        ColorChip { width: 42; height: 16; chipColor: root.selectedProcess }
-                        ColorChip { width: 42; height: 16; chipColor: root.selectedWarning }
-                    }
-
-                    Rectangle {
-                        width: parent.width
-                        height: 32
-                        radius: 8
-                        color: Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, 0.42)
-
-                        Row {
+                            id: card
                             anchors.centerIn: parent
-                            spacing: 12
+                            width: root.cardW
+                            height: root.cardH
+                            radius: themeCell.selected ? Theme.shapeXLI : Theme.shapeLI
+                            color: themeCell.palette.background
+                            scale: themeCell.selected ? 1 : 0.94
 
-                            Text {
-                                text: "Aa"
-                                color: root.selectedText
-                                font.family: Theme.fontFamily
-                                font.pixelSize: Theme.fontSize - 2
-                                font.weight: Font.Bold
-                                anchors.verticalCenter: parent.verticalCenter
+                            Behavior on radius { M3.Spring {} }
+                            Behavior on scale { M3.Spring {} }
+
+                            M3.FocusRing {
+                                shown: themeCell.selected
+                                border.color: themeCell.palette.accent
                             }
 
-                            Rectangle { width: 24; height: 10; radius: 3; color: root.selectedProcess; anchors.verticalCenter: parent.verticalCenter }
-                            Rectangle { width: 24; height: 10; radius: 3; color: root.selectedMisc; anchors.verticalCenter: parent.verticalCenter }
-                            Rectangle { width: 24; height: 10; radius: 3; color: root.selectedWarning; anchors.verticalCenter: parent.verticalCenter }
-                            Rectangle { width: 24; height: 10; radius: 3; color: root.selectedAccent; anchors.verticalCenter: parent.verticalCenter }
+                            M3.StateLayer {
+                                tint: themeCell.palette.text
+                                hovered: cardMouse.containsMouse
+                                pressed: cardMouse.pressed
+                            }
+
+                            Column {
+                                anchors.centerIn: parent
+                                spacing: 16
+
+                                M3.PaletteSwatch {
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                    width: 88
+                                    height: 76
+                                    topColor: themeCell.palette.accent
+                                    leftColor: themeCell.palette.process
+                                    rightColor: themeCell.palette.misc
+                                    rotation: themeCell.selected ? 0 : -45
+
+                                    Behavior on rotation { M3.Spring { speed: "default" } }
+                                }
+
+                                M3.Label {
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                    width: Math.min(implicitWidth, root.cardW - 24)
+                                    text: themeCell.palette.name
+                                    color: themeCell.palette.text
+                                    font.pixelSize: Theme.typeBody + 1
+                                    font.weight: Font.Bold
+                                }
+
+                                Row {
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                    spacing: 5
+                                    Repeater {
+                                        model: [themeCell.palette.separator, themeCell.palette.text, themeCell.palette.highlight, themeCell.palette.warning]
+                                        delegate: Rectangle { required property var modelData; width: 12; height: 12; radius: 6; color: modelData }
+                                    }
+                                }
+                            }
+
+                            Rectangle {
+                                visible: themeCell.active
+                                anchors.top: parent.top
+                                anchors.right: parent.right
+                                anchors.margins: 12
+                                width: 28
+                                height: 28
+                                radius: 14
+                                color: themeCell.palette.accent
+
+                                M3.Icon {
+                                    anchors.centerIn: parent
+                                    icon: "\u{f012c}"
+                                    size: 16
+                                    color: Theme.contentOn(themeCell.palette.accent)
+                                }
+                            }
+
+                            MouseArea {
+                                id: cardMouse
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                cursorShape: Qt.PointingHandCursor
+                                onEntered: root.selectedIndex = themeCell.index
+                                onClicked: {
+                                    if (root.selectedIndex === themeCell.index) launcherScope.applyTheme(themeCell.modelData);
+                                    else root.selectedIndex = themeCell.index;
+                                }
+                            }
                         }
                     }
-                }
-
-                MouseArea {
-                    anchors.fill: parent
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: launcherScope.applyTheme(root.selectedKey)
                 }
             }
         }

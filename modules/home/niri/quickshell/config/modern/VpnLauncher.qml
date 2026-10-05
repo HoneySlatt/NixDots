@@ -4,6 +4,7 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
 import "services" as Services
+import "m3" as M3
 
 Item {
     id: scope
@@ -42,31 +43,6 @@ Item {
 
     Component.onCompleted: refreshNodes()
 
-    component GlassPanel: Rectangle {
-        property color fillColor: Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, 0.56)
-
-        radius: 26
-        color: "transparent"
-        border.color: Qt.tint(Theme.separator, Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.44))
-        border.width: 1
-        gradient: Gradient {
-            GradientStop { position: 0.0; color: Qt.tint(fillColor, Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.08)) }
-            GradientStop { position: 0.62; color: fillColor }
-            GradientStop { position: 1.0; color: Qt.tint(fillColor, Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, 0.24)) }
-        }
-
-        Rectangle {
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.top: parent.top
-            anchors.leftMargin: parent.radius
-            anchors.rightMargin: parent.radius
-            anchors.topMargin: 1
-            height: 1
-            radius: 1
-            color: Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.16)
-        }
-    }
 
     Variants {
         model: Quickshell.screens
@@ -180,7 +156,7 @@ Item {
 
             Timer { id: focusTimer; interval: 80; repeat: false; onTriggered: keyLayer.forceActiveFocus() }
 
-            Rectangle { anchors.fill: parent; color: Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, 0.76) }
+            Rectangle { anchors.fill: parent; color: Theme.scrim }
             MouseArea { anchors.fill: parent; onClicked: VpnLauncherState.close() }
 
             Item {
@@ -189,11 +165,13 @@ Item {
                 focus: VpnLauncherState.visible
                 Keys.onPressed: event => root.handleKey(event)
 
-                GlassPanel {
+                M3.Surface {
                     id: panel
                     anchors.centerIn: parent
                     width: Math.min(parent.width - 96, 1040)
                     height: Math.min(parent.height - 120, 680)
+                    radius: Theme.shapeXLI
+                    growFrom: "center"
 
                     MouseArea { anchors.fill: parent; onClicked: keyLayer.forceActiveFocus() }
 
@@ -204,88 +182,90 @@ Item {
 
                         RowLayout {
                             Layout.fillWidth: true
-                            spacing: 18
+                            spacing: 16
+
+                            Rectangle {
+                                Layout.preferredWidth: 48
+                                Layout.preferredHeight: 48
+                                radius: scope.vpnState === "Connected" ? Theme.shapeM : 24
+                                color: scope.vpnState === "Connected" ? Theme.primary : Theme.surfaceContainerHighest
+
+                                Behavior on radius { M3.Spring {} }
+                                Behavior on color { M3.ColorEffect {} }
+
+                                M3.Icon {
+                                    anchors.centerIn: parent
+                                    icon: "\u{f099d}"
+                                    size: 28
+                                    color: scope.vpnState === "Connected" ? Theme.textOnPrimary : Theme.textOnSurfaceVariant
+                                }
+                            }
 
                             ColumnLayout {
                                 Layout.fillWidth: true
-                                spacing: 5
+                                spacing: 2
 
-                                Text {
-                                    text: root.step === "entry" ? "NymVPN Entry" : "NymVPN Exit"
-                                    color: Theme.text
-                                    font.family: Theme.fontFamily
-                                    font.pixelSize: Theme.fontSize + 12
+                                M3.Label {
+                                    text: "NymVPN"
+                                    font.pixelSize: Theme.typeHeadline
                                     font.weight: Font.Bold
                                 }
 
-                                Text {
-                                    text: root.step === "exit"
-                                        ? "Entry " + root.pendingEntry.name + ", choose exit country"
-                                        : scope.vpnState + "   " + (scope.entryCountry || "random") + " -> " + (scope.exitCountry || "random")
-                                    color: scope.vpnState === "Connected" ? Theme.accent : Theme.muted
-                                    font.family: Theme.fontFamily
-                                    font.pixelSize: Theme.fontSize
-                                    elide: Text.ElideRight
+                                M3.Label {
                                     Layout.fillWidth: true
+                                    text: (scope.vpnState || "Unknown") + "  •  " + (scope.entryCountry || "random") + " → " + (scope.exitCountry || "random")
+                                    color: scope.vpnState === "Connected" ? Theme.primary : Theme.textOnSurfaceVariant
                                 }
                             }
 
-                            Rectangle {
-                                width: 118
-                                height: 38
-                                radius: 19
-                                color: offMouse.containsMouse ? Qt.rgba(Theme.warning.r, Theme.warning.g, Theme.warning.b, 0.28) : Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, 0.42)
-                                border.color: Qt.rgba(Theme.warning.r, Theme.warning.g, Theme.warning.b, 0.68)
-                                border.width: 1
-
-                                Text {
-                                    anchors.centerIn: parent
-                                    text: "OFF"
-                                    color: Theme.text
-                                    font.family: Theme.fontFamily
-                                    font.pixelSize: Theme.fontSize
-                                    font.weight: Font.Bold
-                                }
-
-                                MouseArea { id: offMouse; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: root.clearNode() }
+                            M3.Button {
+                                variant: "error"
+                                icon: "\u{f0425}"
+                                text: "Disconnect"
+                                onClicked: root.clearNode()
                             }
                         }
 
-                        GlassPanel {
+                        RowLayout {
                             Layout.fillWidth: true
-                            height: 48
-                            radius: 24
-                            fillColor: Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, 0.42)
+                            spacing: 8
 
-                            RowLayout {
-                                anchors.fill: parent
-                                anchors.leftMargin: 18
-                                anchors.rightMargin: 18
-                                spacing: 12
-
-                                Text { text: "\uf002"; color: Theme.accent; font.family: Theme.fontFamily; font.pixelSize: Theme.fontSize + 4; Layout.alignment: Qt.AlignVCenter }
-                                TextInput {
-                                    id: searchField
-                                    Layout.fillWidth: true
-                                    Layout.fillHeight: true
-                                    readOnly: true
-                                    color: Theme.text
-                                    font.family: Theme.fontFamily
-                                    font.pixelSize: Theme.fontSize + 1
-                                    verticalAlignment: TextInput.AlignVCenter
-                                    onTextChanged: root.searchQuery = text
-
-                                    Text {
-                                        anchors.fill: parent
-                                        verticalAlignment: Text.AlignVCenter
-                                        text: "Search country..."
-                                        color: Theme.muted
-                                        visible: searchField.text.length === 0
-                                        font.family: searchField.font.family
-                                        font.pixelSize: searchField.font.pixelSize
-                                    }
-                                }
+                            M3.Chip {
+                                clickable: root.step === "exit"
+                                selected: root.step === "entry"
+                                icon: "\u{f01e7}"
+                                text: root.step === "exit" ? "Entry: " + root.pendingEntry.name : "Entry"
+                                onClicked: root.previousStep()
                             }
+
+                            M3.Icon {
+                                icon: "\u{f0142}"
+                                size: 18
+                                color: Theme.textOnSurfaceVariant
+                            }
+
+                            M3.Chip {
+                                clickable: false
+                                selected: root.step === "exit"
+                                icon: "\u{f0343}"
+                                text: "Exit"
+                            }
+
+                            Item { Layout.fillWidth: true }
+
+                            M3.Label {
+                                text: root.filteredNodes.length + " countries"
+                                color: Theme.textOnSurfaceVariant
+                            }
+                        }
+
+                        M3.SearchField {
+                            id: searchField
+                            Layout.fillWidth: true
+                            readOnly: true
+                            color: Theme.surfaceContainerHighest
+                            placeholder: root.step === "entry" ? "Search entry country" : "Search exit country"
+                            onTextChanged: root.searchQuery = text
                         }
 
                         ListView {
@@ -295,57 +275,92 @@ Item {
                             model: root.filteredNodes
                             currentIndex: root.selectedIndex
                             clip: true
-                            spacing: 10
+                            spacing: 2
 
-                            delegate: Rectangle {
+                            delegate: M3.ListSegment {
                                 id: row
                                 required property var modelData
                                 required property int index
 
+                                readonly property bool current: root.isCurrent(modelData)
+
                                 width: nodeList.width
-                                height: 72
-                                radius: 18
-                                color: root.isCurrent(modelData)
-                                    ? Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.22)
-                                    : index === root.selectedIndex
-                                        ? Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.075)
-                                        : Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, 0.34)
-                                border.color: index === root.selectedIndex ? Theme.accent : Qt.rgba(Theme.separator.r, Theme.separator.g, Theme.separator.b, 0.52)
-                                border.width: index === root.selectedIndex ? 2 : 1
+                                height: 56
+                                first: index === 0
+                                last: index === nodeList.count - 1
+                                selected: index === root.selectedIndex
+                                baseColor: Theme.surfaceContainerHigh
+                                onEntered: root.selectedIndex = index
+                                onClicked: root.setSelectedNode()
 
                                 RowLayout {
                                     anchors.fill: parent
-                                    anchors.leftMargin: 18
+                                    anchors.leftMargin: 12
                                     anchors.rightMargin: 18
-                                    spacing: 16
+                                    spacing: 14
 
-                                    Text { text: root.isCurrent(modelData) ? "\uf058" : "\uf132"; color: root.isCurrent(modelData) ? Theme.accent : Theme.muted; font.family: Theme.fontFamily; font.pixelSize: Theme.fontSize + 10; Layout.alignment: Qt.AlignVCenter }
+                                    Rectangle {
+                                        Layout.preferredWidth: 40
+                                        Layout.preferredHeight: 40
+                                        radius: row.current ? Theme.shapeM : 20
+                                        color: row.current ? Theme.primary : Theme.surfaceContainerHighest
+
+                                        M3.Label {
+                                            anchors.centerIn: parent
+                                            visible: !row.current
+                                            text: row.modelData.code
+                                            color: Theme.textOnSurfaceVariant
+                                            font.pixelSize: Theme.typeLabel
+                                            font.weight: Font.Bold
+                                        }
+
+                                        M3.Icon {
+                                            anchors.centerIn: parent
+                                            visible: row.current
+                                            icon: "\u{f012c}"
+                                            size: 20
+                                            color: Theme.textOnPrimary
+                                        }
+                                    }
 
                                     ColumnLayout {
                                         Layout.fillWidth: true
-                                        spacing: 3
+                                        spacing: 1
 
-                                        Text { text: modelData.name; color: Theme.text; font.family: Theme.fontFamily; font.pixelSize: Theme.fontSize + 1; font.weight: Font.Bold; elide: Text.ElideRight; Layout.fillWidth: true }
-                                        Text { text: modelData.servers + (modelData.servers === 1 ? " server" : " servers"); color: Theme.muted; font.family: Theme.fontFamily; font.pixelSize: Theme.fontSize - 1; elide: Text.ElideRight; Layout.fillWidth: true }
+                                        M3.Label {
+                                            Layout.fillWidth: true
+                                            text: row.modelData.name
+                                            color: row.selected ? Theme.textOnSecondaryContainer : Theme.textOnSurface
+                                            font.pixelSize: Theme.typeBody + 1
+                                            font.weight: Font.Bold
+                                        }
+
+                                        M3.Label {
+                                            Layout.fillWidth: true
+                                            text: row.modelData.servers + (row.modelData.servers === 1 ? " server" : " servers") + (row.current ? "  •  current" : "")
+                                            color: row.current ? Theme.primary : Theme.textOnSurfaceVariant
+                                            font.pixelSize: Theme.typeLabel
+                                        }
                                     }
 
-                                    Text { text: modelData.code; color: Theme.muted; font.family: Theme.fontFamily; font.pixelSize: Theme.fontSize - 1; Layout.alignment: Qt.AlignVCenter }
-                                }
+                                    M3.Icon {
+                                        icon: "\u{f0142}"
+                                        size: 20
+                                        color: Theme.textOnSecondaryContainer
+                                        opacity: row.selected ? 1 : 0
 
-                                MouseArea {
-                                    anchors.fill: parent
-                                    hoverEnabled: true
-                                    cursorShape: Qt.PointingHandCursor
-                                    onEntered: root.selectedIndex = index
-                                    onClicked: root.setSelectedNode()
+                                        Behavior on opacity { M3.Effect {} }
+                                    }
                                 }
                             }
                         }
 
-                        RowLayout {
+                        M3.Label {
                             Layout.fillWidth: true
-                            Text { text: "ctrl+j/k navigate   enter select   backspace back   del off   esc close"; color: Theme.muted; font.family: Theme.fontFamily; font.pixelSize: Theme.fontSize - 1; Layout.fillWidth: true }
-                            Text { text: root.filteredNodes.length + " countries"; color: Theme.muted; font.family: Theme.fontFamily; font.pixelSize: Theme.fontSize - 1 }
+                            text: "ctrl+j/k navigate   enter select   backspace back   del off   esc close"
+                            color: Theme.outline
+                            font.pixelSize: Theme.typeLabel
+                            horizontalAlignment: Text.AlignHCenter
                         }
                     }
                 }

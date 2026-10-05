@@ -5,12 +5,13 @@ import Quickshell.Wayland
 import "services" as Services
 import Quickshell.Io
 import Quickshell.Services.Mpris
+import "m3" as M3
 
 Item {
     id: calendarPopup
 
     property date now: new Date()
-    property color coverAccentColor: Theme.accent
+    property color coverAccentColor: Theme.primary
     property var cavaValues: []
     property var wallpaperList: []
     property int wallpaperPage: 0
@@ -52,9 +53,9 @@ Item {
     }
 
     readonly property var tabItems: [
-        { label: "Media", icon: "\uf001", idx: 1 },
-        { label: "Wallpapers", icon: "\uf03e", idx: 2 },
-        { label: "Themes", icon: "\uf1fc", idx: 3 }
+        { label: "Media", icon: "\u{f075a}", idx: 1 },
+        { label: "Walls", icon: "\u{f0e09}", idx: 2 },
+        { label: "Themes", icon: "\u{f03d8}", idx: 3 }
     ]
 
     function formatTime(seconds) {
@@ -187,188 +188,39 @@ Item {
         }
     }
 
-    component GlassCard: Rectangle {
-        property color fillColor: Theme.card
+    component Card: Rectangle {
+        radius: Theme.shapeXL
+        color: Theme.surfaceContainerHigh
 
-        radius: 22
-        color: "transparent"
-        border.color: Qt.tint(Theme.separator, Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.26))
-        border.width: 1
-        gradient: Gradient {
-            GradientStop { position: 0.0; color: Qt.tint(fillColor, Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.060)) }
-            GradientStop { position: 0.55; color: fillColor }
-            GradientStop { position: 1.0; color: Qt.tint(fillColor, Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, 0.18)) }
-        }
-
-        Rectangle {
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.top: parent.top
-            anchors.leftMargin: 20
-            anchors.rightMargin: 20
-            anchors.topMargin: 1
-            height: 1
-            radius: 1
-            color: Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.16)
-        }
-
-        Rectangle {
-            anchors.fill: parent
-            anchors.margins: 1
-            radius: parent.radius - 1
-            color: "transparent"
-            border.color: Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.10)
-            border.width: 1
-        }
-    }
-
-    component GlowNumber: Item {
-        id: glowNumber
-
-        property string value: ""
-        property int pixelSize: 42
-        property bool active: false
-
-        implicitWidth: face.implicitWidth + 10
-        implicitHeight: face.implicitHeight
-
-        Text {
-            visible: glowNumber.active
-            anchors.centerIn: parent
-            text: glowNumber.value
-            color: Theme.accent
-            opacity: 0.24
-            scale: 1.16
-            font.family: Theme.fontFamily
-            font.pixelSize: glowNumber.pixelSize
-            font.weight: Font.Bold
-        }
-
-        Text {
-            visible: glowNumber.active
-            anchors.centerIn: parent
-            anchors.horizontalCenterOffset: 1
-            text: glowNumber.value
-            color: Theme.accent
-            opacity: 0.18
-            scale: 1.08
-            font.family: Theme.fontFamily
-            font.pixelSize: glowNumber.pixelSize
-            font.weight: Font.Bold
-        }
-
-        Text {
-            id: face
-            anchors.centerIn: parent
-            text: glowNumber.value
-            color: glowNumber.active ? Qt.tint(Theme.accent, Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.26)) : Theme.accent
-            font.family: Theme.fontFamily
-            font.pixelSize: glowNumber.pixelSize
-            font.weight: Font.Bold
-        }
-    }
-
-    component RailButton: Rectangle {
-        id: railButton
-
-        property string icon: ""
-        property bool active: false
-        signal clicked()
-
-        width: 58
-        height: 58
-        radius: 29
-        color: railMouse.containsMouse && !active ? Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.035) : "transparent"
-        border.color: "transparent"
-
-        Rectangle {
-            visible: railButton.active
-            anchors.centerIn: parent
-            width: 54
-            height: 54
-            radius: 27
-            color: Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.16)
-        }
-
-        Rectangle {
-            visible: railButton.active
-            anchors.centerIn: parent
-            width: 34
-            height: 34
-            radius: 17
-            color: Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.22)
-        }
-
-        Text {
-            anchors.centerIn: parent
-            text: railButton.icon
-            color: railButton.active ? Theme.accent : Theme.muted
-            font.family: Theme.fontFamily
-            font.pixelSize: Theme.fontSize + 10
-            font.weight: Font.Bold
-        }
-
-        MouseArea {
-            id: railMouse
-            anchors.fill: parent
-            hoverEnabled: true
-            cursorShape: Qt.PointingHandCursor
-            onClicked: railButton.clicked()
-        }
+        Behavior on color { M3.ColorEffect {} }
     }
 
     component RoundImage: Item {
         id: roundImage
 
         property string source: ""
-        property string fallbackIcon: "\uf001"
-        property color backgroundColor: Theme.subtle
-        property color borderColor: Theme.separator
-        property bool circle: true
+        property string fallbackIcon: "\u{f075a}"
+        property color backgroundColor: Theme.surfaceContainerHighest
 
         Rectangle {
             anchors.fill: parent
-            radius: circle ? width / 2 : 16
-            color: backgroundColor
-            border.color: borderColor
-            border.width: 1
+            radius: width / 2
+            color: roundImage.backgroundColor
         }
 
-        Canvas {
+        M3.RoundedImage {
             anchors.fill: parent
-            anchors.margins: 3
-            renderTarget: Canvas.FramebufferObject
-            smooth: true
-            property string artUrl: roundImage.source
-
-            onArtUrlChanged: {
-                if (artUrl !== "") loadImage(artUrl);
-                requestPaint();
-            }
-            onImageLoaded: requestPaint()
-            onPaint: {
-                const ctx = getContext("2d");
-                ctx.reset();
-                if (roundImage.circle) {
-                    const r = width / 2;
-                    ctx.beginPath();
-                    ctx.arc(r, r, r, 0, 2 * Math.PI);
-                    ctx.clip();
-                }
-                if (artUrl !== "" && isImageLoaded(artUrl)) ctx.drawImage(artUrl, 0, 0, width, height);
-            }
-            Component.onCompleted: {
-                if (artUrl !== "") loadImage(artUrl);
-            }
+            radius: width / 2
+            source: roundImage.source
+            sourceSize: Qt.size(width * 2, height * 2)
         }
 
-        Text {
+        M3.Icon {
             anchors.centerIn: parent
             visible: roundImage.source === ""
-            text: roundImage.fallbackIcon
-            color: Theme.text
-            font.family: Theme.fontFamily
-            font.pixelSize: Math.min(parent.width, parent.height) * 0.36
+            icon: roundImage.fallbackIcon
+            size: Math.min(parent.width, parent.height) * 0.4
+            color: Theme.textOnSurfaceVariant
         }
     }
 
@@ -378,45 +230,42 @@ Item {
         property string icon: ""
         property string label: ""
         property real value: 0
-        property color accentColor: Theme.accent
+        property color accentColor: Theme.primary
 
-        width: 34
-        spacing: 8
+        width: 36
+        spacing: 10
 
         Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
-            width: 11
-            height: 230
-            radius: 6
-            color: Qt.rgba(Theme.subtle.r, Theme.subtle.g, Theme.subtle.b, 0.56)
+            width: 16
+            height: 200
+            radius: 8
+            color: Theme.alpha(Theme.secondary, 0.22)
 
             Rectangle {
                 anchors.bottom: parent.bottom
                 width: parent.width
-                height: Math.max(8, parent.height * Math.max(0, Math.min(1, statBar.value)))
+                height: Math.max(parent.width, parent.height * Math.max(0, Math.min(1, statBar.value)))
                 radius: parent.radius
-                gradient: Gradient {
-                    GradientStop { position: 0.0; color: Qt.tint(statBar.accentColor, Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.18)) }
-                    GradientStop { position: 1.0; color: statBar.accentColor }
-                }
-                Behavior on height { NumberAnimation { duration: 120 } }
+                color: statBar.accentColor
+
+                Behavior on height { M3.Spring {} }
+                Behavior on color { M3.ColorEffect {} }
             }
         }
 
-        Text {
+        M3.Icon {
             anchors.horizontalCenter: parent.horizontalCenter
-            text: statBar.icon
-            color: Theme.text
-            font.family: Theme.fontFamily
-            font.pixelSize: Theme.fontSize + 5
+            icon: statBar.icon
+            size: 18
+            color: Theme.textOnSurfaceVariant
         }
 
-        Text {
+        M3.Label {
             anchors.horizontalCenter: parent.horizontalCenter
             text: statBar.label
-            color: Theme.muted
-            font.family: Theme.fontFamily
-            font.pixelSize: Theme.fontSize - 3
+            font.pixelSize: Theme.typeLabel
+            font.weight: Font.Bold
         }
     }
 
@@ -432,7 +281,7 @@ Item {
 
             readonly property bool monitorIsFocused: Services.NiriData.activeWorkspace !== null && Services.NiriData.activeWorkspace.output === root.screen.name
             onMonitorIsFocusedChanged: if (!monitorIsFocused) CalendarPopupState.close()
-            
+
 
             color: "transparent"
             WlrLayershell.namespace: "quickshell:calendarpopup"
@@ -455,168 +304,105 @@ Item {
                     }
                 }
 
-                Item {
+                M3.Surface {
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.top: BarState.isTop ? parent.top : undefined
                     anchors.bottom: BarState.isTop ? undefined : parent.bottom
+                    anchors.topMargin: Theme.popupGap
                     width: Math.min(920, parent.width - 48)
                     height: Math.min(540, parent.height - 72)
-                    clip: true
-
-                    Rectangle {
-                        anchors.fill: parent
-                        anchors.bottomMargin: BarState.isTop ? 0 : -radius
-                        height: parent.height + (BarState.isTop ? 0 : radius)
-                        radius: 24
-                        color: "transparent"
-                        border.color: Qt.tint(Theme.separator, Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.34))
-                        border.width: 1
-                        gradient: Gradient {
-                            GradientStop { position: 0.0; color: Qt.rgba(Theme.panel.r, Theme.panel.g, Theme.panel.b, Theme.popupOpacity) }
-                            GradientStop { position: 0.48; color: Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, Theme.popupOpacity) }
-                            GradientStop { position: 1.0; color: Qt.rgba(Theme.separator.r, Theme.separator.g, Theme.separator.b, 0.84) }
-                        }
-
-                        Rectangle {
-                            anchors.left: parent.left
-                            anchors.right: parent.right
-                            anchors.top: parent.top
-                            anchors.leftMargin: 28
-                            anchors.rightMargin: 28
-                            anchors.topMargin: 1
-                            height: 1
-                            radius: 1
-                            color: Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.18)
-                        }
-
-                        Rectangle {
-                            width: parent.width * 0.42
-                            height: parent.height * 0.18
-                            radius: height / 2
-                            anchors.top: parent.top
-                            anchors.horizontalCenter: parent.horizontalCenter
-                            anchors.topMargin: -height * 0.5
-                            color: Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.10)
-                        }
-
-                        Rectangle {
-                            anchors.fill: parent
-                            anchors.margins: 1
-                            radius: parent.radius - 1
-                            color: "transparent"
-                            border.color: Theme.glow
-                            border.width: 1
-                            opacity: 0.45
-                        }
-                    }
+                    radius: Theme.shapeXLI
+                    flushBottom: !BarState.isTop
+                    growFrom: BarState.isTop ? "top" : "bottom"
 
                     MouseArea { anchors.fill: parent }
 
                     Row {
                         anchors.fill: parent
-                        anchors.margins: 14
-                        spacing: 14
+                        anchors.margins: 16
+                        anchors.leftMargin: 8
+                        spacing: 12
 
-                        GlassCard {
+                        Column {
                             id: rail
-                            width: 110
+                            width: 96
                             height: parent.height
-                            fillColor: Qt.rgba(Theme.panel.r, Theme.panel.g, Theme.panel.b, 0.88)
+                            topPadding: 4
+                            spacing: 14
 
-                            Column {
-                                anchors.fill: parent
-                                anchors.topMargin: 20
-                                anchors.bottomMargin: 20
-                                spacing: 18
+                            Item {
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                width: 80
+                                height: 156
+
+                                readonly property bool active: CalendarPopupState.activeTab === 0
 
                                 Rectangle {
-                                    anchors.horizontalCenter: parent.horizontalCenter
-                                    width: 78
-                                    height: 150
-                                    radius: 18
-                                    color: clockMouse.containsMouse && CalendarPopupState.activeTab !== 0 ? Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.035) : "transparent"
+                                    anchors.fill: parent
+                                    radius: parent.active ? Theme.shapeXL : 40
+                                    color: parent.active ? Theme.primary : "transparent"
 
-                                    Rectangle {
-                                        visible: CalendarPopupState.activeTab === 0
-                                        anchors.top: parent.top
-                                        anchors.right: parent.right
-                                        anchors.topMargin: 13
-                                        anchors.rightMargin: 10
-                                        width: 12
-                                        height: 12
-                                        radius: 6
-                                        color: Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.18)
-                                    }
+                                    Behavior on radius { M3.Spring {} }
+                                    Behavior on color { M3.ColorEffect {} }
 
-                                    Rectangle {
-                                        visible: CalendarPopupState.activeTab === 0
-                                        anchors.top: parent.top
-                                        anchors.right: parent.right
-                                        anchors.topMargin: 16
-                                        anchors.rightMargin: 13
-                                        width: 6
-                                        height: 6
-                                        radius: 3
-                                        color: Qt.tint(Theme.accent, Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.35))
-                                    }
-
-                                    Column {
-                                        anchors.centerIn: parent
-                                        spacing: -2
-
-                                        GlowNumber {
-                                            anchors.horizontalCenter: parent.horizontalCenter
-                                            value: Qt.formatDateTime(calendarPopup.now, "HH")
-                                            active: CalendarPopupState.activeTab === 0
-                                            pixelSize: 42
-                                        }
-
-                                        GlowNumber {
-                                            anchors.horizontalCenter: parent.horizontalCenter
-                                            value: Qt.formatDateTime(calendarPopup.now, "mm")
-                                            active: CalendarPopupState.activeTab === 0
-                                            pixelSize: 42
-                                        }
-
-                                        Text {
-                                            anchors.horizontalCenter: parent.horizontalCenter
-                                            text: Qt.formatDateTime(calendarPopup.now, "MMM dd")
-                                            color: Theme.muted
-                                            font.family: Theme.fontFamily
-                                            font.pixelSize: Theme.fontSize - 1
-                                            font.weight: Theme.fontWeight
-                                        }
-
-                                        Text {
-                                            anchors.horizontalCenter: parent.horizontalCenter
-                                            text: Qt.formatDateTime(calendarPopup.now, "ddd")
-                                            color: Theme.muted
-                                            font.family: Theme.fontFamily
-                                            font.pixelSize: Theme.fontSize - 1
-                                            font.weight: Theme.fontWeight
-                                        }
-                                    }
-
-                                    MouseArea {
-                                        id: clockMouse
-                                        anchors.fill: parent
-                                        hoverEnabled: true
-                                        cursorShape: Qt.PointingHandCursor
-                                        onClicked: CalendarPopupState.activeTab = 0
+                                    M3.StateLayer {
+                                        tint: parent.parent.active ? Theme.textOnPrimary : Theme.textOnSurface
+                                        hovered: clockMouse.containsMouse
+                                        pressed: clockMouse.pressed
                                     }
                                 }
 
-                                Item { width: 1; height: 4 }
+                                Column {
+                                    anchors.centerIn: parent
+                                    spacing: -6
 
-                                Repeater {
-                                    model: calendarPopup.tabItems
-                                    delegate: RailButton {
-                                        required property var modelData
+                                    M3.Label {
                                         anchors.horizontalCenter: parent.horizontalCenter
-                                        icon: modelData.icon
-                                        active: CalendarPopupState.activeTab === modelData.idx
-                                        onClicked: CalendarPopupState.activeTab = modelData.idx
+                                        text: Qt.formatDateTime(calendarPopup.now, "HH")
+                                        color: parent.parent.active ? Theme.textOnPrimary : Theme.primary
+                                        font.pixelSize: Theme.typeDisplay
+                                        font.weight: Font.ExtraBold
                                     }
+
+                                    M3.Label {
+                                        anchors.horizontalCenter: parent.horizontalCenter
+                                        text: Qt.formatDateTime(calendarPopup.now, "mm")
+                                        color: parent.parent.active ? Theme.textOnPrimary : Theme.primary
+                                        font.pixelSize: Theme.typeDisplay
+                                        font.weight: Font.ExtraBold
+                                    }
+
+                                    Item { width: 1; height: 10 }
+
+                                    M3.Label {
+                                        anchors.horizontalCenter: parent.horizontalCenter
+                                        text: Qt.formatDateTime(calendarPopup.now, "ddd dd")
+                                        color: parent.parent.active ? Theme.textOnPrimary : Theme.textOnSurfaceVariant
+                                        font.pixelSize: Theme.typeLabel
+                                        font.weight: Font.Bold
+                                    }
+                                }
+
+                                MouseArea {
+                                    id: clockMouse
+                                    anchors.fill: parent
+                                    hoverEnabled: true
+                                    cursorShape: Qt.PointingHandCursor
+                                    onClicked: CalendarPopupState.activeTab = 0
+                                }
+                            }
+
+                            Item { width: 1; height: 6 }
+
+                            Repeater {
+                                model: calendarPopup.tabItems
+                                delegate: M3.NavItem {
+                                    required property var modelData
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                    icon: modelData.icon
+                                    label: modelData.label
+                                    active: CalendarPopupState.activeTab === modelData.idx
+                                    onClicked: CalendarPopupState.activeTab = modelData.idx
                                 }
                             }
                         }
@@ -624,161 +410,117 @@ Item {
                         Column {
                             width: parent.width - rail.width - parent.spacing
                             height: parent.height
-                            spacing: 14
+                            spacing: 12
 
                             RowLayout {
                                 visible: CalendarPopupState.activeTab === 0
                                 width: parent.width
-                                height: visible ? 86 : 0
-                                spacing: 14
+                                height: visible ? 88 : 0
+                                spacing: 12
 
-                                GlassCard {
-                                    Layout.preferredWidth: 284
+                                Card {
+                                    Layout.preferredWidth: 270
                                     Layout.fillHeight: true
-                                    fillColor: Qt.rgba(Theme.card.r, Theme.card.g, Theme.card.b, 0.82)
 
                                     RowLayout {
                                         anchors.fill: parent
-                                        anchors.leftMargin: 20
+                                        anchors.leftMargin: 16
                                         anchors.rightMargin: 20
                                         spacing: 14
 
-                                        Text {
-                                            text: WeatherState.icon
-                                            color: Theme.accent
-                                            font.family: Theme.fontFamily
-                                            font.pixelSize: 32
-                                            Layout.alignment: Qt.AlignVCenter
+                                        M3.PolarShape {
+                                            Layout.preferredWidth: 56
+                                            Layout.preferredHeight: 56
+                                            lobes: 9
+                                            depth: 0.07
+                                            color: Theme.tertiaryContainer
+
+                                            M3.Icon {
+                                                anchors.centerIn: parent
+                                                icon: WeatherState.icon
+                                                size: 26
+                                                color: Theme.textOnTertiaryContainer
+                                            }
                                         }
 
-                                        Column {
+                                        ColumnLayout {
                                             Layout.fillWidth: true
-                                            Layout.alignment: Qt.AlignVCenter
-                                            spacing: 3
+                                            spacing: 0
 
-                                            Text {
+                                            M3.Label {
                                                 text: WeatherState.temperature
-                                                color: Theme.text
-                                                font.family: Theme.fontFamily
-                                                font.pixelSize: Theme.fontSize + 8
+                                                font.pixelSize: Theme.typeHeadline
                                                 font.weight: Font.Bold
                                             }
 
-                                            Text {
-                                                width: parent.width
+                                            M3.Label {
+                                                Layout.fillWidth: true
                                                 text: WeatherState.description
-                                                color: Theme.muted
-                                                font.family: Theme.fontFamily
-                                                font.pixelSize: Theme.fontSize - 1
-                                                font.weight: Theme.fontWeight
-                                                elide: Text.ElideRight
+                                                color: Theme.textOnSurfaceVariant
+                                                font.pixelSize: Theme.typeLabel
                                             }
                                         }
                                     }
                                 }
 
-                                GlassCard {
+                                Card {
                                     Layout.fillWidth: true
                                     Layout.fillHeight: true
-                                    fillColor: Qt.rgba(Theme.card.r, Theme.card.g, Theme.card.b, 0.82)
 
                                     RowLayout {
                                         anchors.fill: parent
-                                        anchors.leftMargin: 20
-                                        anchors.rightMargin: 18
+                                        anchors.leftMargin: 16
+                                        anchors.rightMargin: 16
                                         spacing: 14
 
                                         RoundImage {
-                                            Layout.preferredWidth: 54
-                                            Layout.preferredHeight: 54
-                                            Layout.alignment: Qt.AlignVCenter
+                                            Layout.preferredWidth: 56
+                                            Layout.preferredHeight: 56
                                             source: "file:///home/honey/Pictures/Others/Honey.png"
-                                            fallbackIcon: "\uf007"
-                                            borderColor: Theme.glow
+                                            fallbackIcon: "\u{f0004}"
                                         }
 
-                                        Column {
+                                        ColumnLayout {
                                             Layout.fillWidth: true
-                                            Layout.alignment: Qt.AlignVCenter
-                                            spacing: 2
+                                            spacing: 0
 
-                                            Text {
+                                            M3.Label {
                                                 text: "Honey"
-                                                color: Theme.text
-                                                font.family: Theme.fontFamily
-                                                font.pixelSize: Theme.fontSize + 6
+                                                font.pixelSize: Theme.typeTitleL
                                                 font.weight: Font.Bold
                                             }
 
-                                            Text {
-                                                width: parent.width
+                                            M3.Label {
+                                                Layout.fillWidth: true
                                                 text: DistroState.icon + " on " + DistroState.wmName + "  •  up " + calendarPopup.uptimeText
-                                                color: Theme.muted
-                                                font.family: Theme.fontFamily
-                                                font.pixelSize: Theme.fontSize - 1
-                                                font.weight: Theme.fontWeight
-                                                elide: Text.ElideRight
+                                                color: Theme.textOnSurfaceVariant
+                                                font.pixelSize: Theme.typeLabel
                                             }
                                         }
 
                                         Row {
-                                            Layout.alignment: Qt.AlignVCenter
-                                            spacing: 16
+                                            spacing: 4
 
-                                            Text {
-                                                text: "\uf04a"
-                                                color: headerPrev.containsMouse ? Theme.text : Theme.muted
-                                                font.family: Theme.fontFamily
-                                                font.pixelSize: Theme.fontSize + 5
+                                            M3.IconButton {
                                                 anchors.verticalCenter: parent.verticalCenter
-                                                MouseArea {
-                                                    id: headerPrev
-                                                    anchors.fill: parent
-                                                    hoverEnabled: true
-                                                    cursorShape: Qt.PointingHandCursor
-                                                    onClicked: {
-                                                        if (calendarPopup.player) calendarPopup.player.previous();
-                                                    }
-                                                }
+                                                icon: "\u{f04ae}"
+                                                onClicked: if (calendarPopup.player) calendarPopup.player.previous()
                                             }
 
-                                            Rectangle {
-                                                width: 42
-                                                height: 42
-                                                radius: 21
-                                                color: Theme.text
+                                            M3.IconButton {
                                                 anchors.verticalCenter: parent.verticalCenter
-                                                Text {
-                                                    anchors.centerIn: parent
-                                                    text: calendarPopup.player && calendarPopup.player.playbackState === MprisPlaybackState.Playing ? "\uf04c" : "\uf04b"
-                                                    color: Theme.background
-                                                    font.family: Theme.fontFamily
-                                                    font.pixelSize: Theme.fontSize + 2
-                                                }
-                                                MouseArea {
-                                                    anchors.fill: parent
-                                                    cursorShape: Qt.PointingHandCursor
-                                                    onClicked: {
-                                                        if (calendarPopup.player) calendarPopup.player.togglePlaying();
-                                                    }
-                                                }
+                                                size: 48
+                                                variant: "filled"
+                                                toggle: true
+                                                checked: calendarPopup.player !== null && calendarPopup.player.playbackState === MprisPlaybackState.Playing
+                                                icon: checked ? "\u{f03e4}" : "\u{f040a}"
+                                                onClicked: if (calendarPopup.player) calendarPopup.player.togglePlaying()
                                             }
 
-                                            Text {
-                                                text: "\uf04e"
-                                                color: headerNext.containsMouse ? Theme.text : Theme.muted
-                                                font.family: Theme.fontFamily
-                                                font.pixelSize: Theme.fontSize + 5
+                                            M3.IconButton {
                                                 anchors.verticalCenter: parent.verticalCenter
-                                                MouseArea {
-                                                    id: headerNext
-                                                    anchors.fill: parent
-                                                    hoverEnabled: true
-                                                    cursorShape: Qt.PointingHandCursor
-                                                    onClicked: {
-                                                        if (calendarPopup.player) calendarPopup.player.next();
-                                                    }
-                                                }
+                                                icon: "\u{f04ad}"
+                                                onClicked: if (calendarPopup.player) calendarPopup.player.next()
                                             }
                                         }
                                     }
@@ -810,13 +552,12 @@ Item {
         id: dashboardPage
 
         RowLayout {
-            spacing: 14
+            spacing: 12
 
-            GlassCard {
+            Card {
                 id: calendarCard
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                fillColor: Qt.rgba(Theme.card.r, Theme.card.g, Theme.card.b, 0.78)
 
                 property int displayMonth: calendarPopup.now.getMonth()
                 property int displayYear: calendarPopup.now.getFullYear()
@@ -855,68 +596,46 @@ Item {
 
                 Column {
                     anchors.fill: parent
-                    anchors.margins: 22
-                    spacing: 12
+                    anchors.margins: 18
+                    anchors.topMargin: 14
+                    spacing: 8
 
                     RowLayout {
                         width: parent.width
-                        height: 34
+                        height: 40
 
-                        Text {
-                            text: "\uf053"
-                            color: prevMonthMouse.containsMouse ? Theme.text : Theme.muted
-                            font.family: Theme.fontFamily
-                            font.pixelSize: Theme.fontSize + 7
-                            MouseArea {
-                                id: prevMonthMouse
-                                anchors.fill: parent
-                                hoverEnabled: true
-                                cursorShape: Qt.PointingHandCursor
-                                onClicked: calendarCard.prevMonth()
-                            }
-                        }
-
-                        Text {
+                        M3.Label {
                             Layout.fillWidth: true
-                            horizontalAlignment: Text.AlignHCenter
-                            text: calendarCard.monthNames[calendarCard.displayMonth] + "  " + calendarCard.displayYear
-                            color: Theme.text
-                            font.family: Theme.fontFamily
-                            font.pixelSize: Theme.fontSize + 8
+                            leftPadding: 6
+                            text: calendarCard.monthNames[calendarCard.displayMonth] + " " + calendarCard.displayYear
+                            font.pixelSize: Theme.typeTitleL
                             font.weight: Font.Bold
                         }
 
-                        Text {
-                            text: "\uf054"
-                            color: nextMonthMouse.containsMouse ? Theme.text : Theme.muted
-                            font.family: Theme.fontFamily
-                            font.pixelSize: Theme.fontSize + 7
-                            MouseArea {
-                                id: nextMonthMouse
-                                anchors.fill: parent
-                                hoverEnabled: true
-                                cursorShape: Qt.PointingHandCursor
-                                onClicked: calendarCard.nextMonth()
-                            }
+                        M3.IconButton {
+                            icon: "\u{f0141}"
+                            onClicked: calendarCard.prevMonth()
+                        }
+
+                        M3.IconButton {
+                            icon: "\u{f0142}"
+                            onClicked: calendarCard.nextMonth()
                         }
                     }
 
-                    Rectangle { width: parent.width; height: 1; color: Theme.separator }
-
                     Row {
                         width: parent.width
-                        height: 24
+                        height: 22
                         Repeater {
-                            model: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
-                            Text {
+                            model: ["S", "M", "T", "W", "T", "F", "S"]
+                            M3.Label {
                                 required property string modelData
                                 width: parent.width / 7
                                 text: modelData
                                 horizontalAlignment: Text.AlignHCenter
-                                color: Theme.muted
-                                font.family: Theme.fontFamily
-                                font.pixelSize: Theme.fontSize - 1
-                                font.weight: Theme.fontWeight
+                                color: Theme.textOnSurfaceVariant
+                                font.pixelSize: Theme.typeLabel
+                                font.weight: Font.Bold
                             }
                         }
                     }
@@ -924,7 +643,7 @@ Item {
                     Grid {
                         id: dayGrid
                         width: parent.width
-                        height: parent.height - 72
+                        height: parent.height - 78
                         columns: 7
                         spacing: 0
                         readonly property var calDays: calendarCard.calendarDays()
@@ -941,23 +660,42 @@ Item {
                                 height: dayGrid.height / dayGrid.rowsCount
                                 readonly property bool isToday: modelData.current && modelData.day === dayGrid.todayDay && calendarCard.displayMonth === dayGrid.todayMonth && calendarCard.displayYear === dayGrid.todayYear
 
-                                Rectangle {
+                                M3.PolarShape {
+                                    visible: isToday
                                     anchors.centerIn: parent
-                                    width: 34
-                                    height: 34
-                                    radius: 17
-                                    color: isToday ? Theme.accent : "transparent"
-                                    opacity: isToday ? 0.95 : 1
+                                    width: 42
+                                    height: 42
+                                    lobes: 9
+                                    depth: 0.07
+                                    color: Theme.primary
                                 }
 
-                                Text {
+                                Rectangle {
+                                    visible: !isToday && modelData.current
+                                    anchors.centerIn: parent
+                                    width: 38
+                                    height: 38
+                                    radius: 19
+                                    color: Theme.textOnSurface
+                                    opacity: dayMouse.containsMouse ? Theme.stateHover : 0
+
+                                    Behavior on opacity { M3.Effect {} }
+                                }
+
+                                M3.Label {
                                     anchors.centerIn: parent
                                     text: modelData.day
-                                    color: isToday ? Theme.background : modelData.current ? Theme.text : Theme.muted
-                                    opacity: modelData.current ? 1.0 : 0.46
-                                    font.family: Theme.fontFamily
-                                    font.pixelSize: Theme.fontSize + 1
-                                    font.weight: isToday ? Font.Bold : Theme.fontWeight
+                                    color: isToday ? Theme.textOnPrimary : modelData.current ? Theme.textOnSurface : Theme.outline
+                                    opacity: modelData.current ? 1.0 : 0.6
+                                    font.pixelSize: Theme.typeBody + 1
+                                    font.weight: isToday ? Font.ExtraBold : Theme.fontWeight
+                                }
+
+                                MouseArea {
+                                    id: dayMouse
+                                    anchors.fill: parent
+                                    hoverEnabled: true
+                                    acceptedButtons: Qt.NoButton
                                 }
                             }
                         }
@@ -965,42 +703,29 @@ Item {
                 }
             }
 
-            GlassCard {
-                Layout.preferredWidth: 154
+            Card {
+                Layout.preferredWidth: 170
                 Layout.fillHeight: true
-                fillColor: Qt.rgba(Theme.card.r, Theme.card.g, Theme.card.b, 0.78)
 
                 Column {
                     anchors.centerIn: parent
-                    anchors.verticalCenterOffset: -18
-                    width: parent.width - 26
+                    width: parent.width - 24
                     spacing: 18
 
-                    Text {
+                    M3.Label {
                         anchors.horizontalCenter: parent.horizontalCenter
+                        width: Math.min(implicitWidth, parent.width)
                         text: calendarPopup.hostname
-                        color: Theme.text
-                        font.family: Theme.fontFamily
-                        font.pixelSize: Theme.fontSize + 6
+                        font.pixelSize: Theme.typeTitle
                         font.weight: Font.Bold
                     }
 
                     Row {
                         anchors.horizontalCenter: parent.horizontalCenter
-                        spacing: 8
-                        StatBar { icon: "\uf2db"; label: Math.round(CpuState.usage) + "%"; value: CpuState.usage / 100; accentColor: CpuState.usage >= 90 ? Theme.warning : Theme.process }
-                        StatBar { icon: "\uf2c8"; label: GpuState.tempC + "°C"; value: Math.min(GpuState.tempC / 100, 1); accentColor: GpuState.tempC >= 80 ? Theme.warning : Theme.misc }
-                        StatBar { icon: "\uefc5"; label: Math.round(RamState.percentage) + "%"; value: RamState.percentage / 100; accentColor: RamState.percentage >= 90 ? Theme.warning : Theme.text }
-                    }
-
-                    Text {
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        text: "CPU     GPU     RAM"
-                        color: Theme.muted
-                        opacity: 0.68
-                        font.family: Theme.fontFamily
-                        font.pixelSize: Theme.fontSize - 4
-                        font.weight: Theme.fontWeight
+                        spacing: 10
+                        StatBar { icon: "\u{f0ee0}"; label: Math.round(CpuState.usage) + "%"; value: CpuState.usage / 100; accentColor: CpuState.usage >= 90 ? Theme.error : Theme.primary }
+                        StatBar { icon: "\u{f050f}"; label: GpuState.tempC + "°"; value: Math.min(GpuState.tempC / 100, 1); accentColor: GpuState.tempC >= 80 ? Theme.error : Theme.tertiary }
+                        StatBar { icon: "\u{f035b}"; label: Math.round(RamState.percentage) + "%"; value: RamState.percentage / 100; accentColor: RamState.percentage >= 90 ? Theme.error : Theme.misc }
                     }
                 }
             }
@@ -1010,17 +735,15 @@ Item {
     Component {
         id: mediaPage
 
-        GlassCard {
-            fillColor: Qt.rgba(Theme.card.r, Theme.card.g, Theme.card.b, 0.78)
-
+        Card {
             RowLayout {
                 anchors.fill: parent
                 anchors.margins: 26
                 spacing: 34
 
                 Item {
-                    Layout.preferredWidth: 250
-                    Layout.preferredHeight: 250
+                    Layout.preferredWidth: 260
+                    Layout.preferredHeight: 260
                     Layout.alignment: Qt.AlignVCenter
 
                     Canvas {
@@ -1033,7 +756,7 @@ Item {
                                 loadImage(artUrl);
                                 requestPaint();
                             } else {
-                                calendarPopup.coverAccentColor = Theme.accent;
+                                calendarPopup.coverAccentColor = Theme.primary;
                             }
                         }
                         onImageLoaded: requestPaint()
@@ -1050,7 +773,7 @@ Item {
                                 }
                                 calendarPopup.coverAccentColor = Qt.rgba(r / n / 255, g / n / 255, b / n / 255, 1.0);
                             } catch(e) {
-                                calendarPopup.coverAccentColor = Theme.accent;
+                                calendarPopup.coverAccentColor = Theme.primary;
                             }
                         }
                     }
@@ -1067,23 +790,20 @@ Item {
                             if (!values || values.length === 0) return;
                             const cx = width / 2;
                             const cy = height / 2;
-                            const innerR = 92;
+                            const innerR = 96;
                             const n = values.length;
                             const step = 2 * Math.PI / n;
-                            const gap = step * 0.16;
+                            ctx.lineCap = "round";
+                            ctx.lineWidth = 5;
+                            ctx.strokeStyle = themeColor;
                             for (let i = 0; i < n; i++) {
                                 const value = Math.min(values[i] / 20.0, 1.0);
-                                const barH = value * 38;
-                                if (barH < 1) continue;
-                                const midAngle = (i / n) * 2 * Math.PI - Math.PI / 2;
-                                const a0 = midAngle - step / 2 + gap;
-                                const a1 = midAngle + step / 2 - gap;
+                                const barH = value * 30;
+                                const angle = (i / n) * 2 * Math.PI - Math.PI / 2;
                                 ctx.beginPath();
-                                ctx.arc(cx, cy, innerR + barH, a0, a1);
-                                ctx.arc(cx, cy, innerR, a1, a0, true);
-                                ctx.closePath();
-                                ctx.fillStyle = themeColor;
-                                ctx.fill();
+                                ctx.moveTo(cx + innerR * Math.cos(angle), cy + innerR * Math.sin(angle));
+                                ctx.lineTo(cx + (innerR + barH) * Math.cos(angle), cy + (innerR + barH) * Math.sin(angle));
+                                ctx.stroke();
                             }
                         }
                     }
@@ -1093,129 +813,90 @@ Item {
                         width: 176
                         height: 176
                         source: calendarPopup.player ? calendarPopup.player.trackArtUrl : ""
-                        fallbackIcon: "\uf001"
-                        borderColor: calendarPopup.coverAccentColor
                     }
                 }
 
                 Column {
                     Layout.fillWidth: true
                     Layout.alignment: Qt.AlignVCenter
-                    spacing: 18
+                    spacing: 16
 
-                    Text {
+                    Column {
                         width: parent.width
-                        text: calendarPopup.player ? calendarPopup.player.trackTitle : "No media playing"
-                        color: Theme.text
-                        font.family: Theme.fontFamily
-                        font.pixelSize: Theme.fontSize + 12
-                        font.weight: Font.Bold
-                        elide: Text.ElideRight
-                    }
+                        spacing: 4
 
-                    Text {
-                        width: parent.width
-                        text: calendarPopup.player ? calendarPopup.player.trackArtist : "Start playback in any MPRIS player"
-                        color: Theme.muted
-                        font.family: Theme.fontFamily
-                        font.pixelSize: Theme.fontSize + 1
-                        font.weight: Theme.fontWeight
-                        elide: Text.ElideRight
+                        M3.Label {
+                            width: parent.width
+                            text: calendarPopup.player ? calendarPopup.player.trackTitle : "No media playing"
+                            font.pixelSize: Theme.typeHeadline
+                            font.weight: Font.Bold
+                        }
+
+                        M3.Label {
+                            width: parent.width
+                            text: calendarPopup.player ? calendarPopup.player.trackArtist : "Start playback in any MPRIS player"
+                            color: Theme.textOnSurfaceVariant
+                            font.pixelSize: Theme.typeTitle
+                        }
                     }
 
                     Column {
                         width: parent.width
-                        spacing: 8
+                        spacing: 6
 
-                        Rectangle {
+                        M3.WavyProgress {
                             width: parent.width
-                            height: 7
-                            radius: 4
-                            color: Theme.subtle
-
-                            Rectangle {
-                                width: !calendarPopup.player || calendarPopup.trackLength <= 0 ? 0 : parent.width * Math.min(calendarPopup.currentPosition / calendarPopup.trackLength, 1)
-                                height: parent.height
-                                radius: parent.radius
-                                color: calendarPopup.coverAccentColor
-                            }
+                            value: !calendarPopup.player || calendarPopup.trackLength <= 0 ? 0 : calendarPopup.currentPosition / calendarPopup.trackLength
+                            playing: calendarPopup.player !== null && calendarPopup.player.playbackState === MprisPlaybackState.Playing
 
                             MouseArea {
                                 anchors.fill: parent
+                                anchors.margins: -6
                                 cursorShape: Qt.PointingHandCursor
                                 onClicked: mouse => {
                                     if (calendarPopup.player && calendarPopup.player.canSeek)
-                                        calendarPopup.player.position = (mouse.x / parent.width) * calendarPopup.trackLength;
+                                        calendarPopup.player.position = Math.max(0, Math.min(1, (mouse.x - 6) / parent.width)) * calendarPopup.trackLength;
                                 }
                             }
                         }
 
                         RowLayout {
                             width: parent.width
-                            Text { text: calendarPopup.formatTime(calendarPopup.currentPosition); color: Theme.muted; font.family: Theme.fontFamily; font.pixelSize: Theme.fontSize - 1 }
+                            M3.Label { text: calendarPopup.formatTime(calendarPopup.currentPosition); color: Theme.textOnSurfaceVariant; font.pixelSize: Theme.typeLabel }
                             Item { Layout.fillWidth: true }
-                            Text { text: calendarPopup.formatTime(calendarPopup.trackLength); color: Theme.muted; font.family: Theme.fontFamily; font.pixelSize: Theme.fontSize - 1 }
+                            M3.Label { text: calendarPopup.formatTime(calendarPopup.trackLength); color: Theme.textOnSurfaceVariant; font.pixelSize: Theme.typeLabel }
                         }
                     }
 
                     Row {
                         anchors.horizontalCenter: parent.horizontalCenter
-                        spacing: 32
+                        spacing: 12
 
-                        Text {
-                            text: "\uf04a"
-                            color: mediaPrev.containsMouse ? Theme.text : Theme.muted
-                            font.family: Theme.fontFamily
-                            font.pixelSize: Theme.fontSize + 10
+                        M3.IconButton {
                             anchors.verticalCenter: parent.verticalCenter
-                            MouseArea {
-                                id: mediaPrev
-                                anchors.fill: parent
-                                hoverEnabled: true
-                                cursorShape: Qt.PointingHandCursor
-                                onClicked: {
-                                    if (calendarPopup.player) calendarPopup.player.previous();
-                                }
-                            }
+                            size: 56
+                            variant: "tonal"
+                            icon: "\u{f04ae}"
+                            onClicked: if (calendarPopup.player) calendarPopup.player.previous()
                         }
 
-                        Rectangle {
-                            width: 58
-                            height: 58
-                            radius: 29
-                            color: Theme.text
+                        M3.IconButton {
                             anchors.verticalCenter: parent.verticalCenter
-                            Text {
-                                anchors.centerIn: parent
-                                text: calendarPopup.player && calendarPopup.player.playbackState === MprisPlaybackState.Playing ? "\uf04c" : "\uf04b"
-                                color: Theme.background
-                                font.family: Theme.fontFamily
-                                font.pixelSize: Theme.fontSize + 6
-                            }
-                            MouseArea {
-                                anchors.fill: parent
-                                cursorShape: Qt.PointingHandCursor
-                                onClicked: {
-                                    if (calendarPopup.player) calendarPopup.player.togglePlaying();
-                                }
-                            }
+                            size: 80
+                            implicitWidth: 112
+                            variant: "filled"
+                            toggle: true
+                            checked: calendarPopup.player !== null && calendarPopup.player.playbackState === MprisPlaybackState.Playing
+                            icon: checked ? "\u{f03e4}" : "\u{f040a}"
+                            onClicked: if (calendarPopup.player) calendarPopup.player.togglePlaying()
                         }
 
-                        Text {
-                            text: "\uf04e"
-                            color: mediaNext.containsMouse ? Theme.text : Theme.muted
-                            font.family: Theme.fontFamily
-                            font.pixelSize: Theme.fontSize + 10
+                        M3.IconButton {
                             anchors.verticalCenter: parent.verticalCenter
-                            MouseArea {
-                                id: mediaNext
-                                anchors.fill: parent
-                                hoverEnabled: true
-                                cursorShape: Qt.PointingHandCursor
-                                onClicked: {
-                                    if (calendarPopup.player) calendarPopup.player.next();
-                                }
-                            }
+                            size: 56
+                            variant: "tonal"
+                            icon: "\u{f04ad}"
+                            onClicked: if (calendarPopup.player) calendarPopup.player.next()
                         }
                     }
                 }
@@ -1226,22 +907,21 @@ Item {
     Component {
         id: wallpapersPage
 
-        GlassCard {
-            fillColor: Qt.rgba(Theme.card.r, Theme.card.g, Theme.card.b, 0.78)
+        Card {
             Component.onCompleted: {
                 if (calendarPopup.wallpaperList.length === 0) wallpaperScanProc.running = true;
             }
 
             Column {
                 anchors.fill: parent
-                anchors.margins: 18
+                anchors.margins: 14
                 spacing: 12
 
                 Grid {
                     id: wallpaperGrid
                     columns: 4
                     rows: 3
-                    spacing: 10
+                    spacing: 8
                     width: parent.width
                     height: parent.height - wallpaperFooter.height - parent.spacing
                     readonly property real cellWidth: (width - (columns - 1) * spacing) / columns
@@ -1256,48 +936,54 @@ Item {
                             return items;
                         }
 
-                        delegate: Rectangle {
+                        delegate: Item {
+                            id: wallpaperCell
                             required property string modelData
+                            readonly property bool selected: calendarPopup.selectedWallpaper === modelData
                             width: wallpaperGrid.cellWidth
                             height: wallpaperGrid.cellHeight
-                            radius: 14
-                            color: Theme.subtle
-                            border.color: calendarPopup.selectedWallpaper === modelData ? Theme.accent : wallpaperMouse.containsMouse ? Theme.glow : "transparent"
-                            border.width: calendarPopup.selectedWallpaper === modelData ? 3 : 1
-                            clip: true
 
-                            Image {
+                            Rectangle {
+                                id: wallpaperFrame
                                 anchors.fill: parent
-                                anchors.margins: 2
-                                source: calendarPopup.wallpaperThumbnailsReady
-                                    ? Qt.resolvedUrl("file://" + calendarPopup.wallpaperThumbnailPath(modelData))
-                                    : Qt.resolvedUrl("file://" + Theme.wallpaperDir + "/" + modelData)
-                                fillMode: Image.PreserveAspectCrop
-                                asynchronous: true
-                                cache: true
-                                smooth: true
-                                sourceSize.width: Math.min(wallpaperGrid.cellWidth, 240)
-                                sourceSize.height: Math.min(wallpaperGrid.cellHeight, 160)
+                                radius: wallpaperCell.selected ? Theme.shapeXL : wallpaperMouse.containsMouse ? Theme.shapeLI : Theme.shapeM
+                                color: Theme.surfaceContainerHighest
+
+                                Behavior on radius { M3.Spring {} }
+
+                                M3.RoundedImage {
+                                    anchors.fill: parent
+                                    radius: wallpaperFrame.radius
+                                    source: calendarPopup.wallpaperThumbnailsReady
+                                        ? Qt.resolvedUrl("file://" + calendarPopup.wallpaperThumbnailPath(wallpaperCell.modelData))
+                                        : Qt.resolvedUrl("file://" + Theme.wallpaperDir + "/" + wallpaperCell.modelData)
+                                    sourceSize: Qt.size(Math.min(wallpaperGrid.cellWidth, 240), Math.min(wallpaperGrid.cellHeight, 160))
+                                }
+
+                                Rectangle {
+                                    anchors.fill: parent
+                                    radius: parent.radius
+                                    color: "transparent"
+                                    border.width: wallpaperCell.selected ? 3 : 0
+                                    border.color: Theme.primary
+                                }
                             }
 
                             Rectangle {
-                                anchors.left: parent.left
+                                visible: wallpaperCell.selected
+                                anchors.top: parent.top
                                 anchors.right: parent.right
-                                anchors.bottom: parent.bottom
-                                height: wallpaperName.implicitHeight + 12
-                                color: Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, 0.72)
-                                visible: wallpaperMouse.containsMouse || calendarPopup.selectedWallpaper === modelData
-                                Text {
-                                    id: wallpaperName
+                                anchors.margins: 8
+                                width: 28
+                                height: 28
+                                radius: 14
+                                color: Theme.primary
+
+                                M3.Icon {
                                     anchors.centerIn: parent
-                                    width: parent.width - 12
-                                    text: modelData
-                                    color: Theme.text
-                                    font.family: Theme.fontFamily
-                                    font.pixelSize: Theme.fontSize - 2
-                                    font.weight: Theme.fontWeight
-                                    elide: Text.ElideMiddle
-                                    horizontalAlignment: Text.AlignHCenter
+                                    icon: "\u{f012c}"
+                                    size: 16
+                                    color: Theme.textOnPrimary
                                 }
                             }
 
@@ -1306,7 +992,7 @@ Item {
                                 anchors.fill: parent
                                 hoverEnabled: true
                                 cursorShape: Qt.PointingHandCursor
-                                onClicked: calendarPopup.applyWallpaper(modelData)
+                                onClicked: calendarPopup.applyWallpaper(wallpaperCell.modelData)
                             }
                         }
                     }
@@ -1315,30 +1001,39 @@ Item {
                 RowLayout {
                     id: wallpaperFooter
                     width: parent.width
-                    height: 36
-                    spacing: 10
+                    height: 40
+                    spacing: 8
 
-                    Rectangle {
-                        Layout.preferredWidth: nsfwText.implicitWidth + 24
-                        Layout.fillHeight: true
-                        radius: 12
-                        color: Theme.nsfwEnabled ? Theme.warning : Theme.subtle
-                        Text {
-                            id: nsfwText
-                            anchors.centerIn: parent
-                            text: Theme.nsfwEnabled ? "\uf06e  NSFW" : "\uf070  NSFW"
-                            color: Theme.nsfwEnabled ? Theme.background : Theme.text
-                            font.family: Theme.fontFamily
-                            font.pixelSize: Theme.fontSize - 1
-                            font.weight: Font.Bold
-                        }
-                        MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: Theme.toggleNsfw() }
+                    M3.Chip {
+                        text: "NSFW"
+                        icon: "\u{f0209}"
+                        selected: Theme.nsfwEnabled
+                        onClicked: Theme.toggleNsfw()
                     }
 
                     Item { Layout.fillWidth: true }
-                    Text { text: calendarPopup.wallpaperList.length + " wallpapers  •  " + (calendarPopup.wallpaperPage + 1) + " / " + calendarPopup.wallpaperTotalPages; color: Theme.muted; font.family: Theme.fontFamily; font.pixelSize: Theme.fontSize; Layout.alignment: Qt.AlignVCenter }
-                    Text { text: "\uf053"; visible: calendarPopup.wallpaperPage > 0; color: wpPrev.containsMouse ? Theme.text : Theme.muted; font.family: Theme.fontFamily; font.pixelSize: Theme.fontSize + 4; Layout.alignment: Qt.AlignVCenter; MouseArea { id: wpPrev; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: calendarPopup.wallpaperPage = Math.max(0, calendarPopup.wallpaperPage - 1) } }
-                    Text { text: "\uf054"; visible: calendarPopup.wallpaperPage < calendarPopup.wallpaperTotalPages - 1; color: wpNext.containsMouse ? Theme.text : Theme.muted; font.family: Theme.fontFamily; font.pixelSize: Theme.fontSize + 4; Layout.alignment: Qt.AlignVCenter; MouseArea { id: wpNext; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: calendarPopup.wallpaperPage = Math.min(calendarPopup.wallpaperTotalPages - 1, calendarPopup.wallpaperPage + 1) } }
+
+                    M3.Label {
+                        text: calendarPopup.wallpaperList.length + " wallpapers  •  " + (calendarPopup.wallpaperPage + 1) + " / " + calendarPopup.wallpaperTotalPages
+                        color: Theme.textOnSurfaceVariant
+                        Layout.rightMargin: 4
+                    }
+
+                    M3.IconButton {
+                        size: 36
+                        variant: "tonal"
+                        icon: "\u{f0141}"
+                        opacity: calendarPopup.wallpaperPage > 0 ? 1 : 0.38
+                        onClicked: calendarPopup.wallpaperPage = Math.max(0, calendarPopup.wallpaperPage - 1)
+                    }
+
+                    M3.IconButton {
+                        size: 36
+                        variant: "tonal"
+                        icon: "\u{f0142}"
+                        opacity: calendarPopup.wallpaperPage < calendarPopup.wallpaperTotalPages - 1 ? 1 : 0.38
+                        onClicked: calendarPopup.wallpaperPage = Math.min(calendarPopup.wallpaperTotalPages - 1, calendarPopup.wallpaperPage + 1)
+                    }
                 }
             }
         }
@@ -1347,9 +1042,7 @@ Item {
     Component {
         id: themesPage
 
-        GlassCard {
-            fillColor: Qt.rgba(Theme.card.r, Theme.card.g, Theme.card.b, 0.78)
-
+        Card {
             Column {
                 anchors.fill: parent
                 anchors.margins: 18
@@ -1358,9 +1051,9 @@ Item {
                 RowLayout {
                     width: parent.width
                     height: 32
-                    Text { text: "Color Themes"; color: Theme.text; font.family: Theme.fontFamily; font.pixelSize: Theme.fontSize + 5; font.weight: Font.Bold }
+                    M3.Label { leftPadding: 4; text: "Color themes"; font.pixelSize: Theme.typeTitleL; font.weight: Font.Bold }
                     Item { Layout.fillWidth: true }
-                    Text { text: Theme.themes[Theme.currentTheme].name; color: Theme.muted; font.family: Theme.fontFamily; font.pixelSize: Theme.fontSize; font.weight: Theme.fontWeight }
+                    M3.Badge { text: Theme.themes[Theme.currentTheme].name }
                 }
 
                 Flickable {
@@ -1377,65 +1070,76 @@ Item {
                         width: themeFlick.width
                         height: Math.ceil(Theme.themeKeys.length / columns) * cellHeight + Math.max(0, Math.ceil(Theme.themeKeys.length / columns) - 1) * spacing
                         columns: 2
-                        spacing: 12
+                        spacing: 10
                         readonly property real cellWidth: (width - spacing) / columns
                         readonly property real cellHeight: (themeFlick.height - spacing * 2) / 3
 
                         Repeater {
                             model: Theme.themeKeys
                             delegate: Rectangle {
-                            required property string modelData
-                            width: themeGrid.cellWidth
-                            height: themeGrid.cellHeight
-                            radius: 16
-                            color: Theme.themes[modelData].separator
-                            border.color: Theme.currentTheme === modelData ? Theme.themes[modelData].accent : "transparent"
-                            border.width: Theme.currentTheme === modelData ? 3 : 1
+                                id: themeCell
+                                required property string modelData
+                                readonly property var palette: Theme.themes[modelData]
+                                readonly property bool active: Theme.currentTheme === modelData
+                                width: themeGrid.cellWidth
+                                height: themeGrid.cellHeight
+                                radius: active ? Theme.shapeXL : Theme.shapeLI
+                                color: palette.background
+                                border.width: active ? 3 : 0
+                                border.color: Theme.primary
 
-                            Column {
-                                anchors.fill: parent
-                                anchors.margins: 12
-                                spacing: 9
+                                Behavior on radius { M3.Spring {} }
+
+                                M3.StateLayer {
+                                    tint: themeCell.palette.text
+                                    hovered: themeMouse.containsMouse
+                                    pressed: themeMouse.pressed
+                                }
 
                                 RowLayout {
-                                    width: parent.width
-                                    Text { Layout.fillWidth: true; text: Theme.themes[modelData].name; color: Theme.themes[modelData].text; font.family: Theme.fontFamily; font.pixelSize: Theme.fontSize + 1; font.weight: Font.Bold; elide: Text.ElideRight }
-                                    Rectangle {
-                                        visible: Theme.currentTheme === modelData
-                                        Layout.preferredWidth: activeThemeText.implicitWidth + 14
-                                        Layout.preferredHeight: activeThemeText.implicitHeight + 6
-                                        radius: 9
-                                        color: Theme.themes[modelData].accent
-                                        Text { id: activeThemeText; anchors.centerIn: parent; text: "active"; color: Theme.themes[modelData].background; font.family: Theme.fontFamily; font.pixelSize: Theme.fontSize - 3; font.weight: Font.Bold }
+                                    anchors.fill: parent
+                                    anchors.leftMargin: 18
+                                    anchors.rightMargin: 18
+                                    spacing: 14
+
+                                    M3.PaletteSwatch {
+                                        Layout.preferredWidth: 52
+                                        Layout.preferredHeight: 52
+                                        topColor: themeCell.palette.accent
+                                        leftColor: themeCell.palette.process
+                                        rightColor: themeCell.palette.misc
+                                    }
+
+                                    ColumnLayout {
+                                        Layout.fillWidth: true
+                                        spacing: 4
+
+                                        M3.Label {
+                                            Layout.fillWidth: true
+                                            text: themeCell.palette.name
+                                            color: themeCell.palette.text
+                                            font.pixelSize: Theme.typeTitle
+                                            font.weight: Font.Bold
+                                        }
+
+                                        Row {
+                                            spacing: 4
+                                            Repeater {
+                                                model: [themeCell.palette.separator, themeCell.palette.text, themeCell.palette.warning, themeCell.palette.highlight]
+                                                delegate: Rectangle { required property var modelData; width: 14; height: 14; radius: 7; color: modelData }
+                                            }
+                                        }
+                                    }
+
+                                    M3.Icon {
+                                        visible: themeCell.active
+                                        icon: "\u{f05e0}"
+                                        size: 24
+                                        color: themeCell.palette.accent
                                     }
                                 }
 
-                                Row {
-                                    width: parent.width
-                                    spacing: 5
-                                    Repeater {
-                                        model: [Theme.themes[modelData].background, Theme.themes[modelData].separator, Theme.themes[modelData].caution, Theme.themes[modelData].text, Theme.themes[modelData].accent, Theme.themes[modelData].process, Theme.themes[modelData].misc, Theme.themes[modelData].warning]
-                                        delegate: Rectangle { required property var modelData; width: (parent.width - 7 * parent.spacing) / 8; height: 18; radius: 5; color: modelData }
-                                    }
-                                }
-
-                                Rectangle {
-                                    width: parent.width
-                                    height: 34
-                                    radius: 10
-                                    color: Theme.themes[modelData].background
-                                    Row {
-                                        anchors.centerIn: parent
-                                        spacing: 12
-                                        Text { text: "Aa"; color: Theme.themes[modelData].text; font.family: Theme.fontFamily; font.pixelSize: Theme.fontSize; font.weight: Font.Bold }
-                                        Rectangle { width: 22; height: 12; radius: 4; color: Theme.themes[modelData].accent; anchors.verticalCenter: parent.verticalCenter }
-                                        Rectangle { width: 22; height: 12; radius: 4; color: Theme.themes[modelData].process; anchors.verticalCenter: parent.verticalCenter }
-                                        Rectangle { width: 22; height: 12; radius: 4; color: Theme.themes[modelData].misc; anchors.verticalCenter: parent.verticalCenter }
-                                    }
-                                }
-                            }
-
-                                MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: Theme.setTheme(modelData) }
+                                MouseArea { id: themeMouse; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: Theme.setTheme(themeCell.modelData) }
                             }
                         }
                     }

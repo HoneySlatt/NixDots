@@ -4,6 +4,7 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
 import Quickshell.Hyprland
+import "m3" as M3
 
 Item {
     id: launcherScope
@@ -41,70 +42,6 @@ Item {
 
     Component.onCompleted: refreshGames()
 
-    component GlassPill: Rectangle {
-        property color fillColor: Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, 0.50)
-
-        color: "transparent"
-        border.color: Qt.tint(Theme.separator, Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.46))
-        border.width: 1
-        gradient: Gradient {
-            GradientStop { position: 0.0; color: Qt.tint(fillColor, Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.075)) }
-            GradientStop { position: 0.62; color: fillColor }
-            GradientStop { position: 1.0; color: Qt.tint(fillColor, Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, 0.20)) }
-        }
-
-        Rectangle {
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.top: parent.top
-            anchors.leftMargin: parent.radius
-            anchors.rightMargin: parent.radius
-            anchors.topMargin: 1
-            height: 1
-            radius: 1
-            color: Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.16)
-        }
-
-        Rectangle {
-            anchors.fill: parent
-            anchors.margins: 1
-            radius: Math.max(0, parent.radius - 1)
-            color: "transparent"
-            border.color: Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.10)
-            border.width: 1
-        }
-    }
-
-    component ArrowButton: GlassPill {
-        id: arrowButton
-
-        property string icon: ""
-        signal clicked()
-
-        width: 54
-        height: 54
-        radius: 27
-        fillColor: arrowMouse.containsMouse
-            ? Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.22)
-            : Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, 0.40)
-
-        Text {
-            anchors.centerIn: parent
-            text: arrowButton.icon
-            color: arrowMouse.containsMouse ? Theme.text : Theme.muted
-            font.family: Theme.fontFamily
-            font.pixelSize: Theme.fontSize + 10
-            font.weight: Font.Bold
-        }
-
-        MouseArea {
-            id: arrowMouse
-            anchors.fill: parent
-            hoverEnabled: true
-            cursorShape: Qt.PointingHandCursor
-            onClicked: arrowButton.clicked()
-        }
-    }
 
     Variants {
         model: Quickshell.screens
@@ -229,7 +166,7 @@ Item {
 
             Rectangle {
                 anchors.fill: parent
-                color: Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, 0.75)
+                color: Theme.alpha(Theme.surfaceContainerLowest, 0.86)
             }
 
             MouseArea {
@@ -275,79 +212,34 @@ Item {
                 }
             }
 
-            GlassPill {
-                id: searchBar
+            M3.SearchField {
+                id: searchField
                 anchors.horizontalCenter: parent.horizontalCenter
                 y: Math.max(54, parent.height * 0.115)
-                width: 430
-                height: 48
-                radius: 24
-                fillColor: Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, 0.48)
-
-                Rectangle {
-                    visible: searchField.activeFocus
-                    anchors.fill: parent
-                    anchors.margins: -3
-                    radius: parent.radius + 3
-                    color: Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.08)
-                }
-
-                RowLayout {
-                    anchors.fill: parent
-                    anchors.leftMargin: 18
-                    anchors.rightMargin: 16
-                    spacing: 12
-
-                    Text {
-                        text: "\uf002"
-                        color: Theme.accent
-                        font.family: Theme.fontFamily
-                        font.pixelSize: Theme.fontSize + 4
-                        Layout.alignment: Qt.AlignVCenter
-                    }
-
-                    TextInput {
-                        id: searchField
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        verticalAlignment: TextInput.AlignVCenter
-                        color: Theme.text
-                        selectionColor: Theme.accent
-                        selectedTextColor: Theme.background
-                        clip: true
-                        font.family: Theme.fontFamily
-                        font.pixelSize: Theme.fontSize + 1
-                        font.weight: Theme.fontWeight
-                        onTextChanged: root.searchQuery = text.toLowerCase()
-
-                        Text {
-                            anchors.fill: parent
-                            verticalAlignment: Text.AlignVCenter
-                            text: "Search games..."
-                            color: Theme.muted
-                            opacity: 0.72
-                            font.family: searchField.font.family
-                            font.pixelSize: searchField.font.pixelSize
-                            font.weight: searchField.font.weight
-                            visible: searchField.text.length === 0
-                        }
-                    }
-                }
+                width: 480
+                placeholder: "Search games"
+                onTextChanged: root.searchQuery = text.toLowerCase()
             }
 
-            ArrowButton {
+            M3.IconButton {
                 anchors.left: parent.left
-                anchors.leftMargin: 32
+                z: 200
+                anchors.leftMargin: 40
                 anchors.verticalCenter: carousel.verticalCenter
-                icon: "\uf053"
+                size: 64
+                variant: "tonal"
+                icon: "\u{f0141}"
                 onClicked: if (root.selectedIndex > 0) root.selectedIndex--
             }
 
-            ArrowButton {
+            M3.IconButton {
                 anchors.right: parent.right
-                anchors.rightMargin: 32
+                z: 200
+                anchors.rightMargin: 40
                 anchors.verticalCenter: carousel.verticalCenter
-                icon: "\uf054"
+                size: 64
+                variant: "tonal"
+                icon: "\u{f0142}"
                 onClicked: if (root.selectedIndex < root.filteredGames.length - 1) root.selectedIndex++
             }
 
@@ -409,27 +301,30 @@ Item {
                     Rectangle {
                         id: artFrame
                         anchors.fill: parent
-                        radius: 12
-                        color: Qt.rgba(Theme.separator.r, Theme.separator.g, Theme.separator.b, 0.36)
-                        clip: true
+                        radius: card.isSelected ? Theme.shapeXXL : Theme.shapeXL
+                        color: Theme.surfaceContainerHigh
 
-                        Image {
+                        Behavior on radius { M3.Spring {} }
+
+                        M3.Icon {
+                            anchors.centerIn: parent
+                            visible: art.status !== Image.Ready
+                            icon: "\u{f0297}"
+                            size: 64
+                            color: Theme.textOnSurfaceVariant
+                        }
+
+                        M3.RoundedImage {
+                            id: art
                             anchors.fill: parent
-                            source: launcherScope.artSource(modelData.art)
-                            fillMode: Image.PreserveAspectCrop
-                            smooth: true
-                            asynchronous: true
+                            radius: artFrame.radius
+                            source: launcherScope.artSource(card.modelData.art)
                             sourceSize: Qt.size(root.cardW * 2, root.cardH * 2)
                         }
 
-                        Rectangle {
-                            anchors.fill: parent
-                            radius: parent.radius
-                            color: "transparent"
-                            border.color: card.isSelected
-                                ? Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.90)
-                                : Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.08)
-                            border.width: card.isSelected ? 2 : 1
+                        M3.FocusRing {
+                            shown: card.isSelected
+                            border.color: Theme.primary
                         }
                     }
 
@@ -445,57 +340,29 @@ Item {
                 }
             }
 
-            Text {
+            M3.Label {
                 id: gameTitle
                 anchors.horizontalCenter: parent.horizontalCenter
-                y: carousel.y + root.cardH + 28
+                y: carousel.y + root.cardH + 36
+                width: Math.min(implicitWidth, parent.width - 120)
                 text: root.filteredGames[root.selectedIndex]?.name ?? ""
-                color: Theme.text
-                font.family: Theme.fontFamily
-                font.pixelSize: Theme.fontSize + 12
-                font.weight: Font.Bold
+                font.pixelSize: Theme.typeHeadline + 6
+                font.weight: Font.ExtraBold
                 horizontalAlignment: Text.AlignHCenter
-                style: Text.Outline
-                styleColor: Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, 0.50)
             }
 
-            GlassPill {
+            M3.Button {
                 id: launchBar
                 anchors.horizontalCenter: parent.horizontalCenter
-                y: gameTitle.y + gameTitle.height + 28
-                width: 250
-                height: 50
-                radius: 25
-                fillColor: Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, 0.48)
-
-                RowLayout {
-                    anchors.centerIn: parent
-                    spacing: 12
-
-                    Text {
-                        text: "\uf04b"
-                        color: launchMouse.containsMouse ? Theme.text : Theme.accent
-                        font.family: Theme.fontFamily
-                        font.pixelSize: Theme.fontSize + 2
-                        font.weight: Font.Bold
-                    }
-
-                    Text {
-                        text: "Launch"
-                        color: Theme.text
-                        font.family: Theme.fontFamily
-                        font.pixelSize: Theme.fontSize + 1
-                        font.weight: Font.Bold
-                    }
-                }
-
-                MouseArea {
-                    id: launchMouse
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: root.launchSelected()
-                }
+                y: gameTitle.y + gameTitle.height + 24
+                size: 64
+                implicitWidth: 220
+                variant: "filled"
+                icon: "\u{f040a}"
+                iconSize: 26
+                text: "Play"
+                labelSize: Theme.typeTitleL
+                onClicked: root.launchSelected()
             }
         }
     }

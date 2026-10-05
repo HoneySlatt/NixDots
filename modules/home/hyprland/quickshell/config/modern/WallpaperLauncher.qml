@@ -4,6 +4,7 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
 import Quickshell.Hyprland
+import "m3" as M3
 
 Item {
     id: launcherScope
@@ -94,122 +95,6 @@ Item {
         }
     }
 
-    component GlassPanel: Rectangle {
-        property color fillColor: Theme.card
-
-        radius: 28
-        color: "transparent"
-        border.color: Qt.tint(Theme.separator, Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.38))
-        border.width: 1
-        gradient: Gradient {
-            GradientStop { position: 0.0; color: Qt.tint(fillColor, Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.055)) }
-            GradientStop { position: 0.55; color: fillColor }
-            GradientStop { position: 1.0; color: Qt.tint(fillColor, Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, 0.20)) }
-        }
-
-        Rectangle {
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.top: parent.top
-            anchors.leftMargin: 28
-            anchors.rightMargin: 28
-            anchors.topMargin: 1
-            height: 1
-            radius: 1
-            color: Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.16)
-        }
-
-        Rectangle {
-            anchors.fill: parent
-            anchors.margins: 1
-            radius: parent.radius - 1
-            color: "transparent"
-            border.color: Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.12)
-            border.width: 1
-        }
-    }
-
-    component ArrowButton: Rectangle {
-        id: arrowBtn
-
-        property string icon: ""
-        signal clicked()
-
-        width: 50
-        height: 66
-        radius: 14
-        color: arrowMouse.containsMouse
-            ? Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.18)
-            : Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, 0.28)
-        border.color: Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.34)
-        border.width: 1
-
-        Text {
-            anchors.centerIn: parent
-            text: arrowBtn.icon
-            color: arrowMouse.containsMouse ? Theme.text : Theme.muted
-            font.family: Theme.fontFamily
-            font.pixelSize: Theme.fontSize + 9
-            font.weight: Font.Bold
-        }
-
-        MouseArea {
-            id: arrowMouse
-            anchors.fill: parent
-            hoverEnabled: true
-            cursorShape: Qt.PointingHandCursor
-            onClicked: arrowBtn.clicked()
-        }
-    }
-
-    component ActionButton: Rectangle {
-        id: actionButton
-
-        property string icon: ""
-        property string label: ""
-        property bool primary: false
-        signal clicked()
-
-        width: 138
-        height: 46
-        radius: 12
-        color: primary
-            ? (buttonMouse.containsMouse ? Qt.tint(Theme.accent, Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.14)) : Theme.accent)
-            : (buttonMouse.containsMouse ? Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.075) : Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, 0.30))
-        border.color: primary
-            ? Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.62)
-            : Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.24)
-        border.width: 1
-
-        RowLayout {
-            anchors.centerIn: parent
-            spacing: 9
-
-            Text {
-                text: actionButton.icon
-                color: primary ? Theme.background : Theme.text
-                font.family: Theme.fontFamily
-                font.pixelSize: Theme.fontSize + 3
-                font.weight: Font.Bold
-            }
-
-            Text {
-                text: actionButton.label
-                color: primary ? Theme.background : Theme.text
-                font.family: Theme.fontFamily
-                font.pixelSize: Theme.fontSize + 1
-                font.weight: Font.Bold
-            }
-        }
-
-        MouseArea {
-            id: buttonMouse
-            anchors.fill: parent
-            hoverEnabled: true
-            cursorShape: Qt.PointingHandCursor
-            onClicked: actionButton.clicked()
-        }
-    }
 
     Variants {
         model: Quickshell.screens
@@ -315,7 +200,7 @@ Item {
 
             Rectangle {
                 anchors.fill: parent
-                color: Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, 0.58)
+                color: Theme.scrim
             }
 
             MouseArea {
@@ -323,13 +208,14 @@ Item {
                 onClicked: WallpaperLauncherState.close()
             }
 
-            GlassPanel {
+            M3.Surface {
                 id: panel
                 anchors.centerIn: parent
                 width: Math.min(parent.width - 80, 1180)
                 height: Math.min(parent.height - 72, 790)
+                radius: Theme.shapeXLI
+                growFrom: "center"
                 focus: WallpaperLauncherState.visible
-                fillColor: Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, Theme.popupOpacity)
 
                 MouseArea { anchors.fill: parent; onClicked: panel.forceActiveFocus() }
 
@@ -365,42 +251,27 @@ Item {
                     anchors.top: parent.top
                     anchors.left: parent.left
                     anchors.right: parent.right
-                    anchors.topMargin: 32
-                    anchors.leftMargin: 82
-                    anchors.rightMargin: 82
-                    height: Math.max(260, parent.height - 262)
-                    radius: 16
-                    color: Theme.separator
-                    clip: true
+                    anchors.margins: 16
+                    height: Math.max(260, parent.height - 16 - 24 - 96 - 16 - 56 - 20)
+                    radius: Theme.shapeXL
+                    color: Theme.surfaceContainerHighest
 
-                    Image {
+                    M3.RoundedImage {
                         anchors.fill: parent
+                        radius: parent.radius
                         source: root.currentWallpaper() !== "" && launcherScope.wallpaperThumbnailsReady
                             ? launcherScope.thumbnailPath(root.currentWallpaper())
                             : ""
-                        fillMode: Image.PreserveAspectCrop
-                        smooth: true
-                        asynchronous: true
                         cache: true
                         sourceSize: Qt.size(1280, 720)
                     }
 
-                    Text {
+                    M3.Label {
                         anchors.centerIn: parent
                         visible: launcherScope.wallpapers.length === 0
                         text: "No wallpapers found"
-                        color: Theme.muted
-                        font.family: Theme.fontFamily
-                        font.pixelSize: Theme.fontSize + 2
-                        font.weight: Theme.fontWeight
-                    }
-
-                    Rectangle {
-                        anchors.fill: parent
-                        radius: parent.radius
-                        color: "transparent"
-                        border.color: Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.30)
-                        border.width: 1
+                        color: Theme.textOnSurfaceVariant
+                        font.pixelSize: Theme.typeTitle
                     }
                 }
 
@@ -409,27 +280,29 @@ Item {
                     anchors.left: parent.left
                     anchors.right: parent.right
                     anchors.top: previewFrame.bottom
-                    anchors.topMargin: 26
-                    anchors.leftMargin: 28
-                    anchors.rightMargin: 28
-                    height: 88
-                    spacing: 18
+                    anchors.topMargin: 24
+                    anchors.leftMargin: 16
+                    anchors.rightMargin: 16
+                    height: 96
+                    spacing: 12
 
-                    ArrowButton {
+                    M3.IconButton {
                         anchors.verticalCenter: parent.verticalCenter
-                        icon: "\uf053"
+                        size: 48
+                        variant: "tonal"
+                        icon: "\u{f0141}"
                         onClicked: if (root.selectedIndex > 0) root.selectedIndex--
                     }
 
                     ListView {
                         id: thumbList
-                        width: parent.width - 136
+                        width: parent.width - 2 * 48 - 2 * parent.spacing
                         height: parent.height
                         anchors.verticalCenter: parent.verticalCenter
                         orientation: ListView.Horizontal
                         model: launcherScope.wallpapers
                         currentIndex: root.selectedIndex
-                        spacing: 16
+                        spacing: 10
                         clip: true
                         interactive: false
                         highlight: Item {}
@@ -442,72 +315,66 @@ Item {
                             required property string modelData
                             required property int index
 
-                            width: 150
-                            height: 84
+                            width: 156
+                            height: 96
                             property bool isSelected: index === root.selectedIndex
 
                             Rectangle {
-                                visible: thumbCard.isSelected
-                                anchors.fill: thumbFrame
-                                anchors.margins: -5
-                                radius: thumbFrame.radius + 5
-                                color: Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.14)
-                                border.color: Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.28)
-                                border.width: 2
-                            }
-
-                            Rectangle {
                                 id: thumbFrame
-                                anchors.fill: parent
-                                radius: 12
-                                color: Qt.rgba(Theme.separator.r, Theme.separator.g, Theme.separator.b, 0.34)
-                                clip: true
+                                anchors.centerIn: parent
+                                width: thumbCard.isSelected ? 156 : 148
+                                height: thumbCard.isSelected ? 92 : 84
+                                radius: thumbCard.isSelected ? Theme.shapeXL : Theme.shapeM
+                                color: Theme.surfaceContainerHighest
 
-                                Image {
+                                Behavior on radius { M3.Spring {} }
+                                Behavior on width { M3.Spring {} }
+                                Behavior on height { M3.Spring {} }
+
+                                M3.RoundedImage {
                                     anchors.fill: parent
+                                    radius: thumbFrame.radius
                                     source: launcherScope.wallpaperThumbnailsReady
                                         ? launcherScope.thumbnailPath(thumbCard.modelData)
                                         : "file://" + thumbCard.modelData
-                                    fillMode: Image.PreserveAspectCrop
-                                    smooth: true
-                                    asynchronous: true
                                     cache: true
                                     sourceSize: Qt.size(360, 240)
+                                }
+
+                                M3.StateLayer {
+                                    hovered: thumbMouse.containsMouse
+                                    pressed: thumbMouse.pressed
                                 }
 
                                 Rectangle {
                                     anchors.fill: parent
                                     radius: parent.radius
                                     color: "transparent"
-                                    border.color: thumbCard.isSelected
-                                        ? Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.90)
-                                        : Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.12)
-                                    border.width: thumbCard.isSelected ? 2 : 1
+                                    border.width: thumbCard.isSelected ? 3 : 0
+                                    border.color: Theme.primary
                                 }
 
                                 Rectangle {
                                     visible: thumbCard.isSelected
                                     anchors.top: parent.top
                                     anchors.right: parent.right
-                                    anchors.topMargin: -1
-                                    anchors.rightMargin: -1
-                                    width: 36
-                                    height: 36
-                                    radius: 18
-                                    color: Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.96)
+                                    anchors.margins: 8
+                                    width: 26
+                                    height: 26
+                                    radius: 13
+                                    color: Theme.primary
 
-                                    Text {
+                                    M3.Icon {
                                         anchors.centerIn: parent
-                                        text: "\uf00c"
-                                        color: Theme.background
-                                        font.family: Theme.fontFamily
-                                        font.pixelSize: Theme.fontSize + 5
-                                        font.weight: Font.Bold
+                                        icon: "\u{f012c}"
+                                        size: 16
+                                        color: Theme.textOnPrimary
                                     }
                                 }
                             }
 
                             MouseArea {
+                                id: thumbMouse
                                 anchors.fill: parent
                                 hoverEnabled: true
                                 cursorShape: Qt.PointingHandCursor
@@ -519,52 +386,57 @@ Item {
                         }
                     }
 
-                    ArrowButton {
+                    M3.IconButton {
                         anchors.verticalCenter: parent.verticalCenter
-                        icon: "\uf054"
+                        size: 48
+                        variant: "tonal"
+                        icon: "\u{f0142}"
                         onClicked: if (root.selectedIndex < launcherScope.wallpapers.length - 1) root.selectedIndex++
                     }
-                }
-
-                Rectangle {
-                    id: separator
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    anchors.top: thumbnailStrip.bottom
-                    anchors.topMargin: 16
-                    anchors.leftMargin: 28
-                    anchors.rightMargin: 28
-                    height: 1
-                    color: Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.22)
                 }
 
                 RowLayout {
                     anchors.left: parent.left
                     anchors.right: parent.right
-                    anchors.top: separator.bottom
-                    anchors.topMargin: 10
-                    anchors.leftMargin: 40
-                    anchors.rightMargin: 28
-                    height: 48
+                    anchors.bottom: parent.bottom
+                    anchors.leftMargin: 28
+                    anchors.rightMargin: 20
+                    anchors.bottomMargin: 20
+                    height: 56
+                    spacing: 8
 
-                    Item { Layout.fillWidth: true }
+                    ColumnLayout {
+                        Layout.fillWidth: true
+                        spacing: 0
 
-                    Row {
-                        Layout.alignment: Qt.AlignVCenter
-                        spacing: 12
-
-                        ActionButton {
-                            icon: "\uf00c"
-                            label: "Apply"
-                            primary: true
-                            onClicked: if (root.currentWallpaper() !== "") launcherScope.applyWallpaper(root.currentWallpaper())
+                        M3.Label {
+                            Layout.fillWidth: true
+                            text: "Wallpapers"
+                            font.pixelSize: Theme.typeTitle
+                            font.weight: Font.Bold
                         }
 
-                        ActionButton {
-                            icon: "\uf074"
-                            label: "Shuffle"
-                            onClicked: root.shuffleSelection()
+                        M3.Label {
+                            text: launcherScope.wallpapers.length > 0 ? (root.selectedIndex + 1) + " / " + launcherScope.wallpapers.length + "  •  " + Theme.themes[Theme.currentTheme].name : Theme.themes[Theme.currentTheme].name
+                            color: Theme.textOnSurfaceVariant
+                            font.pixelSize: Theme.typeLabel
                         }
+                    }
+
+                    M3.Button {
+                        size: 56
+                        variant: "tonal"
+                        icon: "\u{f049d}"
+                        text: "Shuffle"
+                        onClicked: root.shuffleSelection()
+                    }
+
+                    M3.Button {
+                        size: 56
+                        variant: "filled"
+                        icon: "\u{f012c}"
+                        text: "Apply"
+                        onClicked: if (root.currentWallpaper() !== "") launcherScope.applyWallpaper(root.currentWallpaper())
                     }
                 }
             }

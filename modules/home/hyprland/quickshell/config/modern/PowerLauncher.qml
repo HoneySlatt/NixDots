@@ -2,355 +2,13 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Wayland
-import Quickshell.Hyprland
 import Quickshell.Io
 import Quickshell.Services.Mpris
+import Quickshell.Hyprland
+import "m3" as M3
 
 Item {
     id: scope
-
-    component GlassPanel: Rectangle {
-        property color fillColor: Theme.card
-
-        radius: 24
-        color: "transparent"
-        border.color: Qt.tint(Theme.separator, Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.34))
-        border.width: 1
-        gradient: Gradient {
-            GradientStop { position: 0.0; color: Qt.tint(fillColor, Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.06)) }
-            GradientStop { position: 0.58; color: fillColor }
-            GradientStop { position: 1.0; color: Qt.tint(fillColor, Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, 0.20)) }
-        }
-
-        Rectangle {
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.top: parent.top
-            anchors.leftMargin: 24
-            anchors.rightMargin: 24
-            anchors.topMargin: 1
-            height: 1
-            radius: 1
-            color: Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.15)
-        }
-
-        Rectangle {
-            anchors.fill: parent
-            anchors.margins: 1
-            radius: parent.radius - 1
-            color: "transparent"
-            border.color: Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.10)
-            border.width: 1
-        }
-    }
-
-    component ControlTile: Rectangle {
-        id: tile
-
-        property string icon: ""
-        property string title: ""
-        property string subtitle: ""
-        property bool active: false
-        signal clicked()
-
-        radius: 18
-        color: tileMouse.containsMouse
-            ? Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.055)
-            : Qt.rgba(Theme.separator.r, Theme.separator.g, Theme.separator.b, 0.34)
-        border.color: active ? Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.55)
-            : Qt.rgba(Theme.separator.r, Theme.separator.g, Theme.separator.b, 0.55)
-        border.width: 1
-
-        Column {
-            anchors.centerIn: parent
-            spacing: 8
-
-            Rectangle {
-                anchors.horizontalCenter: parent.horizontalCenter
-                width: 54
-                height: 54
-                radius: 27
-                color: tile.active ? Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.28)
-                    : Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.055)
-                border.color: tile.active ? Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.62)
-                    : Qt.rgba(Theme.separator.r, Theme.separator.g, Theme.separator.b, 0.60)
-                border.width: 1
-
-                Text {
-                    anchors.centerIn: parent
-                    text: tile.icon
-                    color: tile.active ? Theme.accent : Theme.muted
-                    font.family: Theme.fontFamily
-                    font.pixelSize: Theme.fontSize + 15
-                    font.weight: Font.Bold
-                }
-            }
-
-            Text {
-                anchors.horizontalCenter: parent.horizontalCenter
-                text: tile.title
-                color: Theme.text
-                font.family: Theme.fontFamily
-                font.pixelSize: Theme.fontSize
-                font.weight: Font.Bold
-            }
-
-            Text {
-                anchors.horizontalCenter: parent.horizontalCenter
-                width: tile.width - 12
-                text: tile.subtitle
-                color: tile.active ? Theme.accent : Theme.muted
-                font.family: Theme.fontFamily
-                font.pixelSize: Theme.fontSize - 1
-                font.weight: Theme.fontWeight
-                horizontalAlignment: Text.AlignHCenter
-                elide: Text.ElideRight
-            }
-        }
-
-        MouseArea {
-            id: tileMouse
-            anchors.fill: parent
-            hoverEnabled: true
-            cursorShape: Qt.PointingHandCursor
-            onClicked: tile.clicked()
-        }
-    }
-
-    component SliderRow: Rectangle {
-        id: sliderRow
-
-        property string icon: ""
-        property string label: ""
-        property int value: 0
-        property bool muted: false
-        signal valueSelected(int percent)
-        signal iconClicked()
-
-        radius: 14
-        color: Qt.rgba(Theme.separator.r, Theme.separator.g, Theme.separator.b, 0.34)
-        border.color: Qt.rgba(Theme.separator.r, Theme.separator.g, Theme.separator.b, 0.35)
-        border.width: 1
-
-        RowLayout {
-            anchors.fill: parent
-            anchors.leftMargin: 14
-            anchors.rightMargin: 14
-            spacing: 12
-
-            Text {
-                text: sliderRow.icon
-                color: sliderRow.muted ? Theme.muted : Theme.text
-                font.family: Theme.fontFamily
-                font.pixelSize: Theme.fontSize + 7
-                Layout.alignment: Qt.AlignVCenter
-
-                MouseArea {
-                    anchors.fill: parent
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: sliderRow.iconClicked()
-                }
-            }
-
-            Text {
-                text: sliderRow.label
-                color: Theme.text
-                font.family: Theme.fontFamily
-                font.pixelSize: Theme.fontSize
-                font.weight: Font.Bold
-                Layout.preferredWidth: 92
-                Layout.alignment: Qt.AlignVCenter
-            }
-
-            Item {
-                Layout.fillWidth: true
-                Layout.preferredHeight: 28
-                Layout.alignment: Qt.AlignVCenter
-
-                Rectangle {
-                    id: sliderTrack
-                    anchors.verticalCenter: parent.verticalCenter
-                    width: parent.width
-                    height: 5
-                    radius: 3
-                    color: Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.10)
-
-                    Rectangle {
-                        width: parent.width * Math.max(0, Math.min(1, sliderRow.value / 100))
-                        height: parent.height
-                        radius: parent.radius
-                        color: sliderRow.muted ? Theme.muted : Theme.accent
-                    }
-
-                    Rectangle {
-                        x: parent.width * Math.max(0, Math.min(1, sliderRow.value / 100)) - width / 2
-                        anchors.verticalCenter: parent.verticalCenter
-                        width: 14
-                        height: 14
-                        radius: 7
-                        color: Theme.text
-                    }
-                }
-
-                MouseArea {
-                    anchors.fill: parent
-                    cursorShape: Qt.PointingHandCursor
-                    preventStealing: true
-                    function setFromMouse(mouse) {
-                        sliderRow.valueSelected(Math.max(0, Math.min(100, Math.round(mouse.x / width * 100))));
-                    }
-                    onClicked: mouse => setFromMouse(mouse)
-                    onPositionChanged: mouse => {
-                        if (pressed) setFromMouse(mouse);
-                    }
-                }
-            }
-
-            Text {
-                text: sliderRow.value + "%"
-                color: Theme.muted
-                font.family: Theme.fontFamily
-                font.pixelSize: Theme.fontSize
-                font.weight: Theme.fontWeight
-                horizontalAlignment: Text.AlignRight
-                Layout.preferredWidth: 42
-                Layout.alignment: Qt.AlignVCenter
-            }
-        }
-    }
-
-    component BottomButton: Rectangle {
-        id: bottomButton
-
-        property string icon: ""
-        property string title: ""
-        property string subtitle: ""
-        property bool active: false
-        property bool danger: false
-        property bool iconOnly: false
-        signal clicked()
-
-        radius: 14
-        color: buttonMouse.containsMouse
-            ? Qt.rgba((danger ? Theme.warning : Theme.text).r, (danger ? Theme.warning : Theme.text).g, (danger ? Theme.warning : Theme.text).b, 0.09)
-            : Qt.rgba(Theme.separator.r, Theme.separator.g, Theme.separator.b, 0.34)
-        border.color: active ? Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.48)
-            : Qt.rgba(Theme.separator.r, Theme.separator.g, Theme.separator.b, 0.35)
-        border.width: 1
-
-        RowLayout {
-            visible: !bottomButton.iconOnly
-            anchors.fill: parent
-            anchors.leftMargin: 12
-            anchors.rightMargin: 12
-            spacing: 10
-
-            Text {
-                text: bottomButton.icon
-                color: bottomButton.danger ? Theme.warning : bottomButton.active ? Theme.accent : Theme.text
-                font.family: Theme.fontFamily
-                font.pixelSize: Theme.fontSize + 9
-                Layout.alignment: Qt.AlignVCenter
-            }
-
-            Column {
-                Layout.fillWidth: true
-                Layout.alignment: Qt.AlignVCenter
-                spacing: 1
-
-                Text {
-                    width: parent.width
-                    text: bottomButton.title
-                    color: Theme.text
-                    font.family: Theme.fontFamily
-                    font.pixelSize: Theme.fontSize - 1
-                    font.weight: Font.Bold
-                    elide: Text.ElideRight
-                }
-
-                Text {
-                    width: parent.width
-                    text: bottomButton.subtitle
-                    color: bottomButton.active ? Theme.accent : Theme.muted
-                    font.family: Theme.fontFamily
-                    font.pixelSize: Theme.fontSize - 2
-                    font.weight: Theme.fontWeight
-                    elide: Text.ElideRight
-                }
-            }
-        }
-
-        Text {
-            visible: bottomButton.iconOnly
-            anchors.centerIn: parent
-            text: bottomButton.icon
-            color: bottomButton.danger ? Theme.warning : bottomButton.active ? Theme.accent : Theme.text
-            font.family: Theme.fontFamily
-            font.pixelSize: Theme.fontSize + 18
-        }
-
-        MouseArea {
-            id: buttonMouse
-            anchors.fill: parent
-            hoverEnabled: true
-            cursorShape: Qt.PointingHandCursor
-            onClicked: bottomButton.clicked()
-        }
-    }
-
-    component RoundCover: Item {
-        id: roundCover
-
-        property string source: ""
-
-        Rectangle {
-            anchors.fill: parent
-            radius: width / 2
-            color: Theme.subtle
-            border.color: Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.28)
-            border.width: 1
-        }
-
-        Canvas {
-            anchors.fill: parent
-            anchors.margins: 3
-            renderTarget: Canvas.FramebufferObject
-            smooth: true
-            property string artUrl: roundCover.source
-
-            onArtUrlChanged: {
-                if (artUrl !== "") loadImage(artUrl);
-                requestPaint();
-            }
-
-            onImageLoaded: requestPaint()
-
-            onPaint: {
-                const ctx = getContext("2d");
-                ctx.reset();
-                const r = width / 2;
-                ctx.beginPath();
-                ctx.arc(r, r, r, 0, 2 * Math.PI);
-                ctx.clip();
-                if (artUrl !== "" && isImageLoaded(artUrl)) {
-                    ctx.drawImage(artUrl, 0, 0, width, height);
-                }
-            }
-
-            Component.onCompleted: {
-                if (artUrl !== "") loadImage(artUrl);
-            }
-        }
-
-        Text {
-            anchors.centerIn: parent
-            visible: roundCover.source === ""
-            text: "\uf001"
-            color: Theme.text
-            font.family: Theme.fontFamily
-            font.pixelSize: Theme.fontSize + 14
-        }
-    }
 
     Variants {
         model: Quickshell.screens
@@ -542,276 +200,261 @@ Item {
                     }
                 }
 
-                Item {
-                    id: popupClip
+
+                M3.Surface {
+                    id: popup
                     anchors.top: BarState.isTop ? parent.top : undefined
                     anchors.bottom: BarState.isTop ? undefined : parent.bottom
+                    anchors.topMargin: Theme.popupGap
                     anchors.right: parent.right
                     anchors.rightMargin: BarState.isTop ? Theme.margin : 0
                     width: 520
-                    height: root.showPowerActions ? 570 : 500
-                    clip: true
+                    height: contentCol.implicitHeight + 32
+                    radius: Theme.shapeXLI
+                    flushBottom: !BarState.isTop
+                    growFrom: BarState.isTop ? "top" : "bottom"
 
-                    GlassPanel {
-                        anchors.fill: parent
-                        anchors.topMargin: 0
-                        anchors.bottomMargin: BarState.isTop ? 0 : -radius
-                        height: parent.height + radius
-                        fillColor: Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, Theme.popupOpacity)
-                    }
+                    Behavior on height { M3.Spring { speed: "default" } }
 
                     MouseArea { anchors.fill: parent }
 
                     Column {
-                        anchors.fill: parent
-                        anchors.margins: 20
-                        spacing: 14
+                        id: contentCol
+                        anchors.top: parent.top
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.margins: 16
+                        spacing: 10
 
                         RowLayout {
                             width: parent.width
-                            height: 118
-                            spacing: 12
+                            spacing: 8
 
-                            ControlTile {
+                            ColumnLayout {
                                 Layout.fillWidth: true
-                                Layout.fillHeight: true
-                                icon: "\uf1eb"
-                                title: "Wi-Fi"
-                                subtitle: NetworkState.netType === "wifi" ? NetworkState.connectionName : NetworkState.netType === "ethernet" ? "Ethernet" : "Off"
+                                spacing: 0
+
+                                M3.Label {
+                                    Layout.fillWidth: true
+                                    text: Qt.formatDateTime(new Date(), "dddd")
+                                    font.pixelSize: Theme.typeTitleL
+                                    font.weight: Font.Bold
+                                }
+
+                                M3.Label {
+                                    text: Qt.formatDateTime(new Date(), "d MMMM")
+                                    color: Theme.textOnSurfaceVariant
+                                    font.pixelSize: Theme.typeLabel
+                                }
+                            }
+
+                            M3.Chip {
+                                visible: root.batteryText !== "--"
+                                clickable: false
+                                icon: "\u{f0079}"
+                                text: root.batteryText
+                            }
+
+                            M3.IconButton {
+                                size: 40
+                                variant: "error"
+                                toggle: true
+                                checked: root.showPowerActions
+                                icon: "\u{f0425}"
+                                onClicked: root.showPowerActions = !root.showPowerActions
+                            }
+                        }
+
+                        Item {
+                            width: parent.width
+                            height: root.showPowerActions ? powerGroup.height : 0
+                            visible: height > 0
+                            clip: true
+                            opacity: root.showPowerActions ? 1 : 0
+
+                            Behavior on height { M3.Spring { speed: "default" } }
+                            Behavior on opacity { M3.Effect {} }
+
+                            Row {
+                                id: powerGroup
+                                width: parent.width
+                                spacing: 2
+
+                                Repeater {
+                                    id: powerRepeater
+                                    model: [
+                                        { label: "Lock", icon: "\u{f033e}", command: "lock-screen" },
+                                        { label: "Logout", icon: "\u{f0343}", command: "hyprctl dispatch 'hl.dsp.exit()'" },
+                                        { label: "Reboot", icon: "\u{f0709}", command: "systemctl reboot" },
+                                        { label: "Shutdown", icon: "\u{f0425}", command: "systemctl poweroff" }
+                                    ]
+
+                                    delegate: M3.Button {
+                                        required property var modelData
+                                        required property int index
+                                        width: (powerGroup.width - 3 * powerGroup.spacing) / 4
+                                        size: 56
+                                        variant: "error"
+                                        grouped: true
+                                        groupStart: index === 0
+                                        groupEnd: index === powerRepeater.count - 1
+                                        icon: modelData.icon
+                                        text: modelData.label
+                                        labelSize: Theme.typeLabel
+                                        onClicked: root.executeAction(modelData.command)
+                                    }
+                                }
+                            }
+                        }
+
+                        GridLayout {
+                            width: parent.width
+                            columns: 2
+                            rowSpacing: 8
+                            columnSpacing: 8
+
+                            M3.QuickTile {
+                                Layout.fillWidth: true
+                                icon: NetworkState.netType === "ethernet" ? "\u{f0200}" : NetworkState.netType === "offline" ? "\u{f05aa}" : "\u{f05a9}"
+                                title: NetworkState.netType === "ethernet" ? "Ethernet" : "Wi-Fi"
+                                subtitle: NetworkState.netType === "wifi" ? NetworkState.connectionName : NetworkState.netType === "ethernet" ? "Connected" : "Off"
                                 active: NetworkState.netType !== "offline"
                                 onClicked: wifiToggleProc.running = true
                             }
 
-                            ControlTile {
+                            M3.QuickTile {
                                 Layout.fillWidth: true
-                                Layout.fillHeight: true
-                                icon: "\uf293"
+                                icon: root.bluetoothPowered ? "\u{f00af}" : "\u{f00b2}"
                                 title: "Bluetooth"
                                 subtitle: root.bluetoothPowered ? "On" : "Off"
                                 active: root.bluetoothPowered
                                 onClicked: bluetoothToggleProc.running = true
                             }
 
-                            ControlTile {
+                            M3.QuickTile {
                                 Layout.fillWidth: true
-                                Layout.fillHeight: true
-                                icon: "\uf132"
+                                icon: "\u{f099d}"
                                 title: "VPN"
-                                subtitle: NetworkState.vpnConnected ? "On" : "Off"
+                                subtitle: NetworkState.vpnConnected ? "Connected" : "Off"
                                 active: NetworkState.vpnConnected
                                 onClicked: vpnToggleProc.running = true
                             }
 
-                            ControlTile {
+                            M3.QuickTile {
                                 Layout.fillWidth: true
-                                Layout.fillHeight: true
-                                icon: "\uf186"
-                                title: "DND"
+                                icon: "\u{f009b}"
+                                title: "Do not disturb"
                                 subtitle: root.dndEnabled ? "On" : "Off"
                                 active: root.dndEnabled
                                 onClicked: dndToggleProc.running = true
                             }
+
+                            M3.QuickTile {
+                                Layout.fillWidth: true
+                                Layout.columnSpan: 2
+                                icon: "\u{f0594}"
+                                title: "Night light"
+                                subtitle: root.nightLightEnabled ? "On" : "Off"
+                                active: root.nightLightEnabled
+                                onClicked: nightLightToggleProc.running = true
+                            }
                         }
 
-                        SliderRow {
+                        M3.Slider {
                             width: parent.width
-                            height: 56
-                            icon: VolumeState.muted ? "\uf026" : "\uf028"
-                            label: "Volume"
+                            trackHeight: 36
+                            handleHeight: 48
+                            icon: VolumeState.muted ? "\u{f0581}" : "\u{f057e}"
+                            iconClickable: true
                             value: VolumeState.volume
                             muted: VolumeState.muted
                             onIconClicked: VolumeState.toggleMute()
-                            onValueSelected: percent => VolumeState.setVolume(percent)
+                            onMoved: value => VolumeState.setVolume(value)
                         }
 
-                        SliderRow {
+                        M3.Slider {
                             width: parent.width
-                            height: 56
-                            icon: "\uf185"
-                            label: "Brightness"
+                            trackHeight: 36
+                            handleHeight: 48
+                            icon: "\u{f00df}"
                             value: root.brightness
-                            onValueSelected: percent => {
-                                root.brightness = percent;
-                                brightnessSetProc.command = ["brightnessctl", "set", percent + "%"];
+                            onMoved: value => {
+                                root.brightness = value;
+                                brightnessSetProc.command = ["brightnessctl", "set", value + "%"];
                                 brightnessSetProc.running = true;
                             }
                         }
 
                         Rectangle {
                             width: parent.width
-                            height: 96
-                            radius: 16
-                            color: Qt.rgba(Theme.separator.r, Theme.separator.g, Theme.separator.b, 0.34)
-                            border.color: Qt.rgba(Theme.separator.r, Theme.separator.g, Theme.separator.b, 0.35)
-                            border.width: 1
+                            height: 80
+                            radius: Theme.shapeXL
+                            color: Theme.surfaceContainerHigh
 
                             RowLayout {
                                 anchors.fill: parent
-                                anchors.margins: 12
+                                anchors.margins: 14
                                 spacing: 14
 
-                                RoundCover {
-                                    Layout.preferredWidth: 68
-                                    Layout.preferredHeight: 68
-                                    source: root.player ? root.player.trackArtUrl : ""
-                                }
+                                Rectangle {
+                                    Layout.preferredWidth: 56
+                                    Layout.preferredHeight: 56
+                                    radius: Theme.shapeL
+                                    color: Theme.surfaceContainerHighest
 
-                                Column {
-                                    Layout.fillWidth: true
-                                    Layout.alignment: Qt.AlignVCenter
-                                    spacing: 4
-
-                                    Text {
-                                        width: parent.width
-                                        text: root.player ? root.player.trackTitle : "No media"
-                                        color: Theme.text
-                                        font.family: Theme.fontFamily
-                                        font.pixelSize: Theme.fontSize + 3
-                                        font.weight: Font.Bold
-                                        elide: Text.ElideRight
-                                    }
-
-                                    Text {
-                                        width: parent.width
-                                        text: root.player ? root.player.trackArtist : ""
-                                        color: Theme.muted
-                                        font.family: Theme.fontFamily
-                                        font.pixelSize: Theme.fontSize
-                                        font.weight: Theme.fontWeight
-                                        elide: Text.ElideRight
-                                    }
-                                }
-
-                                Row {
-                                    Layout.alignment: Qt.AlignVCenter
-                                    spacing: 18
-
-                                    Text {
-                                        text: "\uf04a"
-                                        color: mediaPrevMouse.containsMouse ? Theme.text : Theme.muted
-                                        font.family: Theme.fontFamily
-                                        font.pixelSize: Theme.fontSize + 8
-                                        anchors.verticalCenter: parent.verticalCenter
-                                        MouseArea {
-                                            id: mediaPrevMouse
-                                            anchors.fill: parent
-                                            hoverEnabled: true
-                                            cursorShape: Qt.PointingHandCursor
-                                            onClicked: {
-                                                if (root.player) root.player.previous();
-                                            }
-                                        }
-                                    }
-
-                                    Text {
-                                        text: root.player && root.player.playbackState === MprisPlaybackState.Playing ? "\uf04c" : "\uf04b"
-                                        color: Theme.text
-                                        font.family: Theme.fontFamily
-                                        font.pixelSize: Theme.fontSize + 12
-                                        anchors.verticalCenter: parent.verticalCenter
-                                        MouseArea {
-                                            anchors.fill: parent
-                                            cursorShape: Qt.PointingHandCursor
-                                            onClicked: {
-                                                if (root.player) root.player.togglePlaying();
-                                            }
-                                        }
-                                    }
-
-                                    Text {
-                                        text: "\uf04e"
-                                        color: mediaNextMouse.containsMouse ? Theme.text : Theme.muted
-                                        font.family: Theme.fontFamily
-                                        font.pixelSize: Theme.fontSize + 8
-                                        anchors.verticalCenter: parent.verticalCenter
-                                        MouseArea {
-                                            id: mediaNextMouse
-                                            anchors.fill: parent
-                                            hoverEnabled: true
-                                            cursorShape: Qt.PointingHandCursor
-                                            onClicked: {
-                                                if (root.player) root.player.next();
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        RowLayout {
-                            width: parent.width
-                            height: 70
-                            spacing: 10
-
-                            BottomButton {
-                                Layout.fillWidth: true
-                                Layout.fillHeight: true
-                                icon: "\uf240"
-                                title: "Battery"
-                                subtitle: root.batteryText
-                            }
-
-                            BottomButton {
-                                Layout.fillWidth: true
-                                Layout.fillHeight: true
-                                icon: "\uf185"
-                                title: "Night Light"
-                                subtitle: root.nightLightEnabled ? "On" : "Off"
-                                active: root.nightLightEnabled
-                                onClicked: nightLightToggleProc.running = true
-                            }
-
-                            BottomButton {
-                                Layout.preferredWidth: 72
-                                Layout.fillHeight: true
-                                icon: "\uf011"
-                                title: ""
-                                subtitle: ""
-                                danger: true
-                                iconOnly: true
-                                active: root.showPowerActions
-                                onClicked: root.showPowerActions = !root.showPowerActions
-                            }
-                        }
-
-                        RowLayout {
-                            visible: root.showPowerActions
-                            width: parent.width
-                            height: visible ? 56 : 0
-                            spacing: 10
-
-                            Repeater {
-                                model: [
-                                    { label: "Lock", icon: "\uf023", command: "lock-screen" },
-                                    { label: "Logout", icon: "\uf2f5", command: "hyprctl dispatch 'hl.dsp.exit()'" },
-                                    { label: "Reboot", icon: "\uf021", command: "systemctl reboot" },
-                                    { label: "Shutdown", icon: "\uf011", command: "systemctl poweroff" }
-                                ]
-
-                                delegate: Rectangle {
-                                    required property var modelData
-                                    Layout.fillWidth: true
-                                    Layout.fillHeight: true
-                                    radius: 14
-                                    color: actionMouse.containsMouse ? Qt.rgba(Theme.warning.r, Theme.warning.g, Theme.warning.b, 0.12)
-                                        : Qt.rgba(Theme.separator.r, Theme.separator.g, Theme.separator.b, 0.34)
-                                    border.color: Qt.rgba(Theme.warning.r, Theme.warning.g, Theme.warning.b, 0.22)
-                                    border.width: 1
-
-                                    Column {
+                                    M3.Icon {
                                         anchors.centerIn: parent
-                                        spacing: 3
-                                        Text { anchors.horizontalCenter: parent.horizontalCenter; text: modelData.icon; color: Theme.warning; font.family: Theme.fontFamily; font.pixelSize: Theme.fontSize + 4 }
-                                        Text { anchors.horizontalCenter: parent.horizontalCenter; text: modelData.label; color: Theme.text; font.family: Theme.fontFamily; font.pixelSize: Theme.fontSize - 2; font.weight: Font.Bold }
+                                        visible: cover.status !== Image.Ready
+                                        icon: "\u{f075a}"
+                                        size: 28
+                                        color: Theme.textOnSurfaceVariant
                                     }
 
-                                    MouseArea {
-                                        id: actionMouse
+                                    M3.RoundedImage {
+                                        id: cover
                                         anchors.fill: parent
-                                        hoverEnabled: true
-                                        cursorShape: Qt.PointingHandCursor
-                                        onClicked: root.executeAction(modelData.command)
+                                        radius: parent.radius
+                                        source: root.player ? root.player.trackArtUrl : ""
+                                        sourceSize: Qt.size(136, 136)
                                     }
+                                }
+
+                                ColumnLayout {
+                                    Layout.fillWidth: true
+                                    spacing: 2
+
+                                    M3.Label {
+                                        Layout.fillWidth: true
+                                        text: root.player ? root.player.trackTitle : "No media"
+                                        font.pixelSize: Theme.typeTitle
+                                        font.weight: Font.Bold
+                                    }
+
+                                    M3.Label {
+                                        Layout.fillWidth: true
+                                        text: root.player ? root.player.trackArtist : "Nothing playing"
+                                        color: Theme.textOnSurfaceVariant
+                                        font.pixelSize: Theme.typeLabel
+                                    }
+                                }
+
+                                M3.IconButton {
+                                    icon: "\u{f04ae}"
+                                    onClicked: if (root.player) root.player.previous()
+                                }
+
+                                M3.IconButton {
+                                    size: 52
+                                    variant: "filled"
+                                    toggle: true
+                                    checked: root.player !== null && root.player.playbackState === MprisPlaybackState.Playing
+                                    icon: checked ? "\u{f03e4}" : "\u{f040a}"
+                                    onClicked: if (root.player) root.player.togglePlaying()
+                                }
+
+                                M3.IconButton {
+                                    icon: "\u{f04ad}"
+                                    onClicked: if (root.player) root.player.next()
                                 }
                             }
                         }

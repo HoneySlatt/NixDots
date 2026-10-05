@@ -3,44 +3,10 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Wayland
 import "services" as Services
+import "m3" as M3
 
 Item {
     id: launcherScope
-
-    component GlassPanel: Rectangle {
-        property color fillColor: Theme.card
-
-        radius: 28
-        color: "transparent"
-        border.color: Qt.tint(Theme.separator, Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.38))
-        border.width: 1
-        gradient: Gradient {
-            GradientStop { position: 0.0; color: Qt.tint(fillColor, Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.055)) }
-            GradientStop { position: 0.55; color: fillColor }
-            GradientStop { position: 1.0; color: Qt.tint(fillColor, Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, 0.20)) }
-        }
-
-        Rectangle {
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.top: parent.top
-            anchors.leftMargin: 28
-            anchors.rightMargin: 28
-            anchors.topMargin: 1
-            height: 1
-            radius: 1
-            color: Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.16)
-        }
-
-        Rectangle {
-            anchors.fill: parent
-            anchors.margins: 1
-            radius: parent.radius - 1
-            color: "transparent"
-            border.color: Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.12)
-            border.width: 1
-        }
-    }
 
     Variants {
         model: Quickshell.screens
@@ -176,134 +142,70 @@ Item {
                     }
                 }
 
-                Item {
+                M3.Surface {
                     id: panelClip
                     anchors.top: BarState.isTop ? parent.top : undefined
                     anchors.bottom: BarState.isTop ? undefined : parent.bottom
+                    anchors.topMargin: Theme.popupGap
                     anchors.left: parent.left
                     anchors.leftMargin: BarState.isTop ? Theme.margin : 0
                     width: 380
                     height: 430
-                    clip: true
-
-                    GlassPanel {
-                        anchors.fill: parent
-                        anchors.topMargin: 0
-                        anchors.bottomMargin: BarState.isTop ? 0 : -radius
-                        height: parent.height + radius
-                        radius: BarState.isTop ? 24 : 0
-                        fillColor: Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, 0.90)
-                    }
+                    flushBottom: !BarState.isTop
+                    growFrom: BarState.isTop ? "top" : "bottom"
 
                     MouseArea { anchors.fill: parent }
 
                     Column {
                         anchors.fill: parent
-                        anchors.margins: 20
-                        spacing: 16
+                        anchors.margins: 12
+                        spacing: 12
 
-                        Rectangle {
-                            id: searchBar
+                        M3.SearchField {
+                            id: searchField
                             width: parent.width
-                            height: 48
-                            radius: 24
-                            color: Qt.rgba(Theme.separator.r, Theme.separator.g, Theme.separator.b, 0.56)
-                            border.color: searchField.activeFocus
-                                ? Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.65)
-                                : Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.22)
-                            border.width: 1
-
-                            Rectangle {
-                                visible: searchField.activeFocus
-                                anchors.fill: parent
-                                anchors.margins: -3
-                                radius: parent.radius + 3
-                                color: Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.08)
-                            }
-
-                            RowLayout {
-                                anchors.fill: parent
-                                anchors.leftMargin: 16
-                                anchors.rightMargin: 12
-                                spacing: 10
-
-                                Text {
-                                    text: "\uf002"
-                                    color: Theme.accent
-                                    font.family: Theme.fontFamily
-                                    font.pixelSize: Theme.fontSize + 4
-                                    Layout.alignment: Qt.AlignVCenter
-                                }
-
-                                TextInput {
-                                    id: searchField
-                                    Layout.fillWidth: true
-                                    Layout.fillHeight: true
-                                    verticalAlignment: TextInput.AlignVCenter
-                                    color: Theme.text
-                                    selectionColor: Theme.accent
-                                    selectedTextColor: Theme.background
-                                    clip: true
-                                    font.family: Theme.fontFamily
-                                    font.pixelSize: Theme.fontSize + 1
-                                    font.weight: Theme.fontWeight
-
-                                    onTextChanged: root.searchQuery = text.toLowerCase()
-
-                                    Text {
-                                        anchors.fill: parent
-                                        verticalAlignment: Text.AlignVCenter
-                                        text: "Search"
-                                        color: Theme.muted
-                                        opacity: 0.72
-                                        font.family: searchField.font.family
-                                        font.pixelSize: searchField.font.pixelSize
-                                        font.weight: searchField.font.weight
-                                        visible: searchField.text.length === 0
-                                    }
-                                }
-
-                            }
+                            placeholder: "Search apps"
+                            onTextChanged: root.searchQuery = text.toLowerCase()
                         }
 
                         ListView {
                             id: appList
                             width: parent.width
-                            height: parent.height - searchBar.height - parent.spacing
+                            height: parent.height - searchField.height - parent.spacing
                             clip: true
                             model: root.filteredApps
                             currentIndex: root.selectedIndex
-                            spacing: 4
+                            spacing: 2
                             boundsBehavior: Flickable.StopAtBounds
                             interactive: true
 
-                            delegate: Rectangle {
+                            delegate: M3.ListSegment {
                                 id: appRow
 
                                 required property var modelData
                                 required property int index
 
                                 width: appList.width
-                                height: 44
-                                radius: 14
-                                color: appMouse.containsMouse || index === root.selectedIndex
-                                    ? Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.11)
-                                    : "transparent"
-                                border.color: index === root.selectedIndex
-                                    ? Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.20)
-                                    : "transparent"
-                                border.width: 1
+                                height: 48
+                                first: index === 0
+                                last: index === appList.count - 1
+                                selected: index === root.selectedIndex
+                                baseColor: Theme.surfaceContainerHigh
+                                onEntered: root.selectedIndex = index
+                                onClicked: {
+                                    appRow.modelData.execute();
+                                    LauncherState.close();
+                                }
 
                                 RowLayout {
                                     anchors.fill: parent
-                                    anchors.leftMargin: 12
-                                    anchors.rightMargin: 12
-                                    spacing: 12
+                                    anchors.leftMargin: 14
+                                    anchors.rightMargin: 16
+                                    spacing: 14
 
                                     Item {
                                         Layout.preferredWidth: 28
                                         Layout.preferredHeight: 28
-                                        Layout.alignment: Qt.AlignVCenter
 
                                         Image {
                                             id: appIcon
@@ -318,57 +220,39 @@ Item {
                                             visible: status === Image.Ready
                                         }
 
-                                        Text {
+                                        M3.Icon {
                                             anchors.centerIn: parent
                                             visible: appIcon.status !== Image.Ready
-                                            text: "\uf1b2"
-                                            color: Theme.accent
-                                            font.family: Theme.fontFamily
-                                            font.pixelSize: Theme.fontSize + 6
+                                            icon: "\u{f08c6}"
+                                            size: 24
+                                            color: Theme.primary
                                         }
                                     }
 
-                                    Text {
+                                    M3.Label {
                                         Layout.fillWidth: true
-                                        Layout.alignment: Qt.AlignVCenter
                                         text: appRow.modelData.name ?? ""
-                                        color: Theme.text
-                                        font.family: Theme.fontFamily
-                                        font.pixelSize: Theme.fontSize + 1
-                                        font.weight: Font.Bold
-                                        elide: Text.ElideRight
+                                        color: appRow.selected ? Theme.textOnSecondaryContainer : Theme.textOnSurface
+                                        font.pixelSize: Theme.typeBody + 1
+                                        font.weight: appRow.selected ? Font.Bold : Theme.fontWeight
                                     }
 
-                                    Text {
-                                        text: "\uf054"
-                                        color: index === root.selectedIndex ? Theme.accent : Theme.muted
-                                        font.family: Theme.fontFamily
-                                        font.pixelSize: Theme.fontSize - 1
-                                        Layout.alignment: Qt.AlignVCenter
-                                    }
-                                }
+                                    M3.Icon {
+                                        icon: "\u{f0142}"
+                                        size: 20
+                                        color: Theme.textOnSecondaryContainer
+                                        opacity: appRow.selected ? 1 : 0
 
-                                MouseArea {
-                                    id: appMouse
-                                    anchors.fill: parent
-                                    hoverEnabled: true
-                                    cursorShape: Qt.PointingHandCursor
-                                    onEntered: root.selectedIndex = index
-                                    onClicked: {
-                                        appRow.modelData.execute();
-                                        LauncherState.close();
+                                        Behavior on opacity { M3.Effect {} }
                                     }
                                 }
                             }
 
-                            Text {
+                            M3.Label {
                                 anchors.centerIn: parent
                                 visible: root.filteredApps.length === 0
                                 text: "No applications found"
-                                color: Theme.muted
-                                font.family: Theme.fontFamily
-                                font.pixelSize: Theme.fontSize
-                                font.weight: Theme.fontWeight
+                                color: Theme.textOnSurfaceVariant
                             }
                         }
                     }

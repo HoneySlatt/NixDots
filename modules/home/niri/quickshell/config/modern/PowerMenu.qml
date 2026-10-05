@@ -5,6 +5,7 @@ import Quickshell.Wayland
 import Quickshell.Io
 import Quickshell.Services.Mpris
 import "services" as Services
+import "m3" as M3
 
 Item {
     id: powerMenuScope
@@ -12,266 +13,33 @@ Item {
     readonly property int entryCount: 14
     readonly property int powerStartIndex: 10
 
-    component GlassPanel: Rectangle {
-        property color fillColor: Theme.card
+    component SliderEntry: Item {
+        id: sliderEntry
 
-        radius: 26
-        color: "transparent"
-        border.color: Qt.tint(Theme.separator, Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.34))
-        border.width: 1
-        gradient: Gradient {
-            GradientStop { position: 0.0; color: Qt.tint(fillColor, Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.06)) }
-            GradientStop { position: 0.58; color: fillColor }
-            GradientStop { position: 1.0; color: Qt.tint(fillColor, Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, 0.20)) }
-        }
+        property int entry: 0
+        property alias slider: control
 
-        Rectangle {
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.top: parent.top
-            anchors.leftMargin: 28
-            anchors.rightMargin: 28
-            anchors.topMargin: 1
-            height: 1
-            radius: 1
-            color: Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.16)
+        height: 48
+
+        M3.Slider {
+            id: control
+            anchors.fill: parent
+            trackHeight: 36
+            handleHeight: 48
         }
 
         Rectangle {
             anchors.fill: parent
-            anchors.margins: 1
-            radius: parent.radius - 1
+            anchors.topMargin: 6
+            anchors.bottomMargin: 6
+            radius: 22
             color: "transparent"
-            border.color: Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.10)
-            border.width: 1
-        }
-    }
 
-    component StatusCard: Rectangle {
-        id: statusCard
-
-        property string icon: ""
-        property string title: ""
-        property string value: ""
-        property bool selected: false
-        property bool danger: false
-        property bool active: false
-        signal clicked()
-        signal hovered()
-
-        radius: 16
-        color: selected || cardMouse.containsMouse
-            ? Qt.rgba((danger ? Theme.warning : Theme.accent).r, (danger ? Theme.warning : Theme.accent).g, (danger ? Theme.warning : Theme.accent).b, 0.14)
-            : Qt.rgba(Theme.separator.r, Theme.separator.g, Theme.separator.b, 0.32)
-        border.color: selected
-            ? Qt.rgba((danger ? Theme.warning : Theme.accent).r, (danger ? Theme.warning : Theme.accent).g, (danger ? Theme.warning : Theme.accent).b, 0.58)
-            : active ? Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.38)
-            : Qt.rgba(Theme.separator.r, Theme.separator.g, Theme.separator.b, 0.42)
-        border.width: selected ? 2 : 1
-
-        Behavior on color { ColorAnimation { duration: 120 } }
-        Behavior on border.color { ColorAnimation { duration: 120 } }
-
-        RowLayout {
-            anchors.fill: parent
-            anchors.margins: 12
-            spacing: 12
-
-            Rectangle {
-                Layout.preferredWidth: 42
-                Layout.preferredHeight: 42
-                radius: 21
-                color: Qt.rgba((statusCard.danger ? Theme.warning : Theme.accent).r, (statusCard.danger ? Theme.warning : Theme.accent).g, (statusCard.danger ? Theme.warning : Theme.accent).b, statusCard.active || statusCard.selected ? 0.22 : 0.10)
-                border.color: Qt.rgba((statusCard.danger ? Theme.warning : Theme.accent).r, (statusCard.danger ? Theme.warning : Theme.accent).g, (statusCard.danger ? Theme.warning : Theme.accent).b, statusCard.active || statusCard.selected ? 0.44 : 0.20)
-                border.width: 1
-
-                Text {
-                    anchors.centerIn: parent
-                    text: statusCard.icon
-                    color: statusCard.danger ? Theme.warning : statusCard.active || statusCard.selected ? Theme.accent : Theme.text
-                    font.family: Theme.fontFamily
-                    font.pixelSize: Theme.fontSize + 10
-                }
-            }
-
-            Column {
-                Layout.fillWidth: true
-                Layout.alignment: Qt.AlignVCenter
-                spacing: 2
-
-                Text {
-                    width: parent.width
-                    text: statusCard.title
-                    color: Theme.text
-                    font.family: Theme.fontFamily
-                    font.pixelSize: Theme.fontSize
-                    font.weight: Font.Bold
-                    elide: Text.ElideRight
-                }
-
-                Text {
-                    width: parent.width
-                    text: statusCard.value
-                    color: statusCard.active || statusCard.selected ? (statusCard.danger ? Theme.warning : Theme.accent) : Theme.muted
-                    font.family: Theme.fontFamily
-                    font.pixelSize: Theme.fontSize - 2
-                    font.weight: Theme.fontWeight
-                    elide: Text.ElideRight
-                }
-            }
+            M3.FocusRing { shown: root.selectedIndex === sliderEntry.entry }
         }
 
-        MouseArea {
-            id: cardMouse
-            anchors.fill: parent
-            hoverEnabled: true
-            cursorShape: Qt.PointingHandCursor
-            onEntered: statusCard.hovered()
-            onClicked: statusCard.clicked()
-        }
-    }
-
-    component MeterCard: Rectangle {
-        id: meterCard
-
-        property string icon: ""
-        property string title: ""
-        property int value: 0
-        property bool muted: false
-        property bool selected: false
-        signal hovered()
-        signal valueSelected(int percent)
-        signal iconClicked()
-
-        radius: 16
-        color: selected ? Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.13)
-            : Qt.rgba(Theme.separator.r, Theme.separator.g, Theme.separator.b, 0.32)
-        border.color: selected ? Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.58)
-            : Qt.rgba(Theme.separator.r, Theme.separator.g, Theme.separator.b, 0.42)
-        border.width: selected ? 2 : 1
-
-        RowLayout {
-            anchors.fill: parent
-            anchors.leftMargin: 14
-            anchors.rightMargin: 14
-            spacing: 12
-
-            Text {
-                text: meterCard.icon
-                color: meterCard.muted ? Theme.muted : meterCard.selected ? Theme.accent : Theme.text
-                font.family: Theme.fontFamily
-                font.pixelSize: Theme.fontSize + 8
-                Layout.preferredWidth: 28
-                Layout.alignment: Qt.AlignVCenter
-
-                MouseArea {
-                    anchors.fill: parent
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: meterCard.iconClicked()
-                }
-            }
-
-            Text {
-                text: meterCard.title
-                color: Theme.text
-                font.family: Theme.fontFamily
-                font.pixelSize: Theme.fontSize
-                font.weight: Font.Bold
-                Layout.preferredWidth: 94
-                Layout.alignment: Qt.AlignVCenter
-            }
-
-            Item {
-                Layout.fillWidth: true
-                Layout.preferredHeight: 28
-                Layout.alignment: Qt.AlignVCenter
-
-                Rectangle {
-                    anchors.verticalCenter: parent.verticalCenter
-                    width: parent.width
-                    height: 5
-                    radius: 3
-                    color: Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.10)
-
-                    Rectangle {
-                        width: parent.width * Math.max(0, Math.min(1, meterCard.value / 100))
-                        height: parent.height
-                        radius: parent.radius
-                        color: meterCard.muted ? Theme.muted : Theme.accent
-                    }
-
-                    Rectangle {
-                        x: parent.width * Math.max(0, Math.min(1, meterCard.value / 100)) - width / 2
-                        anchors.verticalCenter: parent.verticalCenter
-                        width: 12
-                        height: 12
-                        radius: 6
-                        color: Theme.text
-                    }
-                }
-
-                MouseArea {
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    cursorShape: Qt.PointingHandCursor
-                    preventStealing: true
-                    onEntered: meterCard.hovered()
-                    function setFromMouse(mouse) {
-                        meterCard.valueSelected(Math.max(0, Math.min(100, Math.round(mouse.x / width * 100))));
-                    }
-                    onClicked: mouse => setFromMouse(mouse)
-                    onPositionChanged: mouse => {
-                        if (pressed) setFromMouse(mouse);
-                    }
-                }
-            }
-
-            Text {
-                text: meterCard.value + "%"
-                color: meterCard.selected ? Theme.accent : Theme.muted
-                font.family: Theme.fontFamily
-                font.pixelSize: Theme.fontSize
-                font.weight: Theme.fontWeight
-                horizontalAlignment: Text.AlignRight
-                Layout.preferredWidth: 42
-                Layout.alignment: Qt.AlignVCenter
-            }
-        }
-    }
-
-    component MediaButton: Rectangle {
-        id: mediaButton
-
-        property string icon: ""
-        property bool active: false
-        property bool selected: false
-        signal clicked()
-        signal hovered()
-
-        radius: 13
-        color: selected || mediaMouse.containsMouse
-            ? Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.14)
-            : Qt.rgba(Theme.separator.r, Theme.separator.g, Theme.separator.b, 0.32)
-        border.color: selected ? Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.58)
-            : active ? Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.36)
-            : Qt.rgba(Theme.separator.r, Theme.separator.g, Theme.separator.b, 0.42)
-        border.width: selected ? 2 : 1
-
-        Text {
-            anchors.centerIn: parent
-            text: mediaButton.icon
-            color: mediaButton.active || mediaButton.selected ? Theme.accent : Theme.text
-            font.family: Theme.fontFamily
-            font.pixelSize: Theme.fontSize + 8
-        }
-
-        MouseArea {
-            id: mediaMouse
-            anchors.fill: parent
-            hoverEnabled: true
-            cursorShape: Qt.PointingHandCursor
-            onEntered: mediaButton.hovered()
-            onClicked: mediaButton.clicked()
+        HoverHandler {
+            onHoveredChanged: if (hovered) root.selectedIndex = sliderEntry.entry
         }
     }
 
@@ -373,20 +141,20 @@ Item {
 
             function entryIcon(index) {
                 switch (index) {
-                case 0: return "\uf1eb";
-                case 1: return "\uf293";
-                case 2: return "\uf132";
-                case 3: return "\uf186";
-                case 4: return VolumeState.muted ? "\uf026" : "\uf028";
-                case 5: return "\uf185";
-                case 6: return "\uf04a";
-                case 7: return player && player.playbackState === MprisPlaybackState.Playing ? "\uf04c" : "\uf04b";
-                case 8: return "\uf04e";
-                case 9: return "\uf185";
-                case 10: return "\uf023";
-                case 11: return "\uf2f5";
-                case 12: return "\uf021";
-                case 13: return "\uf011";
+                case 0: return "\u{f05a9}";
+                case 1: return "\u{f00af}";
+                case 2: return "\u{f099d}";
+                case 3: return "\u{f009b}";
+                case 4: return VolumeState.muted ? "\u{f0581}" : "\u{f057e}";
+                case 5: return "\u{f00df}";
+                case 6: return "\u{f04ae}";
+                case 7: return player && player.playbackState === MprisPlaybackState.Playing ? "\u{f03e4}" : "\u{f040a}";
+                case 8: return "\u{f04ad}";
+                case 9: return "\u{f0594}";
+                case 10: return "\u{f033e}";
+                case 11: return "\u{f0343}";
+                case 12: return "\u{f0709}";
+                case 13: return "\u{f0425}";
                 default: return "";
                 }
             }
@@ -661,7 +429,7 @@ Item {
 
             Rectangle {
                 anchors.fill: parent
-                color: Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, 0.58)
+                color: Theme.scrim
             }
 
             MouseArea {
@@ -669,179 +437,180 @@ Item {
                 onClicked: PowerMenuState.close()
             }
 
-            GlassPanel {
+            M3.Surface {
                 id: panel
                 anchors.centerIn: parent
                 width: 720
-                height: 560
+                height: contentCol.implicitHeight + 48
+                radius: Theme.shapeXLI
+                growFrom: "center"
                 focus: PowerMenuState.visible
-                fillColor: Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, Theme.popupOpacity)
 
                 MouseArea { anchors.fill: parent; onClicked: panel.forceActiveFocus() }
                 Keys.onPressed: event => root.handleKey(event)
 
                 Column {
-                    anchors.fill: parent
-                    anchors.margins: 18
+                    id: contentCol
+                    anchors.top: parent.top
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.margins: 20
                     spacing: 12
 
                     RowLayout {
                         width: parent.width
-                        height: 30
 
-                        Text {
+                        M3.Label {
                             Layout.fillWidth: true
                             text: "Power"
-                            color: Theme.text
-                            font.family: Theme.fontFamily
-                            font.pixelSize: Theme.fontSize + 6
+                            font.pixelSize: Theme.typeHeadline
                             font.weight: Font.Bold
-                            Layout.alignment: Qt.AlignVCenter
                         }
 
-                        Text {
+                        M3.Chip {
+                            visible: root.batteryText !== "--"
+                            clickable: false
+                            icon: "\u{f0079}"
                             text: root.batteryText
-                            color: Theme.muted
-                            font.family: Theme.fontFamily
-                            font.pixelSize: Theme.fontSize
-                            font.weight: Theme.fontWeight
-                            Layout.alignment: Qt.AlignVCenter
                         }
-
                     }
 
                     GridLayout {
                         width: parent.width
-                        height: 158
                         columns: 4
-                        rowSpacing: 10
-                        columnSpacing: 10
+                        columnSpacing: 8
 
                         Repeater {
                             model: [0, 1, 2, 3]
-                            delegate: StatusCard {
+                            delegate: M3.QuickTile {
                                 required property int modelData
                                 Layout.fillWidth: true
-                                Layout.fillHeight: true
+                                Layout.preferredWidth: 1
                                 icon: root.entryIcon(modelData)
                                 title: root.entryTitle(modelData)
-                                value: root.entryValue(modelData)
+                                subtitle: root.entryValue(modelData)
                                 active: root.entryActive(modelData)
                                 selected: root.selectedIndex === modelData
-                                onHovered: root.selectedIndex = modelData
+                                onEntered: root.selectedIndex = modelData
                                 onClicked: root.triggerEntry(modelData)
                             }
                         }
                     }
 
-                    Column {
+                    SliderEntry {
                         width: parent.width
-                        spacing: 8
+                        entry: 4
+                        slider.icon: root.entryIcon(4)
+                        slider.iconClickable: true
+                        slider.value: VolumeState.volume
+                        slider.muted: VolumeState.muted
+                        slider.onIconClicked: VolumeState.toggleMute()
+                        slider.onMoved: value => VolumeState.setVolume(value)
+                    }
 
-                        MeterCard {
-                            width: parent.width
-                            height: 48
-                            icon: root.entryIcon(4)
-                            title: root.entryTitle(4)
-                            value: VolumeState.volume
-                            muted: VolumeState.muted
-                            selected: root.selectedIndex === 4
-                            onHovered: root.selectedIndex = 4
-                            onIconClicked: VolumeState.toggleMute()
-                            onValueSelected: percent => VolumeState.setVolume(percent)
-                        }
-
-                        MeterCard {
-                            width: parent.width
-                            height: 48
-                            icon: root.entryIcon(5)
-                            title: root.entryTitle(5)
-                            value: root.brightness
-                            selected: root.selectedIndex === 5
-                            onHovered: root.selectedIndex = 5
-                            onValueSelected: percent => root.setBrightness(percent)
-                        }
+                    SliderEntry {
+                        width: parent.width
+                        entry: 5
+                        slider.icon: root.entryIcon(5)
+                        slider.value: root.brightness
+                        slider.onMoved: value => root.setBrightness(value)
                     }
 
                     Rectangle {
                         width: parent.width
-                        height: 92
-                        radius: 16
-                        color: Qt.rgba(Theme.separator.r, Theme.separator.g, Theme.separator.b, 0.32)
-                        border.color: Qt.rgba(Theme.separator.r, Theme.separator.g, Theme.separator.b, 0.42)
-                        border.width: 1
+                        height: 76
+                        radius: Theme.shapeXL
+                        color: Theme.surfaceContainerHighest
 
                         RowLayout {
                             anchors.fill: parent
-                            anchors.margins: 12
-                            spacing: 12
+                            anchors.leftMargin: 14
+                            anchors.rightMargin: 16
+                            spacing: 14
 
-                            Column {
-                                Layout.fillWidth: true
-                                Layout.alignment: Qt.AlignVCenter
-                                spacing: 4
+                            Rectangle {
+                                Layout.preferredWidth: 52
+                                Layout.preferredHeight: 52
+                                radius: Theme.shapeL
+                                color: Theme.surfaceContainerHigh
 
-                                Text {
-                                    width: parent.width
-                                    text: root.player ? (root.player.trackTitle || "Media") : "No media"
-                                    color: Theme.text
-                                    font.family: Theme.fontFamily
-                                    font.pixelSize: Theme.fontSize + 2
-                                    font.weight: Font.Bold
-                                    elide: Text.ElideRight
+                                M3.Icon {
+                                    anchors.centerIn: parent
+                                    visible: menuCover.status !== Image.Ready
+                                    icon: "\u{f075a}"
+                                    size: 26
+                                    color: Theme.textOnSurfaceVariant
                                 }
 
-                                Text {
-                                    width: parent.width
-                                    text: root.player ? (root.player.trackArtist || "") : ""
-                                    color: Theme.muted
-                                    font.family: Theme.fontFamily
-                                    font.pixelSize: Theme.fontSize
-                                    font.weight: Theme.fontWeight
-                                    elide: Text.ElideRight
+                                M3.RoundedImage {
+                                    id: menuCover
+                                    anchors.fill: parent
+                                    radius: parent.radius
+                                    source: root.player ? root.player.trackArtUrl : ""
+                                    sourceSize: Qt.size(120, 120)
                                 }
                             }
 
-                            RowLayout {
-                                Layout.preferredWidth: 300
-                                Layout.fillHeight: true
-                                spacing: 8
+                            ColumnLayout {
+                                Layout.fillWidth: true
+                                spacing: 2
 
-                                Repeater {
-                                    model: [6, 7, 8, 9]
-                                    delegate: MediaButton {
-                                        required property int modelData
-                                        Layout.fillWidth: true
-                                        Layout.fillHeight: true
-                                        icon: root.entryIcon(modelData)
-                                        active: root.entryActive(modelData)
-                                        selected: root.selectedIndex === modelData
-                                        onHovered: root.selectedIndex = modelData
-                                        onClicked: root.triggerEntry(modelData)
-                                    }
+                                M3.Label {
+                                    Layout.fillWidth: true
+                                    text: root.player ? (root.player.trackTitle || "Media") : "No media"
+                                    font.pixelSize: Theme.typeTitle
+                                    font.weight: Font.Bold
+                                }
+
+                                M3.Label {
+                                    Layout.fillWidth: true
+                                    text: root.player ? (root.player.trackArtist || "") : "Nothing playing"
+                                    color: Theme.textOnSurfaceVariant
+                                    font.pixelSize: Theme.typeLabel
+                                }
+                            }
+
+                            Repeater {
+                                model: [6, 7, 8, 9]
+                                delegate: M3.IconButton {
+                                    required property int modelData
+                                    size: modelData === 7 ? 56 : 48
+                                    implicitWidth: modelData === 7 ? 72 : 48
+                                    variant: modelData === 7 ? "filled" : "tonal"
+                                    toggle: modelData === 7 || modelData === 9
+                                    checked: root.entryActive(modelData)
+                                    icon: root.entryIcon(modelData)
+                                    onClicked: root.triggerEntry(modelData)
+
+                                    M3.FocusRing { shown: root.selectedIndex === modelData }
+                                    HoverHandler { onHoveredChanged: if (hovered) root.selectedIndex = modelData }
                                 }
                             }
                         }
                     }
 
-                    RowLayout {
+                    Row {
+                        id: powerRow
                         width: parent.width
-                        height: 76
-                        spacing: 10
+                        spacing: 2
 
                         Repeater {
                             model: [10, 11, 12, 13]
-                            delegate: StatusCard {
+                            delegate: M3.Button {
                                 required property int modelData
-                                Layout.fillWidth: true
-                                Layout.fillHeight: true
+                                required property int index
+                                width: (powerRow.width - 3 * powerRow.spacing) / 4
+                                size: 52
+                                variant: "error"
+                                grouped: true
+                                groupStart: index === 0
+                                groupEnd: index === 3
                                 icon: root.entryIcon(modelData)
-                                title: root.entryTitle(modelData)
-                                value: ""
-                                danger: true
-                                selected: root.selectedIndex === modelData
-                                onHovered: root.selectedIndex = modelData
+                                text: root.entryTitle(modelData)
                                 onClicked: root.triggerEntry(modelData)
+
+                                M3.FocusRing { shown: root.selectedIndex === modelData }
+                                HoverHandler { onHoveredChanged: if (hovered) root.selectedIndex = modelData }
                             }
                         }
                     }

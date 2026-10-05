@@ -1,191 +1,116 @@
 import QtQuick
 import QtQuick.Layouts
-import QtQuick.Controls
 import Quickshell
 import Quickshell.Wayland
 import Quickshell.Hyprland
+import "m3" as M3
 
 Item {
-    component GlassPanel: Rectangle {
-        property color fillColor: Theme.card
+    id: volumePopup
 
-        radius: 18
-        color: "transparent"
-        border.color: Qt.tint(Theme.separator, Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.34))
-        border.width: 1
-        gradient: Gradient {
-            GradientStop { position: 0.0; color: Qt.tint(fillColor, Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.055)) }
-            GradientStop { position: 0.58; color: fillColor }
-            GradientStop { position: 1.0; color: Qt.tint(fillColor, Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, 0.20)) }
-        }
-
-        Rectangle {
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.top: parent.top
-            anchors.leftMargin: 18
-            anchors.rightMargin: 18
-            anchors.topMargin: 1
-            height: 1
-            radius: 1
-            color: Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.16)
-        }
-
-        Rectangle {
-            anchors.fill: parent
-            anchors.margins: 1
-            radius: parent.radius - 1
-            color: "transparent"
-            border.color: Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.10)
-            border.width: 1
-        }
+    function volumeIcon(volume, muted) {
+        if (muted) return "\u{f0581}";
+        if (volume <= 30) return "\u{f057f}";
+        if (volume <= 65) return "\u{f0580}";
+        return "\u{f057e}";
     }
 
-    component GlassSlider: Slider {
-        id: slider
-        property bool muted: false
-        property int targetValue: 0
-        signal valueSelected(int percent)
+    component Section: M3.ListSegment {
+        id: section
 
-        from: 0
-        to: 100
-        live: true
-        height: 18
+        property string icon: ""
+        property string title: ""
+        property string summary: ""
+        property bool expanded: false
+        default property alias body: bodyCol.data
+        signal toggled()
 
-        onTargetValueChanged: {
-            if (!slider.pressed) slider.value = targetValue;
-        }
+        interactive: false
+        rounded: expanded
+        clip: true
+        height: header.height + (expanded ? bodyCol.implicitHeight + 8 : 0)
 
-        onMoved: slider.valueSelected(Math.round(slider.value))
+        Behavior on height { M3.Spring { speed: "default" } }
 
-        background: Rectangle {
-            x: slider.leftPadding
-            y: slider.topPadding + slider.availableHeight / 2 - height / 2
-            implicitWidth: 200
-            implicitHeight: 4
-            width: slider.availableWidth
-            height: implicitHeight
-            radius: 3
-            color: Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.10)
+        Item {
+            id: header
+            width: parent.width
+            height: 48
 
             Rectangle {
-                width: parent.width * (slider.value / slider.to)
-                height: parent.height
-                radius: parent.radius
-                color: slider.muted ? Theme.muted : Theme.accent
+                anchors.fill: parent
+                topLeftRadius: section.topLeftRadius
+                topRightRadius: section.topRightRadius
+                bottomLeftRadius: section.expanded ? 0 : section.bottomLeftRadius
+                bottomRightRadius: section.expanded ? 0 : section.bottomRightRadius
+                color: Theme.textOnSurface
+                opacity: headerMouse.pressed ? Theme.statePressed : headerMouse.containsMouse ? Theme.stateHover : 0
+
+                Behavior on opacity { M3.Effect {} }
+            }
+
+            RowLayout {
+                anchors.fill: parent
+                anchors.leftMargin: 16
+                anchors.rightMargin: 16
+                spacing: 14
+
+                M3.Icon {
+                    icon: section.icon
+                    size: 20
+                    color: Theme.textOnSurfaceVariant
+                }
+
+                ColumnLayout {
+                    Layout.fillWidth: true
+                    spacing: 0
+
+                    M3.Label {
+                        Layout.fillWidth: true
+                        text: section.title
+                        font.pixelSize: Theme.typeBody + 1
+                        font.weight: Font.Bold
+                    }
+
+                    M3.Label {
+                        Layout.fillWidth: true
+                        visible: text !== ""
+                        text: section.summary
+                        color: Theme.textOnSurfaceVariant
+                        font.pixelSize: Theme.typeLabel
+                    }
+                }
+
+                M3.Icon {
+                    icon: "\u{f0140}"
+                    size: 20
+                    color: Theme.textOnSurfaceVariant
+                    rotation: section.expanded ? 180 : 0
+
+                    Behavior on rotation { M3.Spring {} }
+                }
+            }
+
+            MouseArea {
+                id: headerMouse
+                anchors.fill: parent
+                hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+                onClicked: section.toggled()
             }
         }
 
-        handle: Rectangle {
-            x: slider.leftPadding + slider.visualPosition * (slider.availableWidth - width)
-            y: slider.topPadding + slider.availableHeight / 2 - height / 2
-            width: 11
-            height: 11
-            radius: 6
-            color: Theme.text
-        }
-    }
-
-    component SectionButton: Rectangle {
-        id: sectionButton
-
-        property string icon: ""
-        property string title: ""
-        property bool expanded: false
-        signal clicked()
-
-        height: 32
-        radius: 9
-        color: sectionMouse.containsMouse || expanded
-            ? Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.055)
-            : "transparent"
-
-        RowLayout {
-            anchors.fill: parent
+        Column {
+            id: bodyCol
+            anchors.top: header.bottom
+            anchors.left: parent.left
+            anchors.right: parent.right
             anchors.leftMargin: 8
             anchors.rightMargin: 8
-            spacing: 8
+            spacing: 2
+            opacity: section.expanded ? 1 : 0
 
-            Text {
-                text: sectionButton.icon
-                color: Theme.text
-                font.family: Theme.fontFamily
-                font.pixelSize: Theme.fontSize + 2
-                Layout.alignment: Qt.AlignVCenter
-            }
-
-            Text {
-                Layout.fillWidth: true
-                text: sectionButton.title
-                color: Theme.text
-                font.family: Theme.fontFamily
-                font.pixelSize: Theme.fontSize
-                font.weight: Font.Bold
-                Layout.alignment: Qt.AlignVCenter
-            }
-
-            Text {
-                text: sectionButton.expanded ? "\uf077" : "\uf054"
-                color: Theme.muted
-                font.family: Theme.fontFamily
-                font.pixelSize: Theme.fontSize - 1
-                Layout.alignment: Qt.AlignVCenter
-            }
-        }
-
-        MouseArea {
-            id: sectionMouse
-            anchors.fill: parent
-            hoverEnabled: true
-            cursorShape: Qt.PointingHandCursor
-            onClicked: sectionButton.clicked()
-        }
-    }
-
-    component ActionButton: Rectangle {
-        id: actionButton
-
-        property string icon: ""
-        property string title: ""
-        property bool active: false
-        signal clicked()
-
-        radius: 12
-        color: actionMouse.containsMouse || active
-            ? Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.12)
-            : Qt.rgba(Theme.separator.r, Theme.separator.g, Theme.separator.b, 0.35)
-        border.color: active ? Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.36)
-            : Qt.rgba(Theme.separator.r, Theme.separator.g, Theme.separator.b, 0.36)
-        border.width: 1
-
-        Row {
-            anchors.centerIn: parent
-            spacing: 10
-
-            Text {
-                text: actionButton.icon
-                color: active ? Theme.accent : Theme.text
-                font.family: Theme.fontFamily
-                font.pixelSize: Theme.fontSize + 5
-                anchors.verticalCenter: parent.verticalCenter
-            }
-
-            Text {
-                text: actionButton.title
-                color: Theme.text
-                font.family: Theme.fontFamily
-                font.pixelSize: Theme.fontSize + 1
-                font.weight: Font.Bold
-                anchors.verticalCenter: parent.verticalCenter
-            }
-        }
-
-        MouseArea {
-            id: actionMouse
-            anchors.fill: parent
-            hoverEnabled: true
-            cursorShape: Qt.PointingHandCursor
-            onClicked: actionButton.clicked()
+            Behavior on opacity { M3.Effect {} }
         }
     }
 
@@ -263,24 +188,17 @@ Item {
                     }
                 }
 
-                Item {
-                    id: popupClip
+                M3.Surface {
+                    id: popup
                     anchors.top: BarState.isTop ? parent.top : undefined
                     anchors.bottom: BarState.isTop ? undefined : parent.bottom
+                    anchors.topMargin: Theme.popupGap
                     anchors.right: parent.right
                     anchors.rightMargin: 86
-                    width: 280
-                    height: contentCol.implicitHeight + 20
-                    clip: true
-
-                    GlassPanel {
-                        anchors.fill: parent
-                        anchors.topMargin: 0
-                        anchors.bottomMargin: BarState.isTop ? 0 : -radius
-                        height: parent.height + radius
-                        radius: BarState.isTop ? 18 : 0
-                        fillColor: Qt.rgba(Theme.background.r, Theme.background.g, Theme.background.b, Theme.popupOpacity)
-                    }
+                    width: 288
+                    height: contentCol.implicitHeight + 24
+                    flushBottom: !BarState.isTop
+                    growFrom: BarState.isTop ? "top" : "bottom"
 
                     MouseArea { anchors.fill: parent }
 
@@ -289,167 +207,191 @@ Item {
                         anchors.top: parent.top
                         anchors.left: parent.left
                         anchors.right: parent.right
-                        anchors.margins: 10
-                        spacing: 5
+                        anchors.margins: 12
+                        spacing: 10
 
                         RowLayout {
                             width: parent.width
-                            height: 24
-                            spacing: 8
+                            spacing: 14
 
-                            Text {
-                                text: VolumeState.muted ? "\uf026" : VolumeState.volume <= 30 ? "\uf027" : "\uf028"
-                                color: VolumeState.muted ? Theme.muted : Theme.text
-                                font.family: Theme.fontFamily
-                                font.pixelSize: Theme.fontSize + 5
-                                Layout.alignment: Qt.AlignVCenter
-
-                                MouseArea {
-                                    anchors.fill: parent
-                                    cursorShape: Qt.PointingHandCursor
-                                    onClicked: VolumeState.toggleMute()
-                                }
+                            M3.IconButton {
+                                size: 40
+                                variant: "filled"
+                                toggle: true
+                                checked: !VolumeState.muted
+                                icon: volumePopup.volumeIcon(VolumeState.volume, VolumeState.muted)
+                                onClicked: VolumeState.toggleMute()
                             }
 
-                            Text {
+                            ColumnLayout {
                                 Layout.fillWidth: true
-                                text: "Audio"
-                                color: Theme.text
-                                font.family: Theme.fontFamily
-                                font.pixelSize: Theme.fontSize + 1
-                                font.weight: Font.Bold
-                                Layout.alignment: Qt.AlignVCenter
+                                spacing: 0
+
+                                M3.Label {
+                                    Layout.fillWidth: true
+                                    text: "Volume"
+                                    font.pixelSize: Theme.typeTitle
+                                    font.weight: Font.Bold
+                                }
+
+                                M3.Label {
+                                    Layout.fillWidth: true
+                                    text: VolumeState.muted ? "Muted" : (VolumeState.sinks.find(s => s.active)?.label ?? "Output")
+                                    color: Theme.textOnSurfaceVariant
+                                    font.pixelSize: Theme.typeLabel
+                                }
                             }
 
-                            Text {
+                            M3.Label {
                                 text: VolumeState.volume + "%"
-                                color: Theme.muted
-                                font.family: Theme.fontFamily
-                                font.pixelSize: Theme.fontSize - 1
-                                font.weight: Theme.fontWeight
-                                Layout.alignment: Qt.AlignVCenter
+                                color: VolumeState.muted ? Theme.textOnSurfaceVariant : Theme.primary
+                                font.pixelSize: Theme.typeTitle
+                                font.weight: Font.Bold
                             }
                         }
 
-                        GlassSlider {
+                        M3.Slider {
                             width: parent.width
-                            targetValue: VolumeState.volume
+                            value: VolumeState.volume
                             muted: VolumeState.muted
-                            onValueSelected: percent => VolumeState.setVolume(percent)
-                        }
-
-                        Rectangle { width: parent.width; height: 1; color: Theme.separator }
-
-                        SectionButton {
-                            width: parent.width
-                            icon: "\uf025"
-                            title: "Output Device"
-                            expanded: root.showDevices
-                            onClicked: {
-                                root.showDevices = !root.showDevices;
-                                if (root.showDevices) VolumeState.refreshSinks();
-                            }
+                            onMoved: value => VolumeState.setVolume(value)
                         }
 
                         Column {
-                            visible: root.showDevices
                             width: parent.width
-                            spacing: 4
+                            spacing: 2
 
-                            Repeater {
-                                model: VolumeState.sinks
-                                delegate: Rectangle {
-                                    required property var modelData
-                                    width: parent.width
-                                    height: 30
-                                    radius: 8
-                                    color: modelData.active ? Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.13)
-                                        : sinkMouse.containsMouse ? Qt.rgba(Theme.text.r, Theme.text.g, Theme.text.b, 0.045) : "transparent"
+                            Section {
+                                width: parent.width
+                                first: true
+                                icon: "\u{f04c3}"
+                                title: "Output device"
+                                summary: VolumeState.sinks.find(s => s.active)?.label ?? ""
+                                expanded: root.showDevices
+                                onToggled: {
+                                    root.showDevices = !root.showDevices;
+                                    if (root.showDevices) VolumeState.refreshSinks();
+                                }
 
-                                    RowLayout {
-                                        anchors.fill: parent
-                                        anchors.leftMargin: 8
-                                        anchors.rightMargin: 8
-                                        spacing: 7
+                                Repeater {
+                                    model: VolumeState.sinks
+                                    delegate: Rectangle {
+                                        id: sinkRow
+                                        required property var modelData
+                                        width: parent.width
+                                        height: 44
+                                        radius: height / 2
+                                        color: modelData.active ? Theme.secondaryContainer : "transparent"
 
-                                        Text { text: modelData.active ? "\uf192" : "\uf10c"; color: modelData.active ? Theme.accent : Theme.muted; font.family: Theme.fontFamily; font.pixelSize: Theme.fontSize; Layout.alignment: Qt.AlignVCenter }
-                                        Text { text: "\uf025"; color: Theme.text; font.family: Theme.fontFamily; font.pixelSize: Theme.fontSize + 1; Layout.alignment: Qt.AlignVCenter }
-                                        Text { Layout.fillWidth: true; text: modelData.label; color: Theme.text; font.family: Theme.fontFamily; font.pixelSize: Theme.fontSize - 1; font.weight: Theme.fontWeight; elide: Text.ElideRight; Layout.alignment: Qt.AlignVCenter }
-                                        Text { visible: modelData.active; text: "\uf00c"; color: Theme.text; font.family: Theme.fontFamily; font.pixelSize: Theme.fontSize; Layout.alignment: Qt.AlignVCenter }
+                                        Behavior on color { M3.ColorEffect {} }
+
+                                        M3.StateLayer {
+                                            tint: sinkRow.modelData.active ? Theme.textOnSecondaryContainer : Theme.textOnSurface
+                                            hovered: sinkMouse.containsMouse
+                                            pressed: sinkMouse.pressed
+                                        }
+
+                                        RowLayout {
+                                            anchors.fill: parent
+                                            anchors.leftMargin: 14
+                                            anchors.rightMargin: 14
+                                            spacing: 12
+
+                                            M3.Icon {
+                                                icon: sinkRow.modelData.label.toLowerCase().includes("head") ? "\u{f02cb}" : "\u{f04c3}"
+                                                size: 18
+                                                color: sinkRow.modelData.active ? Theme.textOnSecondaryContainer : Theme.textOnSurfaceVariant
+                                            }
+
+                                            M3.Label {
+                                                Layout.fillWidth: true
+                                                text: sinkRow.modelData.label
+                                                color: sinkRow.modelData.active ? Theme.textOnSecondaryContainer : Theme.textOnSurface
+                                                font.weight: sinkRow.modelData.active ? Font.Bold : Theme.fontWeight
+                                            }
+
+                                            M3.Icon {
+                                                visible: sinkRow.modelData.active
+                                                icon: "\u{f012c}"
+                                                size: 18
+                                                color: Theme.textOnSecondaryContainer
+                                            }
+                                        }
+
+                                        MouseArea {
+                                            id: sinkMouse
+                                            anchors.fill: parent
+                                            hoverEnabled: true
+                                            cursorShape: Qt.PointingHandCursor
+                                            onClicked: VolumeState.setDefaultSink(sinkRow.modelData.sinkId)
+                                        }
                                     }
+                                }
+                            }
 
-                                    MouseArea {
-                                        id: sinkMouse
-                                        anchors.fill: parent
-                                        hoverEnabled: true
-                                        cursorShape: Qt.PointingHandCursor
-                                        onClicked: VolumeState.setDefaultSink(modelData.sinkId)
+                            Section {
+                                width: parent.width
+                                last: true
+                                icon: "\u{f1542}"
+                                title: "App volumes"
+                                summary: VolumeState.appStreams.length + (VolumeState.appStreams.length === 1 ? " stream" : " streams")
+                                expanded: root.showApps
+                                onToggled: {
+                                    root.showApps = !root.showApps;
+                                    if (root.showApps) VolumeState.refreshAppStreams();
+                                }
+
+                                M3.Label {
+                                    visible: VolumeState.appStreams.length === 0
+                                    width: parent.width
+                                    height: 40
+                                    horizontalAlignment: Text.AlignHCenter
+                                    verticalAlignment: Text.AlignVCenter
+                                    text: "No app streams"
+                                    color: Theme.textOnSurfaceVariant
+                                }
+
+                                Repeater {
+                                    model: VolumeState.appStreams
+                                    delegate: RowLayout {
+                                        id: streamRow
+                                        required property var modelData
+                                        width: parent.width
+                                        height: 44
+                                        spacing: 10
+
+                                        M3.Icon {
+                                            Layout.leftMargin: 8
+                                            icon: "\u{f08c6}"
+                                            size: 18
+                                            color: Theme.textOnSurfaceVariant
+                                        }
+
+                                        M3.Label {
+                                            Layout.preferredWidth: 72
+                                            text: streamRow.modelData.label
+                                        }
+
+                                        M3.Slider {
+                                            Layout.fillWidth: true
+                                            trackHeight: 10
+                                            handleHeight: 24
+                                            value: streamRow.modelData.volume
+                                            muted: streamRow.modelData.muted
+                                            onMoved: value => VolumeState.setAppVolume(streamRow.modelData.streamId, value)
+                                        }
+
+                                        M3.IconButton {
+                                            size: 32
+                                            toggle: true
+                                            checked: streamRow.modelData.muted
+                                            icon: streamRow.modelData.muted ? "\u{f0581}" : "\u{f057e}"
+                                            onClicked: VolumeState.toggleAppMute(streamRow.modelData.streamId)
+                                        }
                                     }
                                 }
                             }
                         }
-
-                        Rectangle { width: parent.width; height: 1; color: Theme.separator }
-
-                        SectionButton {
-                            width: parent.width
-                            icon: "\uf1de"
-                            title: "App Volumes"
-                            expanded: root.showApps
-                            onClicked: {
-                                root.showApps = !root.showApps;
-                                if (root.showApps) VolumeState.refreshAppStreams();
-                            }
-                        }
-
-                        Column {
-                            visible: root.showApps
-                            width: parent.width
-                            spacing: 5
-
-                            Text {
-                                visible: VolumeState.appStreams.length === 0
-                                anchors.horizontalCenter: parent.horizontalCenter
-                                text: "No app streams"
-                                color: Theme.muted
-                                font.family: Theme.fontFamily
-                                font.pixelSize: Theme.fontSize
-                                font.weight: Theme.fontWeight
-                            }
-
-                            Repeater {
-                                model: VolumeState.appStreams
-                                delegate: RowLayout {
-                                    required property var modelData
-                                    width: parent.width
-                                    height: 28
-                                    spacing: 7
-
-                                    Text { text: "\uf1b2"; color: Theme.text; font.family: Theme.fontFamily; font.pixelSize: Theme.fontSize + 2; Layout.preferredWidth: 18; Layout.alignment: Qt.AlignVCenter }
-                                    Text { text: modelData.label; color: Theme.text; font.family: Theme.fontFamily; font.pixelSize: Theme.fontSize - 1; font.weight: Theme.fontWeight; elide: Text.ElideRight; Layout.preferredWidth: 70; Layout.alignment: Qt.AlignVCenter }
-
-                                    GlassSlider {
-                                        Layout.fillWidth: true
-                                        Layout.alignment: Qt.AlignVCenter
-                                        targetValue: modelData.volume
-                                        muted: modelData.muted
-                                        onValueSelected: percent => VolumeState.setAppVolume(modelData.streamId, percent)
-                                    }
-
-                                    Text { text: modelData.volume + "%"; color: Theme.muted; font.family: Theme.fontFamily; font.pixelSize: Theme.fontSize - 2; Layout.preferredWidth: 30; horizontalAlignment: Text.AlignRight; Layout.alignment: Qt.AlignVCenter }
-                                    Text {
-                                        text: modelData.muted ? "\uf026" : "\uf028"
-                                        color: modelData.muted ? Theme.muted : Theme.text
-                                        font.family: Theme.fontFamily
-                                        font.pixelSize: Theme.fontSize
-                                        Layout.preferredWidth: 16
-                                        Layout.alignment: Qt.AlignVCenter
-                                        MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: VolumeState.toggleAppMute(modelData.streamId) }
-                                    }
-                                }
-                            }
-                        }
-
                     }
                 }
             }

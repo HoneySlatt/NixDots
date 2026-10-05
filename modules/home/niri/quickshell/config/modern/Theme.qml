@@ -105,6 +105,125 @@ QtObject {
     readonly property color subtle: Qt.tint(separator, Qt.rgba(background.r, background.g, background.b, 0.35))
     readonly property color glow: Qt.rgba(accent.r, accent.g, accent.b, 0.35)
 
+    // ── Material 3 color roles, derived from the active theme ──
+    readonly property color _black: "#000000"
+    readonly property color _white: "#ffffff"
+
+    function _clamp(v) {
+        return Math.max(0, Math.min(1, v));
+    }
+
+    function mix(a, b, t) {
+        return Qt.rgba(_clamp(a.r + (b.r - a.r) * t), _clamp(a.g + (b.g - a.g) * t), _clamp(a.b + (b.b - a.b) * t), 1);
+    }
+
+    function alpha(c, a) {
+        return Qt.rgba(c.r, c.g, c.b, a);
+    }
+
+    function luminance(c) {
+        const lin = v => v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+        return 0.2126 * lin(c.r) + 0.7152 * lin(c.g) + 0.0722 * lin(c.b);
+    }
+
+    function contrast(a, b) {
+        const la = luminance(a);
+        const lb = luminance(b);
+        return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05);
+    }
+
+    // Readable content color on top of any container
+    function contentOn(c) {
+        const dark = mix(c, _black, 0.74);
+        const light = mix(c, _white, 0.94);
+        return contrast(dark, c) >= contrast(light, c) ? dark : light;
+    }
+
+    function _container(c) {
+        return mix(background, c, isDark ? 0.32 : 0.22);
+    }
+
+    function _onContainer(c) {
+        return isDark ? mix(c, _white, 0.58) : mix(c, _black, 0.6);
+    }
+
+    function _desaturate(c) {
+        return c.hslHue < 0 ? c : Qt.hsla(c.hslHue, c.hslSaturation * 0.4, c.hslLightness, 1);
+    }
+
+    readonly property bool isDark: luminance(background) < 0.4
+
+    readonly property color primary: contrast(accent, background) >= 1.8 ? accent : highlight
+    readonly property color textOnPrimary: contentOn(primary)
+    readonly property color primaryContainer: _container(primary)
+    readonly property color textOnPrimaryContainer: _onContainer(primary)
+
+    readonly property color secondary: _desaturate(primary)
+    readonly property color textOnSecondary: contentOn(secondary)
+    readonly property color secondaryContainer: _container(secondary)
+    readonly property color textOnSecondaryContainer: _onContainer(secondary)
+
+    readonly property color tertiary: contrast(process, background) >= 1.8 ? process : misc
+    readonly property color textOnTertiary: contentOn(tertiary)
+    readonly property color tertiaryContainer: _container(tertiary)
+    readonly property color textOnTertiaryContainer: _onContainer(tertiary)
+
+    readonly property color error: warning
+    readonly property color textOnError: contentOn(error)
+    readonly property color errorContainer: _container(error)
+    readonly property color textOnErrorContainer: _onContainer(error)
+
+    readonly property color surface: background
+    readonly property color surfaceContainerLowest: isDark ? mix(background, _black, 0.3) : mix(background, _white, 0.6)
+    // Popups share the bar color; raised elements step towards the theme separator
+    readonly property color surfaceContainerLow: background
+    readonly property color surfaceContainer: background
+    readonly property color surfaceContainerHigh: mix(background, separator, 0.65)
+    readonly property color surfaceContainerHighest: mix(background, separator, 1.3)
+    readonly property color textOnSurface: text
+    readonly property color textOnSurfaceVariant: mix(text, background, 0.3)
+    readonly property color outline: mix(text, background, 0.52)
+    readonly property color outlineVariant: mix(text, background, 0.8)
+    readonly property color inverseSurface: text
+    readonly property color inverseOnSurface: background
+    readonly property color scrim: Qt.rgba(0, 0, 0, 0.4)
+    readonly property color shadow: Qt.rgba(0, 0, 0, isDark ? 0.45 : 0.22)
+
+    // State layer opacities
+    readonly property real stateHover: 0.08
+    readonly property real statePressed: 0.12
+
+    // ── Material 3 shape scale ──
+    readonly property int shapeXS: 4
+    readonly property int shapeS: 8
+    readonly property int shapeM: 12
+    readonly property int shapeL: 16
+    readonly property int shapeLI: 20
+    readonly property int shapeXL: 28
+    readonly property int shapeXLI: 32
+    readonly property int shapeXXL: 48
+    readonly property int popupGap: margin
+
+    // ── Material 3 type scale ──
+    readonly property int typeDisplay: 44
+    readonly property int typeHeadline: 26
+    readonly property int typeTitleL: 20
+    readonly property int typeTitle: 15
+    readonly property int typeBody: 13
+    readonly property int typeLabel: 12
+    readonly property int typeLabelS: 11
+
+    // ── Material 3 Expressive motion (spring approximations) ──
+    readonly property list<real> springFast: [0.42, 1.67, 0.21, 0.90, 1, 1]
+    readonly property list<real> springDefault: [0.38, 1.21, 0.22, 1.00, 1, 1]
+    readonly property list<real> springSlow: [0.39, 1.29, 0.35, 0.98, 1, 1]
+    readonly property list<real> effects: [0.34, 0.80, 0.34, 1.00, 1, 1]
+    readonly property list<real> emphasizedDecel: [0.05, 0.7, 0.1, 1, 1, 1]
+    readonly property int springFastDuration: 350
+    readonly property int springDefaultDuration: 500
+    readonly property int springSlowDuration: 650
+    readonly property int effectsDuration: 200
+
     readonly property var themeKeys: ["carbonfox", "everforest", "rosepine", "pastelglow", "gruvbox", "gruvbox-light"]
 
     // ── Wallpaper directories ──
