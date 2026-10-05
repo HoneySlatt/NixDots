@@ -3,7 +3,7 @@
 {
   imports = [
     ./common.nix
-    ./config/ghostty.nix
+    ./config/rio.nix
     ./zed
   ];
 
@@ -46,7 +46,7 @@
     ];
 
     binds = {
-      "Ctrl+Shift+T".action.spawn = [ "ghostty" "+new-window" ];
+      "Ctrl+Shift+T".action.spawn = "rio";
       "Mod+Q" = {
         action.close-window = { };
         repeat = false;
