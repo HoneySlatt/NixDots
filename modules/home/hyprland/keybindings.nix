@@ -115,9 +115,9 @@ in
   wayland.windowManager.hyprland.settings = {
     bind = [
       # App launchers
-      (bind "CTRL + SHIFT + T" (exec "ghostty +new-window"))
+      (bind "CTRL + SHIFT + T" (exec "rio"))
       (bind "SUPER + Q" (mkLuaInline "hl.dsp.window.close()"))
-      (bind "SUPER + E" (exec "ghostty +new-window -e yazi"))
+      (bind "SUPER + E" (exec "rio -e yazi"))
       (bind "SUPER + SHIFT + E" (exec "nautilus"))
       (bind "SUPER + V" (mkLuaInline "hl.dsp.window.float({ action = 'toggle' })"))
       (bind "SUPER + SPACE" (exec "toggle-launcher"))
@@ -154,9 +154,9 @@ in
       (bind "SUPER + SHIFT + C" (exec "chatgpt"))
       (bind "SUPER + CTRL + C" (exec "opencode-desktop"))
       (bind "SUPER + O" (exec "obsidian"))
-      (bind "SUPER + N" (exec "ghostty +new-window -e nvim"))
+      (bind "SUPER + N" (exec "rio -e nvim"))
       (bind "SUPER + SHIFT + N" (exec "zeditor"))
-      (bind "CTRL + ALT + DELETE" (exec "ghostty +new-window -e btop"))
+      (bind "CTRL + ALT + DELETE" (exec "rio -e btop"))
       (bind "SUPER + Escape" (exec "lock-screen"))
       (bind "SUPER + SHIFT + Escape" (mkLuaInline "hl.dsp.exit()"))
 

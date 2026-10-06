@@ -3,7 +3,7 @@
 {
   imports = [
     ./zsh.nix
-    ./ghostty.nix
+    ./rio.nix
     ./mpv.nix
     ./yazi.nix
     ./applications.nix

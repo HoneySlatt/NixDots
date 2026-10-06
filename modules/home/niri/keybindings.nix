@@ -3,12 +3,12 @@
 {
   programs.niri.settings.binds = {
     # ── App launchers ────────────────────────────────────────────────────
-    "Ctrl+Shift+T".action.spawn = [ "ghostty" "+new-window" ];
+    "Ctrl+Shift+T".action.spawn = "rio";
     "Mod+Q" = {
       action.close-window = { };
       repeat = false;
     };
-    "Mod+E".action.spawn = [ "ghostty" "+new-window" "-e" "yazi" ];
+    "Mod+E".action.spawn = [ "rio" "-e" "yazi" ];
     "Mod+Shift+E".action.spawn = "nautilus";
     "Mod+V".action.toggle-window-floating = { };
     "Mod+Space".action.spawn = "toggle-launcher";
@@ -40,9 +40,9 @@
     "Mod+Shift+C".action.spawn = "chatgpt";
     "Mod+Ctrl+C".action.spawn = [ "opencode-desktop" ];
     "Mod+O".action.spawn = "obsidian";
-    "Mod+N".action.spawn = [ "ghostty" "+new-window" "-e" "nvim" ];
+    "Mod+N".action.spawn = [ "rio" "-e" "nvim" ];
     "Mod+Shift+N".action.spawn = "zeditor";
-    "Ctrl+Alt+Delete".action.spawn = [ "ghostty" "+new-window" "-e" "btop" ];
+    "Ctrl+Alt+Delete".action.spawn = [ "rio" "-e" "btop" ];
 
     # ── Focus / Move ─────────────────────────────────────────────────────
     "Mod+H".action.focus-column-left = { };
