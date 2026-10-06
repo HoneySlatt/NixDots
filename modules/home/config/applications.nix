@@ -99,7 +99,7 @@ xdg.desktopEntries = {
     win11 = {
       name       = "Windows 11";
       exec       = "virsh -c qemu:///system start win11";
-      icon       = "distributor-logo-windows";
+      icon       = "/home/honey/Pictures/Icons/win11.png";
       comment    = "Windows 11 VM with GPU passthrough";
       categories = [ "Game" "System" ];
     };

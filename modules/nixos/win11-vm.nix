@@ -23,9 +23,59 @@ let
       </source>
     </hostdev>'';
 
+  # Local account without Microsoft login, minimal privacy settings.
+  autounattend = pkgs.writeText "autounattend.xml" ''
+    <?xml version="1.0" encoding="utf-8"?>
+    <unattend xmlns="urn:schemas-microsoft-com:unattend" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State">
+      <settings pass="specialize">
+        <component name="Microsoft-Windows-Deployment" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+          <RunSynchronous>
+            <RunSynchronousCommand wcm:action="add">
+              <Order>1</Order>
+              <Path>reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\OOBE" /v BypassNRO /t REG_DWORD /d 1 /f</Path>
+            </RunSynchronousCommand>
+          </RunSynchronous>
+        </component>
+      </settings>
+      <settings pass="oobeSystem">
+        <component name="Microsoft-Windows-Shell-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+          <OOBE>
+            <HideEULAPage>true</HideEULAPage>
+            <HideOEMRegistrationScreen>true</HideOEMRegistrationScreen>
+            <HideOnlineAccountScreens>true</HideOnlineAccountScreens>
+            <HideWirelessSetupInOOBE>true</HideWirelessSetupInOOBE>
+            <ProtectYourPC>3</ProtectYourPC>
+          </OOBE>
+          <UserAccounts>
+            <LocalAccounts>
+              <LocalAccount wcm:action="add">
+                <Name>Honey</Name>
+                <Group>Administrators</Group>
+                <Password>
+                  <Value></Value>
+                  <PlainText>true</PlainText>
+                </Password>
+              </LocalAccount>
+            </LocalAccounts>
+          </UserAccounts>
+        </component>
+      </settings>
+    </unattend>
+  '';
+
+  # Setup picks up autounattend.xml and $WinPEDriver$ from the root of any attached media.
+  unattendIso = pkgs.runCommand "${name}-unattend.iso" { nativeBuildInputs = [ pkgs.xorriso ]; } ''
+    mkdir -p root/'$WinPEDriver$'
+    cp ${autounattend} root/autounattend.xml
+    cp -r ${pkgs.virtio-win}/viostor/w11/amd64 root/'$WinPEDriver$'/viostor
+    cp -r ${pkgs.virtio-win}/NetKVM/w11/amd64 root/'$WinPEDriver$'/NetKVM
+    xorriso -as mkisofs -J -joliet-long -r -V UNATTEND -o $out root
+  '';
+
   domainXml = pkgs.writeText "${name}.xml" ''
     <domain type='kvm'>
       <name>${name}</name>
+      <uuid>c9512b88-5a0b-413e-ad2c-06b1f5b44b4f</uuid>
       <memory unit='GiB'>16</memory>
       <currentMemory unit='GiB'>16</currentMemory>
       <vcpu placement='static'>14</vcpu>
@@ -107,8 +157,15 @@ let
           <target dev='sdb' bus='sata'/>
           <readonly/>
         </disk>
+        <disk type='file' device='cdrom'>
+          <driver name='qemu' type='raw'/>
+          <source file='${unattendIso}'/>
+          <target dev='sdc' bus='sata'/>
+          <readonly/>
+        </disk>
         <controller type='usb' model='qemu-xhci' ports='15'/>
         <interface type='network'>
+          <mac address='52:54:00:2a:b8:99'/>
           <source network='default'/>
           <model type='virtio'/>
         </interface>
@@ -126,7 +183,12 @@ let
           </source>
         </hostdev>
         ${usbPassthrough "0x046d" "0xc547"}
-        ${usbPassthrough "0x1b1c" "0x2b14"}
+        <!-- CPU USB controller (keyboard): native xHCI, full polling rate -->
+        <hostdev mode='subsystem' type='pci' managed='yes'>
+          <source>
+            <address domain='0x0000' bus='0x0f' slot='0x00' function='0x3'/>
+          </source>
+        </hostdev>
         ${usbPassthrough "0x1235" "0x8210"}
         <video>
           <model type='none'/>
@@ -134,6 +196,15 @@ let
         <memballoon model='none'/>
       </devices>
     </domain>
+  '';
+
+  bootKey = pkgs.writeShellScript "${name}-boot-key" ''
+    export PATH=${lib.makeBinPath [ config.virtualisation.libvirtd.package pkgs.coreutils ]}
+    sleep 2
+    for _ in $(seq 15); do
+      virsh -c qemu:///system send-key ${name} KEY_ENTER
+      sleep 1
+    done
   '';
 
   hook = pkgs.writeShellScript "${name}-hook" ''
@@ -150,7 +221,7 @@ let
 
     case "$2/$3" in
       prepare/begin)
-        systemctl stop greetd.service ollama.service
+        systemctl stop greetd.service ollama.service lactd.service
         systemctl --user -M honey@ stop graphical-session.target
         for _ in $(seq 20); do
           fuser -s "$gpu-card" "$gpu-render" /dev/kfd || break
@@ -161,11 +232,18 @@ let
         for vt in /sys/class/vtconsole/vtcon*/bind; do echo 0 > "$vt"; done
         pinHost 0,8
         ;;
+      started/begin)
+        # Firmware ignores the passed-through keyboard: press Enter on the emulated PS/2
+        # keyboard for the "boot from CD" prompt while Windows is not installed yet.
+        # Run detached since hooks must not call back into libvirt.
+        if [ "$(du -k ${disk} | cut -f1)" -lt 1048576 ]; then
+          systemd-run --no-block --collect --unit=${name}-boot-key ${bootKey}
+        fi
+        ;;
       release/end)
         pinHost 0-15
         for vt in /sys/class/vtconsole/vtcon*/bind; do echo 1 > "$vt"; done
-        systemctl restart lactd.service
-        systemctl start ollama.service greetd.service
+        systemctl start lactd.service ollama.service greetd.service
         ;;
     esac
     exit 0
@@ -173,10 +251,20 @@ let
 in
 {
   boot.kernelParams = [ "iommu=pt" ];
+  boot.kernelModules = [ "kvm-amd" ];
 
   users.users.honey.extraGroups = [ "libvirtd" ];
 
-  virtualisation.libvirtd.hooks.qemu.${name} = hook;
+  virtualisation.libvirtd = {
+    hooks.qemu.${name} = hook;
+    # Never save/resume the VM across host reboots: a resumed VM grabs the GPU at boot.
+    onBoot = "ignore";
+    onShutdown = "shutdown";
+    shutdownTimeout = 60;
+  };
+
+  # Hooks are only symlinked by this unit, refresh them when the hook changes.
+  systemd.services.libvirtd-config.restartTriggers = [ hook ];
 
   # Group-writable so the Windows ISO can be dropped in without sudo.
   systemd.tmpfiles.rules = [ "d ${images} 0775 root libvirtd -" ];
