@@ -168,6 +168,8 @@ let
           <mac address='52:54:00:2a:b8:99'/>
           <source network='default'/>
           <model type='virtio'/>
+          <!-- Traffic goes through the Nym VPN tunnel (MTU 1340), 1280 fits any tunnel -->
+          <mtu size='1280'/>
         </interface>
         <tpm model='tpm-crb'>
           <backend type='emulator' version='2.0'/>
@@ -183,13 +185,12 @@ let
           </source>
         </hostdev>
         ${usbPassthrough "0x046d" "0xc547"}
-        <!-- CPU USB controller (keyboard): native xHCI, full polling rate -->
+        <!-- CPU USB controller (keyboard, Scarlett): native xHCI, no emulated USB -->
         <hostdev mode='subsystem' type='pci' managed='yes'>
           <source>
             <address domain='0x0000' bus='0x0f' slot='0x00' function='0x3'/>
           </source>
         </hostdev>
-        ${usbPassthrough "0x1235" "0x8210"}
         <video>
           <model type='none'/>
         </video>
@@ -254,6 +255,9 @@ in
   boot.kernelModules = [ "kvm-amd" ];
 
   users.users.honey.extraGroups = [ "libvirtd" ];
+
+  # Let the VM reach host services (Materialious, Invidious, Jellyfin...).
+  networking.firewall.trustedInterfaces = [ "virbr0" ];
 
   virtualisation.libvirtd = {
     hooks.qemu.${name} = hook;
