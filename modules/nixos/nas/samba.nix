@@ -16,7 +16,7 @@
       };
 
       "NAS" = {
-        "path"        = "/mnt/ssd2";
+        "path"        = "/NAS";
         "browseable"  = "yes";
         "read only"   = "no";
         "writable"    = "yes";

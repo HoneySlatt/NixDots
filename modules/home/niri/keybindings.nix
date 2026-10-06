@@ -38,8 +38,7 @@
     "Mod+Ctrl+G".action.spawn = "steam";
     "Mod+C".action.spawn = "claude-desktop";
     "Mod+Shift+C".action.spawn = "chatgpt";
-    "Mod+Ctrl+C".action.spawn = [ "ghostty" "+new-window" "-e" "claude" ];
-    "Mod+Ctrl+Shift+C".action.spawn = [ "ghostty" "+new-window" "-e" "codex" ];
+    "Mod+Ctrl+C".action.spawn = [ "opencode-desktop" ];
     "Mod+O".action.spawn = "obsidian";
     "Mod+N".action.spawn = [ "ghostty" "+new-window" "-e" "nvim" ];
     "Mod+Shift+N".action.spawn = "zeditor";
