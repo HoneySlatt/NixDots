@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Switch theme — btop, gdu, fastfetch, ghostty, kitty, yazi, nvim, gtk, qt, hyprland, wallpaper,
-# discord, element, steam, heroic, obsidian, obs, firefox, userstyles, jellyfin, kopuz, cider,
+# discord, steam, heroic, obsidian, obs, firefox, userstyles, jellyfin, kopuz, cider,
 # blender, kdeglobals, hyprlock, tuta, opencode
 
 MODE="full"
@@ -93,18 +93,16 @@ for f in "$SCRIPT_DIR/apps/"*.sh; do
   source "$f"
 done
 
-# Shell-only mode: only update discord and element.
+# Shell-only mode: only update discord.
 if [ "$MODE" = "shell" ]; then
   switch_discord
-  switch_element
-  echo "Updated discord + element shell profile"
+  echo "Updated discord shell profile"
   exit 0
 fi
 
 # Slow application updates run in a restartable user service.
 if [ "$MODE" = "background" ]; then
   switch_discord
-  switch_element
   switch_steam
   switch_heroic
   switch_obsidian

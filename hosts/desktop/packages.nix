@@ -57,7 +57,6 @@
     pkgsRocm.blender
     gimp
     kopuz
-    dorion
     seanime
     cider-2
     obsidian
@@ -127,6 +126,11 @@
     # Custom pkgs
     steam-metadata-editor
     nuvio
+
+    # Discord
+    (discord.override {
+      withVencord = true;
+    })
   ];
 
   programs.steam = {

@@ -191,7 +191,14 @@ in
       name = "qs-userstyles-server";
       runtimeInputs = [ pkgs.python3 ];
       text = ''
-        exec python3 -m http.server 48531 --bind 127.0.0.1 --directory "$HOME/.config/quickshell/themes"
+        # Skip per-request logs (Cinny polls every 2s); errors are still logged
+        exec python3 -c '
+        import functools, http.server, sys
+        class Handler(http.server.SimpleHTTPRequestHandler):
+            def log_request(self, *args):
+                pass
+        http.server.ThreadingHTTPServer(("127.0.0.1", 48531), functools.partial(Handler, directory=sys.argv[1])).serve_forever()
+        ' "$HOME/.config/quickshell/themes"
       '';
     })
 
