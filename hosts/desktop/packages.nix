@@ -49,7 +49,7 @@
     signal-desktop
     element-desktop
     tutanota-desktop
-    opencode-desktop
+    (pkgs.callPackage ../../modules/home/pkgs/opencode-desktop.nix { })
     jellyfin-desktop
     kdePackages.kdenlive
 

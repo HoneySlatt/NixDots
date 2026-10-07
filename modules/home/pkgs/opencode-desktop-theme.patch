@@ -1,0 +1,41 @@
+diff --git a/packages/desktop/src/main/index.ts b/packages/desktop/src/main/index.ts
+--- a/packages/desktop/src/main/index.ts
++++ b/packages/desktop/src/main/index.ts
+@@ -1,3 +1,4 @@
++import "./quickshell-theme.mjs"
+ import { randomUUID } from "node:crypto"
+ import { mkdirSync, rmSync } from "node:fs"
+ import * as http from "node:http"
+diff --git a/packages/ui/src/theme/context.tsx b/packages/ui/src/theme/context.tsx
+--- a/packages/ui/src/theme/context.tsx
++++ b/packages/ui/src/theme/context.tsx
+@@ -284,6 +284,29 @@ export const { use: useTheme, provider: ThemeProvider } = createSimpleContext({
+       })
+     })
+ 
++    // Quickshell supplies a palette; use the native v1/v2 theme resolvers.
++    onMount(() => {
++      const sync = () => {
++        const value = (window as Window & {
++          __quickshellTheme?: { name: string; mode: "light" | "dark"; variant: DesktopTheme["dark"] }
++        }).__quickshellTheme
++        if (!value) return
++        const theme: DesktopTheme = {
++          id: "quickshell",
++          name: `Quickshell · ${value.name}`,
++          light: value.variant,
++          dark: value.variant,
++        }
++        setStore("themes", "quickshell", theme)
++        setStore("themeId", "quickshell")
++        setStore("colorScheme", value.mode)
++        setStore("mode", value.mode)
++        cacheThemeVariants(theme, "quickshell")
++      }
++      makeEventListener(window, "quickshell-theme", sync)
++      sync()
++    })
++
+     createEffect(() => {
+       const theme = store.themes[store.themeId]
+       if (!theme) return

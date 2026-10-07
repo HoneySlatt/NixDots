@@ -23,17 +23,75 @@ let
       </source>
     </hostdev>'';
 
-  # Local account without Microsoft login, minimal privacy settings.
+  # Host services the guest may reach: Materialious, the Invidious instance it queries
+  # and the Samba share (SMB over TCP, no NetBIOS).
+  guestPorts = [
+    (lib.toInt config.virtualisation.oci-containers.containers.materialious.environment.PORT)
+    config.services.invidious.port
+    445
+  ];
+
+  dword = key: value: data: ''reg.exe add "${key}" /v ${value} /t REG_DWORD /d ${toString data} /f'';
+
+  # Telemetry, Copilot, web search and ads off. Applied during setup and shipped as
+  # privacy.cmd on the unattend ISO for an existing install.
+  policies = "HKLM\\SOFTWARE\\Policies\\Microsoft";
+  machineTweaks = [
+    (dword "${policies}\\Windows\\DataCollection" "AllowTelemetry" 0)
+    (dword "HKLM\\SYSTEM\\CurrentControlSet\\Services\\DiagTrack" "Start" 4)
+    (dword "HKLM\\SYSTEM\\CurrentControlSet\\Services\\dmwappushservice" "Start" 4)
+    (dword "${policies}\\Windows\\Windows Error Reporting" "Disabled" 1)
+    (dword "${policies}\\Windows\\CloudContent" "DisableWindowsConsumerFeatures" 1)
+    (dword "${policies}\\Windows\\CloudContent" "DisableSoftLanding" 1)
+    (dword "${policies}\\Windows\\CloudContent" "DisableCloudOptimizedContent" 1)
+    (dword "${policies}\\Windows\\Windows Search" "AllowCortana" 0)
+    (dword "${policies}\\Windows\\Windows Search" "DisableWebSearch" 1)
+    (dword "${policies}\\Windows\\Windows Search" "ConnectedSearchUseWeb" 0)
+    (dword "${policies}\\Windows Defender\\Spynet" "SubmitSamplesConsent" 2)
+    (dword "${policies}\\Windows\\DeliveryOptimization" "DODownloadMode" 0)
+    (dword "${policies}\\Edge" "DiagnosticData" 0)
+    (dword "${policies}\\Edge" "PersonalizationReportingEnabled" 0)
+  ];
+  userTweaks = hive:
+    let
+      cdm = "${hive}\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager";
+      advanced = "${hive}\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced";
+    in [
+      (dword "${hive}\\Software\\Policies\\Microsoft\\Windows\\WindowsCopilot" "TurnOffWindowsCopilot" 1)
+      (dword "${hive}\\Software\\Policies\\Microsoft\\Windows\\Explorer" "DisableSearchBoxSuggestions" 1)
+      (dword cdm "SilentInstalledAppsEnabled" 0)
+      (dword cdm "SystemPaneSuggestionsEnabled" 0)
+      (dword cdm "SubscribedContent-338388Enabled" 0)
+      (dword cdm "SubscribedContent-338389Enabled" 0)
+      (dword cdm "SubscribedContent-353694Enabled" 0)
+      (dword cdm "SubscribedContent-353696Enabled" 0)
+      (dword advanced "Start_IrisRecommendations" 0)
+      (dword advanced "ShowSyncProviderNotifications" 0)
+    ];
+
+  # The local account is created after specialize, so its profile is copied from Default.
+  setupCommands =
+    [ (dword "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\OOBE" "BypassNRO" 1) ]
+    ++ machineTweaks
+    ++ [ ''reg.exe load "HKU\DefaultUser" "C:\Users\Default\NTUSER.DAT"'' ]
+    ++ userTweaks "HKU\\DefaultUser"
+    ++ [ ''reg.exe unload "HKU\DefaultUser"'' ];
+
+  privacyCmd = pkgs.writeText "privacy.cmd"
+    (lib.concatMapStrings (c: c + "\r\n") (machineTweaks ++ userTweaks "HKCU"));
+
+  # Local account without Microsoft login.
   autounattend = pkgs.writeText "autounattend.xml" ''
     <?xml version="1.0" encoding="utf-8"?>
     <unattend xmlns="urn:schemas-microsoft-com:unattend" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State">
       <settings pass="specialize">
         <component name="Microsoft-Windows-Deployment" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
           <RunSynchronous>
+    ${lib.concatImapStringsSep "\n" (i: cmd: ''
             <RunSynchronousCommand wcm:action="add">
-              <Order>1</Order>
-              <Path>reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\OOBE" /v BypassNRO /t REG_DWORD /d 1 /f</Path>
-            </RunSynchronousCommand>
+              <Order>${toString i}</Order>
+              <Path>${cmd}</Path>
+            </RunSynchronousCommand>'') setupCommands}
           </RunSynchronous>
         </component>
       </settings>
@@ -67,6 +125,7 @@ let
   unattendIso = pkgs.runCommand "${name}-unattend.iso" { nativeBuildInputs = [ pkgs.xorriso ]; } ''
     mkdir -p root/'$WinPEDriver$'
     cp ${autounattend} root/autounattend.xml
+    cp ${privacyCmd} root/privacy.cmd
     cp -r ${pkgs.virtio-win}/viostor/w11/amd64 root/'$WinPEDriver$'/viostor
     cp -r ${pkgs.virtio-win}/NetKVM/w11/amd64 root/'$WinPEDriver$'/NetKVM
     xorriso -as mkisofs -J -joliet-long -r -V UNATTEND -o $out root
@@ -89,7 +148,6 @@ let
         <type arch='x86_64' machine='q35'>hvm</type>
         <loader readonly='yes' secure='yes' type='pflash' format='raw'>${pkgs.OVMFFull.firmware}</loader>
         <nvram template='${pkgs.OVMFFull.variablesMs}' templateFormat='raw' format='raw'>/var/lib/libvirt/qemu/nvram/${name}_VARS.fd</nvram>
-        <smbios mode='host'/>
       </os>
       <features>
         <acpi/>
@@ -256,8 +314,39 @@ in
 
   users.users.honey.extraGroups = [ "libvirtd" ];
 
-  # Let the VM reach host services (Materialious, Invidious, Jellyfin...).
-  networking.firewall.trustedInterfaces = [ "virbr0" ];
+  # The guest only gets DHCP, DNS, Materialious, Invidious and Samba from the host.
+  networking.firewall.interfaces.virbr0 = {
+    allowedUDPPorts = [ 53 67 ];
+    allowedTCPPorts = [ 53 ] ++ guestPorts;
+  };
+
+  # Ports opened globally by other services are dropped here, and guest traffic can only
+  # leave through the Nym tunnel so a disconnected VPN cuts the VM off instead of leaking.
+  systemd.services."${name}-firewall" = {
+    description = "Restrict the Windows 11 VM network";
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = "${pkgs.nftables}/bin/nft -f ${pkgs.writeText "${name}-firewall.nft" ''
+        destroy table inet ${name}
+        table inet ${name} {
+          chain input {
+            type filter hook input priority filter; policy accept;
+            iifname "virbr0" ct state established,related accept
+            iifname "virbr0" udp dport { 53, 67 } accept
+            iifname "virbr0" tcp dport { ${lib.concatMapStringsSep ", " toString ([ 53 ] ++ guestPorts)} } accept
+            iifname "virbr0" drop
+          }
+          chain forward {
+            type filter hook forward priority filter; policy accept;
+            iifname "virbr0" oifname != "tun*" drop
+          }
+        }
+      ''}";
+      ExecStop = "${pkgs.nftables}/bin/nft destroy table inet ${name}";
+    };
+  };
 
   virtualisation.libvirtd = {
     hooks.qemu.${name} = hook;
