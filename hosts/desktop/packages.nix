@@ -57,7 +57,6 @@
     pkgsRocm.blender
     gimp
     kopuz
-    seanime
     cider-2
     obsidian
     inkscape
@@ -121,7 +120,6 @@
     sqlite
     openssl
     nautilus
-    jellyfin-mpv-shim
 
     # Custom pkgs
     steam-metadata-editor
