@@ -134,8 +134,6 @@ in
       (bind "SUPER + SHIFT + B" (exec "firefox"))
       (bind "SUPER + M" (exec "cider-2"))
       (bind "SUPER + SHIFT + M" (exec "kopuz"))
-      (bind "SUPER + SHIFT + T" (exec "toggle-quickshell"))
-      (bind "SUPER + SHIFT + Q" (exec "toggle-quickshell"))
       (bind "SUPER + SHIFT + W" (exec "toggle-bar-position"))
       (bind "SUPER + SHIFT + V" (exec "toggle-nym"))
       (bind "SUPER + CTRL + V" (exec "toggle-vpn-launcher"))

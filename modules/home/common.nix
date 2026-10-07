@@ -51,7 +51,6 @@
     (callPackage ./pkgs/google-sans.nix { })
     material-symbols
     nerd-fonts.symbols-only
-    nerd-fonts.iosevka-term
   ];
 
   programs.direnv = {

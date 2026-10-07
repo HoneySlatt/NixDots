@@ -2,24 +2,6 @@
 
 let
   shellDir = "$HOME/NixOS/modules/home/hyprland/quickshell/config";
-
-  readProfile = ''
-    STATE_FILE="$HOME/.config/quickshell/.current-shell"
-    profile="modern"
-
-    if [ -f "$STATE_FILE" ]; then
-      profile="$(tr -d '[:space:]' < "$STATE_FILE")"
-    fi
-  '';
-
-  qsIpc = modern: tui: ''
-    ${readProfile}
-
-    case "$profile" in
-      tui) ${tui} ;;
-      *) ${modern} ;;
-    esac
-  '';
 in
 {
   home.packages = [
@@ -434,88 +416,43 @@ in
     })
 
     (pkgs.writeShellApplication {
-      name = "toggle-quickshell";
-      text = ''
-        shell_dir="${shellDir}"
-        state_file="$shell_dir/.current-shell"
-        current="modern"
-
-        if [ -f "$state_file" ]; then
-          current="$(tr -d '[:space:]' < "$state_file")"
-        fi
-
-        if [ "$current" = "tui" ]; then
-          target="modern"
-        else
-          target="tui"
-        fi
-
-        quickshell kill -c modern --any-display || true
-        quickshell kill -c tui --any-display || true
-        sleep 0.2
-
-        ln -sfnT "$shell_dir" "$HOME/.config/quickshell"
-        printf '%s\n' "$target" > "$state_file"
-        apply-font-profile
-        "$HOME/.config/quickshell/themes/switch-theme.sh" --shell >/dev/null 2>&1 || true
-        nohup qs -c "$target" >/dev/null 2>&1 &
-      '';
-    })
-
-    (pkgs.writeShellApplication {
       name = "toggle-bar-position";
-      text = qsIpc
-        ''quickshell ipc -p "$HOME/.config/quickshell/modern" -n call togglePosition call''
-        ''quickshell ipc -c tui call tuiTogglePosition call'';
+      text = ''quickshell ipc -p "$HOME/.config/quickshell/modern" -n call togglePosition call'';
     })
 
     (pkgs.writeShellApplication {
       name = "toggle-launcher";
-      text = qsIpc
-        ''quickshell ipc -p "$HOME/.config/quickshell/modern" -n call toggleLauncher call''
-        ''quickshell ipc -c tui call tuiToggleAppLauncher call'';
+      text = ''quickshell ipc -p "$HOME/.config/quickshell/modern" -n call toggleLauncher call'';
     })
 
     (pkgs.writeShellApplication {
       name = "toggle-theme-launcher";
-      text = qsIpc
-        ''quickshell ipc -c modern call toggleThemeLauncher call''
-        ''quickshell ipc -c tui call tuiToggleThemeLauncher call'';
+      text = ''quickshell ipc -c modern call toggleThemeLauncher call'';
     })
 
     (pkgs.writeShellApplication {
       name = "toggle-wallpaper-launcher";
-      text = qsIpc
-        ''quickshell ipc -c modern call toggleWallpaperLauncher call''
-        ''quickshell ipc -c tui call tuiToggleWallpaperLauncher call'';
+      text = ''quickshell ipc -c modern call toggleWallpaperLauncher call'';
     })
 
     (pkgs.writeShellApplication {
       name = "toggle-game-launcher";
-      text = qsIpc
-        ''quickshell ipc -c modern call toggleSteamLauncher call''
-        ''quickshell ipc -c tui call tuiToggleGameLauncher call'';
+      text = ''quickshell ipc -c modern call toggleSteamLauncher call'';
     })
 
     (pkgs.writeShellApplication {
       name = "toggle-music-launcher";
-      text = qsIpc
-        ''quickshell ipc -c modern call toggleMusicLauncher call''
-        ''quickshell ipc -c tui call tuiToggleMusicLauncher call'';
+      text = ''quickshell ipc -c modern call toggleMusicLauncher call'';
     })
 
     (pkgs.writeShellApplication {
       name = "toggle-vpn-launcher";
-      text = qsIpc
-        ''quickshell ipc -c modern call toggleVpnLauncher call''
-        ''quickshell ipc -c tui call tuiToggleVpnLauncher call'';
+      text = ''quickshell ipc -c modern call toggleVpnLauncher call'';
     })
 
     (pkgs.writeShellApplication {
       name = "toggle-power-launcher";
-      text = qsIpc
-        ''quickshell ipc -c modern call togglePowerMenu call''
-        ''quickshell ipc -c tui call tuiTogglePowerLauncher call'';
+      text = ''quickshell ipc -c modern call togglePowerMenu call'';
     })
 
     (pkgs.writeShellApplication {
@@ -554,43 +491,23 @@ in
           fi
         fi
 
-        ${readProfile}
-
-        if [ "$profile" = "tui" ] && [ -f "$HOME/.config/hypr/hyprlock-tui.conf" ]; then
-          hyprlock --config "$HOME/.config/hypr/hyprlock-tui.conf" --immediate-render
-        else
-          hyprlock --immediate-render
-        fi
+        hyprlock --immediate-render
       '';
     })
 
     (pkgs.writeShellApplication {
       name = "apply-font-profile";
       text = ''
-        ${readProfile}
-
-        case "$profile" in
-          tui)
-            FONT="IosevkaTerm Nerd Font Mono"
-            FONT_NAME="IosevkaTerm Nerd Font Mono 11"
-            FSIZE=12
-            BOLD="IosevkaTerm Nerd Font Mono"
-            ITALIC="IosevkaTerm Nerd Font Mono"
-            BOLD_ITALIC="IosevkaTerm Nerd Font Mono"
-            ;;
-          *)
-            FONT="Google Sans Code"
-            FONT_NAME="Google Sans Flex 10"
-            FSIZE=11
-            BOLD="Google Sans Code"
-            ITALIC="Google Sans Code"
-            BOLD_ITALIC="Google Sans Code"
-            ;;
-        esac
+        FONT="Google Sans Code"
+        FONT_NAME="Google Sans Flex 10"
+        FSIZE=11
+        BOLD="Google Sans Code"
+        ITALIC="Google Sans Code"
+        BOLD_ITALIC="Google Sans Code"
 
         mkdir -p "$HOME/.config/ghostty"
         cat > "$HOME/.config/ghostty/fonts.conf" << AEOF
-# Font profile: $profile - auto-generated by apply-font-profile
+# Auto-generated by apply-font-profile
 font-family = "$FONT"
 font-family-bold = "$BOLD"
 font-family-italic = "$ITALIC"
@@ -619,13 +536,7 @@ EOF
         if pgrep -x wf-recorder > /dev/null; then
           pkill --signal SIGINT wf-recorder
         else
-          ${readProfile}
-
-          if [ "$profile" = "tui" ]; then
-            quickshell -c tuiquickshot -n
-          else
-            quickshell -c hyprquickshot -n
-          fi
+          quickshell -c hyprquickshot -n
         fi
       '';
     })
@@ -634,26 +545,12 @@ EOF
       name = "start-quickshell";
       text = ''
         shell_dir="${shellDir}"
-        state_file="$shell_dir/.current-shell"
-        profile="modern"
-
-        if [ -f "$state_file" ]; then
-          profile="$(tr -d '[:space:]' < "$state_file")"
-        fi
-
-        case "$profile" in
-          tui) ;;
-          *) profile="modern" ;;
-        esac
-
         quickshell kill -c modern --any-display || true
-        quickshell kill -c tui --any-display || true
         sleep 0.2
 
         ln -sfnT "$shell_dir" "$HOME/.config/quickshell"
         apply-font-profile
-        "$HOME/.config/quickshell/themes/switch-theme.sh" --shell >/dev/null 2>&1 || true
-        nohup qs -c "$profile" >/dev/null 2>&1 &
+        nohup qs -c modern >/dev/null 2>&1 &
       '';
     })
   ];

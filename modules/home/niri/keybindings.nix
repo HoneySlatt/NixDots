@@ -22,8 +22,6 @@
     "Mod+Shift+B".action.spawn = "firefox";
     "Mod+M".action.spawn = "cider-2";
     "Mod+Shift+M".action.spawn = "kopuz";
-    "Mod+Shift+T".action.spawn = "toggle-quickshell";
-    "Mod+Shift+Q".action.spawn = "toggle-quickshell";
     "Mod+Shift+W".action.spawn = "toggle-bar-position";
     "Mod+Shift+V".action.spawn = "toggle-nym";
     "Mod+Ctrl+V".action.spawn = "toggle-vpn-launcher";

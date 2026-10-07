@@ -8,12 +8,8 @@ THEME_FILE="$HOME/.config/quickshell/.current-theme"
 THEME="${1:-pastelglow}"
 REQUEST_ID="${2:-$(date +%s%3N)00}"
 
-if [ "$THEME" = "--shell" ] || [ "$THEME" = "--background-current" ]; then
-  if [ "$THEME" = "--shell" ]; then
-    MODE="shell"
-  else
-    MODE="background"
-  fi
+if [ "$THEME" = "--background-current" ]; then
+  MODE="background"
 
   if [ -f "$THEME_FILE" ]; then
     THEME="$(tr -d '[:space:]' < "$THEME_FILE")"
@@ -92,13 +88,6 @@ esac
 for f in "$SCRIPT_DIR/apps/"*.sh; do
   source "$f"
 done
-
-# Shell-only mode: only update discord.
-if [ "$MODE" = "shell" ]; then
-  switch_discord
-  echo "Updated discord shell profile"
-  exit 0
-fi
 
 # Slow application updates run in a restartable user service.
 if [ "$MODE" = "background" ]; then
