@@ -421,6 +421,11 @@ in
     })
 
     (pkgs.writeShellApplication {
+      name = "toggle-bar-style";
+      text = ''quickshell ipc -p "$HOME/.config/quickshell/modern" -n call toggleBarStyle call'';
+    })
+
+    (pkgs.writeShellApplication {
       name = "toggle-launcher";
       text = ''quickshell ipc -p "$HOME/.config/quickshell/modern" -n call toggleLauncher call'';
     })

@@ -23,6 +23,7 @@
     "Mod+M".action.spawn = "cider-2";
     "Mod+Shift+M".action.spawn = "kopuz";
     "Mod+Shift+W".action.spawn = "toggle-bar-position";
+    "Mod+Shift+T".action.spawn = "toggle-bar-style";
     "Mod+Shift+V".action.spawn = "toggle-nym";
     "Mod+Ctrl+V".action.spawn = "toggle-vpn-launcher";
     "Mod+U".action.spawn = "toggle-nsfw";

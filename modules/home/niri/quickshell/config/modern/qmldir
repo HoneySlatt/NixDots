@@ -17,6 +17,7 @@ singleton DistroState 1.0 DistroState.qml
 singleton HdrState 1.0 HdrState.qml
 singleton BarState 1.0 BarState.qml
 Bar 1.0 Bar.qml
+MaterialBar 1.0 MaterialBar.qml
 CalendarPopup 1.0 CalendarPopup.qml
 SmallLauncher 1.0 SmallLauncher.qml
 AppLauncher 1.0 AppLauncher.qml

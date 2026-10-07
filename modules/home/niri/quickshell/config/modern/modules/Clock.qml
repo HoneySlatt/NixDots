@@ -6,6 +6,7 @@ Item {
     id: clock
 
     property date now: new Date()
+    property string format: "hh:mm AP\u2003-\u2003ddd dd"
 
     Layout.alignment: Qt.AlignVCenter
     implicitWidth: clockText.implicitWidth
@@ -20,7 +21,7 @@ Item {
         scale: Theme.barTextScale
         font.pixelSize: Theme.fontSize
         font.weight: Theme.fontWeight
-        text: Qt.formatDateTime(clock.now, "hh:mm AP\u2003-\u2003ddd dd")
+        text: Qt.formatDateTime(clock.now, clock.format)
     }
 
     opacity: mouseArea.containsMouse ? 0.6 : 1.0
