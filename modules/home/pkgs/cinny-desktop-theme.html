@@ -1,0 +1,17 @@
+    <script>
+      (() => {
+        const style = document.createElement('style');
+        document.head.append(style);
+        window.qsCinnyTheme = css => {
+          if (style.textContent !== css) style.textContent = css;
+        };
+        const poll = () => {
+          const script = document.createElement('script');
+          script.src = `http://127.0.0.1:48531/cinny.js?t=${Date.now()}`;
+          script.onload = script.onerror = () => script.remove();
+          document.head.append(script);
+        };
+        poll();
+        setInterval(poll, 2000);
+      })();
+    </script>
