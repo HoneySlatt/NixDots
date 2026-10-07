@@ -57,6 +57,7 @@
     pkgsRocm.blender
     gimp
     kopuz
+    dorion
     cider-2
     obsidian
     inkscape
