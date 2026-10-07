@@ -109,7 +109,6 @@
     codex
     opencode
     claude-code
-    mistral-vibe
 
     # Virtualisation
     virt-manager

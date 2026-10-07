@@ -3,8 +3,8 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Wayland
 import Quickshell.Widgets
-import "../modern"
-import "../modern/m3" as M3
+import "../material"
+import "../material/m3" as M3
 
 PanelWindow {
     id: root

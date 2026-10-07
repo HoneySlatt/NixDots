@@ -1,7 +1,7 @@
 { ... }:
 
 let
-  # UI roles mirror modern/Theme.qml: surfaces, primary containers and state layers.
+  # UI roles mirror material/Theme.qml: surfaces, primary containers and state layers.
   # Zed reuses foregrounds across containers: soften tint where needed for contrast.
   # Syntax colors stay editor-specific so code remains easy to distinguish.
   palettes = {

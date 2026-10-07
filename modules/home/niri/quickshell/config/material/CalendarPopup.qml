@@ -305,9 +305,7 @@ Item {
                 }
 
                 M3.Surface {
-                    anchors.horizontalCenter: BarState.material ? undefined : parent.horizontalCenter
-                    anchors.left: BarState.material ? parent.left : undefined
-                    anchors.leftMargin: Theme.margin
+                    anchors.horizontalCenter: parent.horizontalCenter
                     anchors.top: BarState.isTop ? parent.top : undefined
                     anchors.bottom: BarState.isTop ? undefined : parent.bottom
                     anchors.topMargin: Theme.popupGap

@@ -417,47 +417,42 @@ in
 
     (pkgs.writeShellApplication {
       name = "toggle-bar-position";
-      text = ''quickshell ipc -p "$HOME/.config/quickshell/modern" -n call togglePosition call'';
-    })
-
-    (pkgs.writeShellApplication {
-      name = "toggle-bar-style";
-      text = ''quickshell ipc -p "$HOME/.config/quickshell/modern" -n call toggleBarStyle call'';
+      text = ''quickshell ipc -p "$HOME/.config/quickshell/material" -n call togglePosition call'';
     })
 
     (pkgs.writeShellApplication {
       name = "toggle-launcher";
-      text = ''quickshell ipc -p "$HOME/.config/quickshell/modern" -n call toggleLauncher call'';
+      text = ''quickshell ipc -p "$HOME/.config/quickshell/material" -n call toggleLauncher call'';
     })
 
     (pkgs.writeShellApplication {
       name = "toggle-theme-launcher";
-      text = ''quickshell ipc -c modern call toggleThemeLauncher call'';
+      text = ''quickshell ipc -c material call toggleThemeLauncher call'';
     })
 
     (pkgs.writeShellApplication {
       name = "toggle-wallpaper-launcher";
-      text = ''quickshell ipc -c modern call toggleWallpaperLauncher call'';
+      text = ''quickshell ipc -c material call toggleWallpaperLauncher call'';
     })
 
     (pkgs.writeShellApplication {
       name = "toggle-game-launcher";
-      text = ''quickshell ipc -c modern call toggleSteamLauncher call'';
+      text = ''quickshell ipc -c material call toggleSteamLauncher call'';
     })
 
     (pkgs.writeShellApplication {
       name = "toggle-music-launcher";
-      text = ''quickshell ipc -c modern call toggleMusicLauncher call'';
+      text = ''quickshell ipc -c material call toggleMusicLauncher call'';
     })
 
     (pkgs.writeShellApplication {
       name = "toggle-vpn-launcher";
-      text = ''quickshell ipc -c modern call toggleVpnLauncher call'';
+      text = ''quickshell ipc -c material call toggleVpnLauncher call'';
     })
 
     (pkgs.writeShellApplication {
       name = "toggle-power-launcher";
-      text = ''quickshell ipc -c modern call togglePowerMenu call'';
+      text = ''quickshell ipc -c material call togglePowerMenu call'';
     })
 
     (pkgs.writeShellApplication {
@@ -526,12 +521,12 @@ EOF
       name = "start-quickshell";
       text = ''
         shell_dir="${shellDir}"
-        quickshell kill -c modern --any-display || true
+        quickshell kill -c material --any-display || true
         sleep 0.2
 
         ln -sfnT "$shell_dir" "$HOME/.config/quickshell"
         apply-font-profile
-        nohup qs -c modern >/dev/null 2>&1 &
+        nohup qs -c material >/dev/null 2>&1 &
       '';
     })
   ];

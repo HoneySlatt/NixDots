@@ -66,19 +66,9 @@ ShellRoot {
 
     Variants {
         id: shellVariants
-        model: BarState.styleReady && !BarState.material ? Quickshell.screens : []
+        model: Quickshell.screens
 
         Bar {
-            required property var modelData
-            screen: modelData
-        }
-    }
-
-    Variants {
-        id: materialVariants
-        model: BarState.styleReady && BarState.material ? Quickshell.screens : []
-
-        MaterialBar {
             required property var modelData
             screen: modelData
         }
@@ -97,14 +87,6 @@ ShellRoot {
 
         function call() {
             BarState.togglePosition();
-        }
-    }
-
-    IpcHandler {
-        target: "toggleBarStyle"
-
-        function call() {
-            BarState.toggleStyle();
         }
     }
 
@@ -161,12 +143,10 @@ ShellRoot {
         target: "toggleVisibility"
 
         function call() {
-            for (const variants of [shellVariants, materialVariants]) {
-                for (let i = 0; i < variants.instances.length; i++) {
-                    let bar = variants.instances[i];
-                    if (bar.isFocused) {
-                        bar.visible = !bar.visible;
-                    }
+            for (let i = 0; i < shellVariants.instances.length; i++) {
+                let bar = shellVariants.instances[i];
+                if (bar.isFocused) {
+                    bar.visible = !bar.visible;
                 }
             }
         }

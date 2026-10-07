@@ -1,7 +1,7 @@
 import QtQuick
 import Quickshell
 import Quickshell.Wayland
-import "../modern"
+import "../material"
 
 Variants {
     model: Quickshell.screens
