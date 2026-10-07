@@ -46,8 +46,8 @@
     localsend
     libreoffice
     qbittorrent
+    cinny-desktop
     signal-desktop
-    element-desktop
     tutanota-desktop
     (pkgs.callPackage ../../modules/home/pkgs/opencode-desktop.nix { })
     jellyfin-desktop

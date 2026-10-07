@@ -30,8 +30,8 @@
     "Mod+U".action.spawn = "toggle-nsfw";
     "Mod+S".action.screenshot = { };
     "Mod+Shift+P".action.spawn = "hyprpicker";
-    "Mod+D".action.spawn = "discord";
-    "Mod+Shift+D".action.spawn = "element-desktop";
+    "Mod+D".action.spawn = "cinny";
+    "Mod+Shift+D".action.spawn = "discord";
     "Ctrl+Shift+M".action.spawn = [ "tutanota-desktop" "--no-sandbox" "%U" ];
     "Mod+Ctrl+N".action.spawn = "jellyfin-desktop";
     "Mod+Shift+G".action.spawn = "heroic";
