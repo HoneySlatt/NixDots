@@ -2,7 +2,7 @@
 
 {
   nixpkgs.overlays = [
-    #inputs.millennium.overlays.default
+    inputs.millennium.overlays.default
     (final: prev: {
       steam-metadata-editor = final.callPackage ../../modules/home/pkgs/steam-metadata-editor.nix { };
       nuvio = final.callPackage ../../modules/home/pkgs/nuvio.nix { };
@@ -57,7 +57,6 @@
     pkgsRocm.blender
     gimp
     kopuz
-    dorion
     cider-2
     obsidian
     inkscape
@@ -100,17 +99,17 @@
     bat
     eza
     gdu
+    imv
+    cava
     btop
     ffmpeg
     ripgrep
-    cava
     fastfetch
-    imv
-    concord-tui
-    codex
-    claude-code
-    opencode
     trash-cli
+    codex
+    opencode
+    claude-code
+    mistral-vibe
 
     # Virtualisation
     virt-manager
@@ -137,7 +136,7 @@
     remotePlay.openFirewall = true;
     dedicatedServer.openFirewall = true;
     protontricks.enable = true;
-    #package = pkgs.millennium-steam;
+    package = pkgs.millennium-steam;
   };
 
   programs.gamemode.enable = true;
