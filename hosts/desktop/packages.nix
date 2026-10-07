@@ -127,6 +127,7 @@
     # Custom pkgs
     steam-metadata-editor
     nuvio
+  ];
 
   programs.steam = {
     enable = true;
