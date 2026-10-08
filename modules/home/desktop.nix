@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, ... }:
 
 {
   imports = [
@@ -8,7 +8,6 @@
     ./helix
     ./neovim
     ./niri
-    ./niri/quickshell
   ];
   home.file."NAS" = {source = config.lib.file.mkOutOfStoreSymlink "/NAS";};
 }

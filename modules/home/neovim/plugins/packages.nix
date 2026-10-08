@@ -1,10 +1,5 @@
 { pkgs, ... }:
 {
-  programs.nixvim.extraPackages = with pkgs; [
-    stylua
-    gotools # goimports
-    rustfmt
-    rust-analyzer
-    clang-tools # clang-format
-  ];
+  # Formatters and linters come from conform-nvim and lint autoInstall
+  programs.nixvim.extraPackages = [ pkgs.lazygit ];
 }

@@ -15,7 +15,7 @@ secrets/age-keys.txt.pub
 
 # Nix
 /nix/
-result/
+result
 
 # Flake
 .flake/

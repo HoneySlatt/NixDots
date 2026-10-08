@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 let
-  nym-vpnd = pkgs.callPackage ../../home/pkgs/nym-vpnd.nix { };
+  inherit (pkgs) nym-vpnd;
 in
 {
   environment.systemPackages = [ nym-vpnd ];

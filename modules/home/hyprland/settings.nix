@@ -1,4 +1,4 @@
-{ ... }:
+{ config, ... }:
 
 let
   mkEnv = name: value: { _args = [ name value ]; };
@@ -7,10 +7,8 @@ in
 {
   wayland.windowManager.hyprland.settings = {
     env = [
-      (mkEnv "QT_QPA_PLATFORMTHEME" "qt5ct")
-      (mkEnv "QT_STYLE_OVERRIDE" "kvantum")
-      (mkEnv "XCURSOR_THEME" "phinger-cursors-dark")
-      (mkEnv "XCURSOR_SIZE" "24")
+      (mkEnv "XCURSOR_THEME" config.home.pointerCursor.name)
+      (mkEnv "XCURSOR_SIZE" (toString config.home.pointerCursor.size))
       (mkEnv "DXVK_HDR" "1")
       (mkEnv "ENABLE_HDR_WSI" "1")
       (mkEnv "XDG_DATA_DIRS" "/etc/profiles/per-user/honey/share:/run/current-system/sw/share:/usr/local/share:/usr/share")

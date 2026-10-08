@@ -1,7 +1,25 @@
 { config, pkgs, ... }:
 
 {
-  home.packages = [ pkgs.waycorner ];
+  home.packages = [
+    pkgs.waycorner
+    (pkgs.writeShellApplication {
+      name = "toggle-overview";
+      runtimeInputs = [ pkgs.hyprland pkgs.jq ];
+      text = ''
+        active_layout="$(hyprctl -j activeworkspace 2>/dev/null | jq -r '.tiledLayout // empty' 2>/dev/null || true)"
+        if [[ -z "$active_layout" && -f "$HOME/.config/hypr/layout-mode" ]]; then
+          active_layout="$(tr -d '[:space:]' < "$HOME/.config/hypr/layout-mode")"
+        fi
+
+        if [[ "$active_layout" == "scrolling" ]]; then
+          hyprctl eval 'hl.dispatch(hl.plugin.scrolloverview.overview("toggle all"))'
+        else
+          hyprctl eval 'hl.plugin.hymission.toggle("onlycurrentworkspace")'
+        fi
+      '';
+    })
+  ];
 
   xdg.configFile."waycorner/config.toml".text = ''
     [scrolling-overview]

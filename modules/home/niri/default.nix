@@ -1,5 +1,3 @@
-{ ... }:
-
 {
   imports = [
     ./packages.nix
@@ -11,9 +9,9 @@
     ./single-column.nix
     ./keybindings.nix
     ./windowrules.nix
-    ../hyprland/hyprlock.nix
+    ../hyprlock.nix
     ./hypridle.nix
-    ./quickshell
+    ../quickshell
   ];
 
   services.gnome-keyring.enable = true;

@@ -36,9 +36,11 @@
         center = [];
         right = [ "diagnostics" "selections" "position" "file-type" ];
         separator = "│";
-        mode.normal = "NORMAL";
-        mode.insert = "INSERT";
-        mode.select = "SELECT";
+        mode = {
+          normal = "NORMAL";
+          insert = "INSERT";
+          select = "SELECT";
+        };
       };
       whitespace = {
         render = "none";

@@ -1,7 +1,7 @@
 { lib, ... }:
 
 let
-  workspaceRule = ws: monitor: { _args = [{ workspace = toString ws; monitor = monitor; }]; };
+  workspaceRule = ws: monitor: { _args = [{ workspace = toString ws; inherit monitor; }]; };
 in
 {
   wayland.windowManager.hyprland.settings = {

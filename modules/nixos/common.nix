@@ -1,15 +1,19 @@
-{ pkgs, ... }:
+{ inputs, pkgs, ... }:
 
 {
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
-  nix.settings.auto-optimise-store = true;
-  nix.gc = {
-    automatic = true;
-    dates = "weekly";
-    options = "--delete-older-than 7d";
+  nix = {
+    settings.experimental-features = [ "nix-command" "flakes" ];
+    # Deduplicate the store on a schedule instead of during every build
+    optimise.automatic = true;
+    gc = {
+      automatic = true;
+      dates = "weekly";
+      options = "--delete-older-than 7d";
+    };
   };
 
   nixpkgs.config.allowUnfree = true;
+  nixpkgs.overlays = [ (import ../../pkgs inputs) ];
 
   time.timeZone = "Europe/Paris";
   i18n.defaultLocale = "en_US.UTF-8";

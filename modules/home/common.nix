@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ lib, pkgs, ... }:
 
 {
   home.username = "honey";
@@ -12,15 +12,6 @@
     size = 24;
     gtk.enable = true;
     x11.enable = true;
-  };
-
-  gtk = {
-    enable = true;
-    iconTheme = {
-      package = pkgs.papirus-icon-theme;
-      name = "Papirus-Dark";
-    };
-    gtk4.theme = null;
   };
 
   fonts.fontconfig = {
@@ -48,7 +39,7 @@
     '';
 
   home.packages = with pkgs; [
-    (callPackage ./pkgs/google-sans.nix { })
+    google-sans
     material-symbols
     nerd-fonts.symbols-only
   ];

@@ -1,18 +1,13 @@
-{ ... }:
+{ config, ... }:
 
 {
   programs.niri.settings = {
-    environment = {
-      QT_QPA_PLATFORMTHEME = "qt5ct";
-      QT_STYLE_OVERRIDE = "kvantum";
-      XCURSOR_THEME = "phinger-cursors-dark";
-      XCURSOR_SIZE = "24";
-      NIXOS_OZONE_WL = "1";
-    };
+    environment.NIXOS_OZONE_WL = "1";
 
+    # Also exports XCURSOR_THEME and XCURSOR_SIZE to spawned apps
     cursor = {
-      theme = "phinger-cursors-dark";
-      size = 24;
+      theme = config.home.pointerCursor.name;
+      inherit (config.home.pointerCursor) size;
     };
 
     layout = {

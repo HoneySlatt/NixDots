@@ -15,8 +15,17 @@
     awww
   ];
 
+  gtk = {
+    enable = true;
+    iconTheme = {
+      package = pkgs.papirus-icon-theme;
+      name = "Papirus-Dark";
+    };
+    gtk4.theme = null;
+  };
+
   xdg.configFile."quickshell".source =
-    config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/NixOS/modules/home/niri/quickshell/config";
+    config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/NixOS/modules/home/quickshell/config";
 
   programs.niri.settings = {
     outputs."eDP-1".scale = 1.0;
@@ -27,8 +36,8 @@
     };
 
     cursor = {
-      theme = "phinger-cursors-dark";
-      size = 24;
+      theme = config.home.pointerCursor.name;
+      inherit (config.home.pointerCursor) size;
     };
 
     layout = {

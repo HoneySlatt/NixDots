@@ -1,9 +1,44 @@
-{ pkgs, ... }:
+{ config, lib, ... }:
 
+let
+  icons = "${config.home.homeDirectory}/Pictures/Icons";
+
+  imageTypes = [ "image/jpeg" "image/png" "image/gif" "image/webp" "image/avif" "image/bmp" "image/tiff" "image/svg+xml" ];
+  mediaTypes = [
+    "video/mp4" "video/x-matroska" "video/webm" "video/x-msvideo" "video/quicktime" "video/x-flv"
+    "audio/mpeg" "audio/flac" "audio/ogg" "audio/x-wav"
+  ];
+  textTypes = [
+    "text/plain" "text/x-shellscript" "text/x-python" "text/x-csrc" "text/x-chdr" "text/x-c++src"
+    "text/x-lua" "text/x-rust" "text/x-go" "text/x-java" "text/css" "text/javascript"
+    "application/json" "application/x-yaml" "application/x-shellscript"
+  ];
+  webTypes = [
+    "text/html" "x-scheme-handler/http" "x-scheme-handler/https" "x-scheme-handler/ftp"
+    "x-scheme-handler/about" "x-scheme-handler/unknown" "application/xhtml+xml"
+    "application/x-extension-htm" "application/x-extension-html" "application/x-extension-xhtml"
+  ];
+
+  # Hidden overrides of the per-app LibreOffice entries
+  libreoffice = lib.mapAttrs (app: { name, categories }: {
+    name      = "LibreOffice ${name}";
+    exec      = "libreoffice --${app} %U";
+    icon      = "libreoffice-${app}";
+    noDisplay = true;
+    inherit categories;
+  }) {
+    writer  = { name = "Writer";  categories = [ "Office" "WordProcessor" ]; };
+    calc    = { name = "Calc";    categories = [ "Office" "Spreadsheet" ]; };
+    impress = { name = "Impress"; categories = [ "Office" "Presentation" ]; };
+    draw    = { name = "Draw";    categories = [ "Office" "Graphics" ]; };
+    math    = { name = "Math";    categories = [ "Office" ]; };
+    base    = { name = "Base";    categories = [ "Office" "Database" ]; };
+  };
+in
 {
-xdg.desktopEntries = {
+  xdg.desktopEntries = libreoffice // {
 
-# ─── Desktop Apps ────────────────────────────────────────────────────────
+    # ─── Desktop Apps ────────────────────────────────────────────────────────
 
     "brave-origin" = {
       name       = "Brave Origin";
@@ -18,8 +53,8 @@ xdg.desktopEntries = {
       exec       = "mpv --player-operation-mode=pseudo-gui -- %U";
       icon       = "mpv";
       comment    = "Free and open source media player";
-      mimeType   = [ "video/mp4" "video/mkv" "video/x-matroska" "video/webm" "video/avi" "video/x-msvideo" "video/quicktime" "video/x-flv" "audio/mpeg" "audio/flac" "audio/ogg" "audio/x-wav" ];
-      noDisplay = true;
+      mimeType   = mediaTypes;
+      noDisplay  = true;
       categories = [ "AudioVideo" "Video" ];
     };
 
@@ -43,7 +78,7 @@ xdg.desktopEntries = {
     "tutanota-desktop" = {
       name       = "Tuta Mail";
       exec       = "tutanota-desktop --no-sandbox %U";
-      icon       = "/home/honey/Pictures/Icons/tuta.png";
+      icon       = "${icons}/tuta.png";
       comment    = "Encrypted email client";
       categories = [ "Network" "Email" ];
     };
@@ -83,7 +118,7 @@ xdg.desktopEntries = {
     "org.prismlauncher.PrismLauncher" = {
       name       = "Minecraft";
       exec       = "prismlauncher";
-      icon       = "/home/honey/Pictures/Icons/minecrafths.png";
+      icon       = "${icons}/minecrafths.png";
       comment    = "Minecraft launcher";
       categories = [ "Game" ];
     };
@@ -91,7 +126,7 @@ xdg.desktopEntries = {
     xivlauncher = {
       name       = "Final Fantasy XIV Online";
       exec       = "XIVLauncher.Core";
-      icon       = "/home/honey/Pictures/Icons/ffxiv.png";
+      icon       = "${icons}/ffxiv.png";
       comment    = "Final Fantasy XIV launcher";
       categories = [ "Game" ];
     };
@@ -99,7 +134,7 @@ xdg.desktopEntries = {
     win11 = {
       name       = "Windows 11";
       exec       = "virsh -c qemu:///system start win11";
-      icon       = "/home/honey/Pictures/Icons/win11.png";
+      icon       = "${icons}/win11.png";
       comment    = "Windows 11 VM with GPU passthrough";
       categories = [ "Game" "System" ];
     };
@@ -133,7 +168,7 @@ xdg.desktopEntries = {
     yazi = {
       name       = "Yazi";
       exec       = "rio -e yazi %F";
-      icon       = "/home/honey/Pictures/Icons/yazi.png";
+      icon       = "${icons}/yazi.png";
       comment    = "Blazing fast terminal file manager";
       noDisplay  = true;
       categories = [ "System" "FileManager" ];
@@ -160,11 +195,11 @@ xdg.desktopEntries = {
     };
 
     btop = {
-      name      = "Btop";
-      exec      = "rio -e btop";
-      icon      = "btop";
-      comment   = "Resource monitor";
-      noDisplay = true;
+      name       = "Btop";
+      exec       = "rio -e btop";
+      icon       = "btop";
+      comment    = "Resource monitor";
+      noDisplay  = true;
       categories = [ "System" "Monitor" ];
     };
 
@@ -196,125 +231,67 @@ xdg.desktopEntries = {
     };
 
     umpv = {
-      name      = "umpv";
-      noDisplay = true;
-      exec      = "umpv %U";
-      icon      = "mpv";
-      categories = [ "AudioVideo" "Video" ];
-    };
-
-    jellyfin-mpv-shim = {
-      name      = "Jellyfin MPV Shim";
-      exec      = "jellyfin-mpv-shim";
-      icon      = "jellyfin-mpv-shim";
-      terminal  = true;
-      noDisplay = true;
-      comment   = "Cast media from Jellyfin to mpv";
+      name       = "umpv";
+      exec       = "umpv %U";
+      icon       = "mpv";
+      noDisplay  = true;
       categories = [ "AudioVideo" "Video" ];
     };
 
     imv = {
-      name      = "imv";
-      exec      = "imv %F";
-      icon      = "imv";
-      noDisplay = true;
-      mimeType  = [ "image/jpeg" "image/png" "image/gif" "image/webp" "image/avif" "image/bmp" "image/tiff" "image/svg+xml" ];
+      name       = "imv";
+      exec       = "imv %F";
+      icon       = "imv";
+      noDisplay  = true;
+      mimeType   = imageTypes;
       categories = [ "Graphics" "Viewer" ];
     };
 
     imv-dir = {
-      name      = "imv";
-      noDisplay = true;
-      exec      = "imv %F";
-      icon      = "imv";
+      name       = "imv";
+      exec       = "imv %F";
+      icon       = "imv";
+      noDisplay  = true;
       categories = [ "Graphics" "Viewer" ];
     };
 
     "io.github.ilya_zlobintsev.LACT" = {
-      name      = "LACT";
-      exec      = "lact gui";
-      icon      = "io.github.ilya_zlobintsev.LACT";
-      noDisplay = true;
+      name       = "LACT";
+      exec       = "lact gui";
+      icon       = "io.github.ilya_zlobintsev.LACT";
+      noDisplay  = true;
       categories = [ "System" "Settings" ];
     };
 
     kvantummanager = {
-      name      = "Kvantum Manager";
-      exec      = "kvantummanager";
-      icon      = "kvantummanager";
-      noDisplay = true;
+      name       = "Kvantum Manager";
+      exec       = "kvantummanager";
+      icon       = "kvantummanager";
+      noDisplay  = true;
       categories = [ "Settings" ];
     };
 
     qt5ct = {
-      name      = "Qt5 Settings";
-      exec      = "qt5ct";
-      icon      = "preferences-desktop-theme";
-      noDisplay = true;
+      name       = "Qt5 Settings";
+      exec       = "qt5ct";
+      icon       = "preferences-desktop-theme";
+      noDisplay  = true;
       categories = [ "Settings" "DesktopSettings" ];
     };
 
     qt6ct = {
-      name      = "Qt6 Settings";
-      exec      = "qt6ct";
-      icon      = "preferences-desktop-theme";
-      noDisplay = true;
+      name       = "Qt6 Settings";
+      exec       = "qt6ct";
+      icon       = "preferences-desktop-theme";
+      noDisplay  = true;
       categories = [ "Settings" "DesktopSettings" ];
     };
 
-    writer = {
-      name      = "LibreOffice Writer";
-      exec      = "libreoffice --writer %U";
-      icon      = "libreoffice-writer";
-      noDisplay = true;
-      categories = [ "Office" "WordProcessor" ];
-    };
-
-    calc = {
-      name      = "LibreOffice Calc";
-      exec      = "libreoffice --calc %U";
-      icon      = "libreoffice-calc";
-      noDisplay = true;
-      categories = [ "Office" "Spreadsheet" ];
-    };
-
-    impress = {
-      name      = "LibreOffice Impress";
-      exec      = "libreoffice --impress %U";
-      icon      = "libreoffice-impress";
-      noDisplay = true;
-      categories = [ "Office" "Presentation" ];
-    };
-
-    draw = {
-      name      = "LibreOffice Draw";
-      exec      = "libreoffice --draw %U";
-      icon      = "libreoffice-draw";
-      noDisplay = true;
-      categories = [ "Office" "Graphics" ];
-    };
-
-    math = {
-      name      = "LibreOffice Math";
-      exec      = "libreoffice --math %U";
-      icon      = "libreoffice-math";
-      noDisplay = true;
-      categories = [ "Office" ];
-    };
-
-    base = {
-      name      = "LibreOffice Base";
-      exec      = "libreoffice --base %U";
-      icon      = "libreoffice-base";
-      noDisplay = true;
-      categories = [ "Office" "Database" ];
-    };
-
     xsltfilter = {
-      name      = "LibreOffice XSLT Filter";
-      exec      = "libreoffice";
-      icon      = "libreoffice-startcenter";
-      noDisplay = true;
+      name       = "LibreOffice XSLT Filter";
+      exec       = "libreoffice";
+      icon       = "libreoffice-startcenter";
+      noDisplay  = true;
       categories = [ "Office" ];
     };
   };
@@ -323,56 +300,11 @@ xdg.desktopEntries = {
 
   xdg.mimeApps = {
     enable = true;
-    defaultApplications = {
-      # Images → imv
-      "image/jpeg"    = "imv.desktop";
-      "image/png"     = "imv.desktop";
-      "image/gif"     = "imv.desktop";
-      "image/webp"    = "imv.desktop";
-      "image/avif"    = "imv.desktop";
-      "image/bmp"     = "imv.desktop";
-      "image/tiff"    = "imv.desktop";
-      "image/svg+xml" = "imv.desktop";
-
-      # Videos → mpv
-      "video/mp4"        = "mpv.desktop";
-      "video/x-matroska" = "mpv.desktop";
-      "video/webm"       = "mpv.desktop";
-      "video/x-msvideo"  = "mpv.desktop";
-      "video/quicktime"  = "mpv.desktop";
-      "video/x-flv"      = "mpv.desktop";
-      "audio/mpeg"       = "mpv.desktop";
-      "audio/flac"       = "mpv.desktop";
-      "audio/ogg"        = "mpv.desktop";
-      "audio/x-wav"      = "mpv.desktop";
-
-      # Text / code → neovim
-      "text/plain"                = "nvim.desktop";
-      "text/x-shellscript"        = "nvim.desktop";
-      "text/x-python"             = "nvim.desktop";
-      "text/x-csrc"               = "nvim.desktop";
-      "text/x-chdr"               = "nvim.desktop";
-      "text/x-c++src"             = "nvim.desktop";
-      "text/x-lua"                = "nvim.desktop";
-      "text/x-rust"               = "nvim.desktop";
-      "text/x-go"                 = "nvim.desktop";
-      "text/x-java"               = "nvim.desktop";
-      "text/html"                  = "brave-origin.desktop";
-      "x-scheme-handler/http"      = "brave-origin.desktop";
-      "x-scheme-handler/https"     = "brave-origin.desktop";
-      "x-scheme-handler/ftp"       = "brave-origin.desktop";
-      "x-scheme-handler/about"     = "brave-origin.desktop";
-      "x-scheme-handler/unknown"   = "brave-origin.desktop";
-      "x-scheme-handler/tuta"      = "tutanota-desktop.desktop";
-      "application/xhtml+xml"      = "brave-origin.desktop";
-      "application/x-extension-htm"   = "brave-origin.desktop";
-      "application/x-extension-html"  = "brave-origin.desktop";
-      "application/x-extension-xhtml" = "brave-origin.desktop";
-      "text/css"                  = "nvim.desktop";
-      "text/javascript"           = "nvim.desktop";
-      "application/json"          = "nvim.desktop";
-      "application/x-yaml"        = "nvim.desktop";
-      "application/x-shellscript" = "nvim.desktop";
-    };
+    defaultApplications =
+      lib.genAttrs imageTypes (_: "imv.desktop")
+      // lib.genAttrs mediaTypes (_: "mpv.desktop")
+      // lib.genAttrs textTypes (_: "nvim.desktop")
+      // lib.genAttrs webTypes (_: "brave-origin.desktop")
+      // { "x-scheme-handler/tuta" = "tutanota-desktop.desktop"; };
   };
 }

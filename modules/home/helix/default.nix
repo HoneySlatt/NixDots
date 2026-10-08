@@ -1,4 +1,4 @@
-{ pkgs, config, lib, inputs, ... }:
+{ pkgs, ... }:
 
 let
   helixWrapped = pkgs.symlinkJoin {
@@ -17,7 +17,6 @@ in
 {
   imports = [
     ./settings.nix
-    ./keymaps.nix
     ./languages.nix
     ./themes.nix
     ./activation.nix

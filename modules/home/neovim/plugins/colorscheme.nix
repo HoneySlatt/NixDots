@@ -92,16 +92,6 @@
       })
 
 
-      -- Dynamic colorscheme from .current-theme
-      local theme_map = {
-        pastelglow        = { cs = "pastelglow", bg = "light" },
-        rosepine          = { cs = "rose-pine",  bg = "dark"  },
-        gruvbox           = { cs = "gruvbox",    bg = "dark"  },
-        ["gruvbox-light"] = { cs = "gruvbox",    bg = "light" },
-        carbonfox         = { cs = "carbonfox",  bg = "dark"  },
-        everforest        = { cs = "everforest", bg = "dark"  },
-      }
-
       vim.api.nvim_create_autocmd("ColorScheme", {
         pattern = "carbonfox",
         callback = function()
@@ -117,15 +107,18 @@
         end,
       })
 
-      local f = io.open(vim.fn.expand("~/.config/quickshell/.current-theme"), "r")
-      local entry = theme_map["pastelglow"]
-      if f then
-        local raw = f:read("*l"):gsub("%s+", "")
-        f:close()
-        entry = theme_map[raw] or entry
+      -- Dynamic colorscheme from .current-theme, names from themes.json
+      local qs = vim.fn.expand("~/.config/quickshell")
+      local ok, themes = pcall(function()
+        return vim.json.decode(table.concat(vim.fn.readfile(qs .. "/themes/themes.json"), "\n"))
+      end)
+      if ok then
+        local current = vim.fn.filereadable(qs .. "/.current-theme") == 1
+          and vim.fn.readfile(qs .. "/.current-theme")[1]:gsub("%s+", "")
+        local entry = themes[current] or themes.pastelglow
+        vim.opt.background = entry.light and "light" or "dark"
+        vim.cmd.colorscheme(entry.nvim)
       end
-      vim.opt.background = entry.bg
-      vim.cmd.colorscheme(entry.cs)
     '';
   };
 }

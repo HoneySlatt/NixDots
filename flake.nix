@@ -23,7 +23,10 @@
       url = "github:stslex/chatgpt-desktop-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    millennium.url = "github:SteamClientHomebrew/Millennium?dir=packages/nix";
+    millennium = {
+      url = "github:SteamClientHomebrew/Millennium?dir=packages/nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nixvim = {
       url = "github:nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -38,63 +41,33 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, ... }@inputs: {
-    packages.x86_64-linux.nym-vpnd = nixpkgs.legacyPackages.x86_64-linux.callPackage ./modules/home/pkgs/nym-vpnd.nix { };
-
-    nixosConfigurations = {
-
-      desktop = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
+  outputs = { nixpkgs, home-manager, ... }@inputs:
+    let
+      mkHost = host: homeModule: nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs; };
         modules = [
-          ./hosts/desktop
+          ./hosts/${host}
           inputs.niri.nixosModules.niri
           home-manager.nixosModules.home-manager
           {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.backupCommand = ''rm -f "$1"'';
-            home-manager.sharedModules = [ inputs.nixvim.homeModules.nixvim ];
-            home-manager.extraSpecialArgs = { inherit inputs; };
-            home-manager.users.honey = import ./modules/home/desktop.nix;
+            home-manager = {
+              useGlobalPkgs = true;
+              useUserPackages = true;
+              backupCommand = ''rm -f "$1"'';
+              sharedModules = [ inputs.nixvim.homeModules.nixvim ];
+              extraSpecialArgs = { inherit inputs; };
+              users.honey = import homeModule;
+            };
           }
         ];
       };
+    in
+    {
+      packages.x86_64-linux.nym-vpnd = (nixpkgs.legacyPackages.x86_64-linux.extend (import ./pkgs inputs)).nym-vpnd;
 
-      laptop = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        specialArgs = { inherit inputs; };
-        modules = [
-          ./hosts/laptop
-          inputs.niri.nixosModules.niri
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.backupCommand = ''rm -f "$1"'';
-            home-manager.sharedModules = [ inputs.nixvim.homeModules.nixvim ];
-            home-manager.extraSpecialArgs = { inherit inputs; };
-            home-manager.users.honey = import ./modules/home/laptop.nix;
-          }
-        ];
-      };
-
-      steamdeck = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        specialArgs = { inherit inputs; };
-        modules = [
-          ./hosts/steamdeck
-          inputs.niri.nixosModules.niri
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.backupCommand = ''rm -f "$1"'';
-            home-manager.extraSpecialArgs = { inherit inputs; };
-            home-manager.users.honey = import ./modules/home/deck.nix;
-          }
-        ];
+      nixosConfigurations = {
+        desktop = mkHost "desktop" ./modules/home/desktop.nix;
+        steamdeck = mkHost "steamdeck" ./modules/home/deck.nix;
       };
     };
-  };
 }

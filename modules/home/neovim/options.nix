@@ -1,5 +1,7 @@
 {
   programs.nixvim = {
+    lsp.inlayHints.enable = true;
+
     globals = {
       mapleader = " ";
       maplocalleader = " ";

@@ -1,4 +1,4 @@
-{ lib, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
 let
   companionKey = "z98YxWj0MDvXLzJs";
@@ -17,7 +17,7 @@ in
     domain = "localhost";
 
     settings = {
-      external_port = 3000;
+      external_port = config.services.invidious.port;
       https_only = false;
       registration_enabled = true;
       invidious_companion = [ { private_url = "http://127.0.0.1:8282/companion"; } ];
@@ -71,5 +71,5 @@ in
     PrivateUsers = lib.mkForce false;
   };
 
-  networking.firewall.allowedTCPPorts = [ 3000 ];
+  networking.firewall.allowedTCPPorts = [ config.services.invidious.port ];
 }

@@ -24,7 +24,6 @@ let
   focusExpr = direction: "hl.dsp.focus({ direction = ${luaString direction} })";
   moveWindowExpr = direction: "hl.dsp.window.move({ direction = ${luaString direction} })";
   workspaceRefExpr = reference: "hl.dsp.focus({ workspace = ${luaString reference} })";
-  moveToWorkspaceRefExpr = reference: "hl.dsp.window.move({ workspace = ${luaString reference} })";
   monitorWorkspaceExpr = action: offset: luaActionExpr ''
     local active = hl.get_active_workspace()
     if active then

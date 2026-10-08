@@ -1,5 +1,3 @@
-{ ... }:
-
 let
   # UI roles mirror material/Theme.qml: surfaces, primary containers and state layers.
   # Zed reuses foregrounds across containers: soften tint where needed for contrast.

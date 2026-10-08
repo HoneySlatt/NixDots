@@ -1,7 +1,23 @@
-{ ... }:
+{ lib, ... }:
 
+let
+  osd = args: {
+    action.spawn = [ "swayosd-client" "--monitor" "DP-2" ] ++ args;
+    allow-when-locked = true;
+  };
+  media = command: {
+    action.spawn = [ "playerctl" command ];
+    allow-when-locked = true;
+  };
+  # Mod+1..9, Mod+0 for workspace 10
+  workspaceBinds = lib.mergeAttrsList (map (i:
+    let ws = toString i; key = toString (lib.mod i 10); in {
+      "Mod+${key}".action.focus-workspace = ws;
+      "Mod+Shift+${key}".action.move-window-to-workspace = ws;
+    }) (lib.range 1 10));
+in
 {
-  programs.niri.settings.binds = {
+  programs.niri.settings.binds = workspaceBinds // {
     # ── App launchers ────────────────────────────────────────────────────
     "Ctrl+Shift+T".action.spawn = "rio";
     "Mod+Q" = {
@@ -108,46 +124,16 @@
     };
 
     # ── Media / Volume / Brightness ──────────────────────────────────────
-    "XF86AudioRaiseVolume" = {
-      action.spawn = [ "swayosd-client" "--monitor" "DP-2" "--output-volume" "raise" ];
-      allow-when-locked = true;
-    };
-    "XF86AudioLowerVolume" = {
-      action.spawn = [ "swayosd-client" "--monitor" "DP-2" "--output-volume" "lower" ];
-      allow-when-locked = true;
-    };
-    "XF86AudioMute" = {
-      action.spawn = [ "swayosd-client" "--monitor" "DP-2" "--output-volume" "mute-toggle" ];
-      allow-when-locked = true;
-    };
-    "XF86AudioMicMute" = {
-      action.spawn = [ "swayosd-client" "--monitor" "DP-2" "--input-volume" "mute-toggle" ];
-      allow-when-locked = true;
-    };
-    "XF86MonBrightnessUp" = {
-      action.spawn = [ "swayosd-client" "--monitor" "DP-2" "--brightness" "raise" ];
-      allow-when-locked = true;
-    };
-    "XF86MonBrightnessDown" = {
-      action.spawn = [ "swayosd-client" "--monitor" "DP-2" "--brightness" "lower" ];
-      allow-when-locked = true;
-    };
+    "XF86AudioRaiseVolume" = osd [ "--output-volume" "raise" ];
+    "XF86AudioLowerVolume" = osd [ "--output-volume" "lower" ];
+    "XF86AudioMute" = osd [ "--output-volume" "mute-toggle" ];
+    "XF86AudioMicMute" = osd [ "--input-volume" "mute-toggle" ];
+    "XF86MonBrightnessUp" = osd [ "--brightness" "raise" ];
+    "XF86MonBrightnessDown" = osd [ "--brightness" "lower" ];
 
-    "XF86AudioNext" = {
-      action.spawn = [ "playerctl" "next" ];
-      allow-when-locked = true;
-    };
-    "XF86AudioPause" = {
-      action.spawn = [ "playerctl" "play-pause" ];
-      allow-when-locked = true;
-    };
-    "XF86AudioPlay" = {
-      action.spawn = [ "playerctl" "play-pause" ];
-      allow-when-locked = true;
-    };
-    "XF86AudioPrev" = {
-      action.spawn = [ "playerctl" "previous" ];
-      allow-when-locked = true;
-    };
+    "XF86AudioNext" = media "next";
+    "XF86AudioPause" = media "play-pause";
+    "XF86AudioPlay" = media "play-pause";
+    "XF86AudioPrev" = media "previous";
   };
 }

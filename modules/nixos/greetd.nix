@@ -1,5 +1,3 @@
-{ ... }:
-
 {
   services.greetd = {
     enable = true;
@@ -11,8 +9,10 @@
     };
   };
 
-  systemd.services.greetd.serviceConfig.StandardInput = "tty";
-  systemd.services.greetd.serviceConfig.StandardOutput = "tty";
-  systemd.services.greetd.serviceConfig.TTYPath = "/dev/tty1";
+  systemd.services.greetd.serviceConfig = {
+    StandardInput = "tty";
+    StandardOutput = "tty";
+    TTYPath = "/dev/tty1";
+  };
 }
 

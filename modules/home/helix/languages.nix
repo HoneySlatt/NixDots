@@ -1,6 +1,7 @@
 { pkgs, ... }:
 
 let
+  lspSettings = import ../lsp-settings.nix;
   prettierCmd = "${pkgs.prettier}/bin/prettier";
   helixWakatimeLs = pkgs.zed-wakatime-ls.overrideAttrs (oldAttrs: {
     postPatch = (oldAttrs.postPatch or "") + ''
@@ -239,46 +240,12 @@ in
 
       gopls = {
         command = "gopls";
-        config = {
-          hints = {
-            assignVariableTypes = true;
-            compositeLiteralFields = true;
-            functionTypeParameters = true;
-            parameterNames = true;
-            rangeVariableTypes = true;
-          };
-          analyses = {
-            unusedparams = true;
-            shadow = true;
-          };
-          staticcheck = true;
-        };
+        config = lspSettings.gopls;
       };
 
       "rust-analyzer" = {
         command = "rust-analyzer";
-        config = {
-          check = {
-            command = "clippy";
-            extraArgs = [ "--" "-W" "clippy::pedantic" ];
-          };
-          cargo = {
-            allFeatures = true;
-            loadOutDirsFromCheck = true;
-          };
-          inlayHints = {
-            bindingModeHints.enable = false;
-            chainingHints.enable = true;
-            closingBraceHints.enable = true;
-            closureReturnTypeHints.enable = "always";
-            parameterHints.enable = true;
-            typeHints.enable = true;
-            typeHints.hideClosureInitialization = false;
-          };
-          procMacro = {
-            enable = true;
-          };
-        };
+        config = lspSettings.rust-analyzer;
       };
 
       "lua-language-server" = {

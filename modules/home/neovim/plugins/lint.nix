@@ -1,6 +1,7 @@
 {
   programs.nixvim.plugins.lint = {
     enable = true;
+    autoInstall.enable = true;
     lintersByFt = {
       python = [ "ruff" ];
       javascript = [ "eslint_d" ];

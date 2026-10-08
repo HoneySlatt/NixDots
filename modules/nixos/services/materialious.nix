@@ -1,4 +1,4 @@
-{ pkgs, config, lib, ... }:
+{ config, ... }:
 
 {
   virtualisation.podman.enable = true;
@@ -24,7 +24,7 @@
       PUBLIC_REGISTRATION_ALLOWED = "true";
       PUBLIC_CAPTCHA_DISABLED = "true";
 
-      PUBLIC_DEFAULT_INVIDIOUS_INSTANCE = "http://localhost:3000";
+      PUBLIC_DEFAULT_INVIDIOUS_INSTANCE = "http://localhost:${toString config.services.invidious.port}";
       PUBLIC_DEFAULT_RETURNYTDISLIKES_INSTANCE = "https://returnyoutubedislikeapi.com";
       PUBLIC_DEFAULT_SPONSERBLOCK_INSTANCE = "https://sponsor.ajay.app";
       PUBLIC_DEFAULT_DEARROW_INSTANCE = "https://sponsor.ajay.app";

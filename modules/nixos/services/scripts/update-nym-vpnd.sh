@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-file="$HOME/NixOS/modules/home/pkgs/nym-vpnd.nix"
+file="$HOME/NixOS/pkgs/nym-vpnd.nix"
 
 current=$(sed -n 's/^  version = "\(.*\)";$/\1/p' "$file")
 

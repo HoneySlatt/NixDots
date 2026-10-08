@@ -58,38 +58,26 @@
         enable_http2 = true;
       };
 
-      engines = lib.mapAttrsToList (name: value: { inherit name; } // value) {
-        "google".disabled = false;
-        "google".weight = 2;
-        "bing".disabled = false;
-        "bing".weight = 1;
-        "brave".disabled = false;
-        "brave".weight = 1;
-        "duckduckgo".disabled = false;
-        "duckduckgo".weight = 1;
-        "qwant".disabled = false;
-        "qwant".weight = 1;
-        "mojeek".disabled = false;
-        "mojeek".weight = 0.5;
-        "mwmbl".disabled = true;
-        "mwmbl".weight = 0.4;
+      engines = lib.mapAttrsToList (name: value: { inherit name; disabled = false; } // value) {
+        google.weight = 2;
+        bing.weight = 1;
+        brave.weight = 1;
+        duckduckgo.weight = 1;
+        qwant.weight = 1;
+        mojeek.weight = 0.5;
+        mwmbl = { disabled = true; weight = 0.4; };
 
-        "wikidata".disabled = false;
-        "wikidata".weight = 1.5;
-        "wikipedia".disabled = false;
-        "wikipedia".weight = 1.5;
-        "ddg definitions".disabled = false;
+        wikidata.weight = 1.5;
+        wikipedia.weight = 1.5;
         "ddg definitions".weight = 2;
-        "wikibooks".disabled = false;
+        wikibooks = { };
 
-        "stackoverflow".disabled = false;
-        "stackoverflow".weight = 1.5;
-        "github".disabled = false;
-        "github".weight = 1;
-        "searchcode code".disabled = false;
+        stackoverflow.weight = 1.5;
+        github.weight = 1;
+        "searchcode code" = { };
 
-        "google news".disabled = false;
-        "bing news".disabled = false;
+        "google news" = { };
+        "bing news" = { };
       };
 
       enabled_plugins = [

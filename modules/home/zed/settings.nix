@@ -1,5 +1,8 @@
 { pkgs, ... }:
 
+let
+  lspSettings = import ../lsp-settings.nix;
+in
 {
   programs.zed-editor.userSettings = {
     helix_mode = true;
@@ -22,46 +25,8 @@
     autosave = "off";
 
     lsp = {
-      "rust-analyzer" = {
-        initialization_options = {
-          check = {
-            command = "clippy";
-            extraArgs = [ "--" "-W" "clippy::pedantic" ];
-          };
-          cargo = {
-            allFeatures = true;
-            loadOutDirsFromCheck = true;
-          };
-          inlayHints = {
-            bindingModeHints.enable = false;
-            chainingHints.enable = true;
-            closingBraceHints.enable = true;
-            closureReturnTypeHints.enable = "always";
-            parameterHints.enable = true;
-            typeHints.enable = true;
-          };
-          procMacro = {
-            enable = true;
-          };
-        };
-      };
-
-      gopls = {
-        settings = {
-          hints = {
-            assignVariableTypes = true;
-            compositeLiteralFields = true;
-            functionTypeParameters = true;
-            parameterNames = true;
-            rangeVariableTypes = true;
-          };
-          analyses = {
-            unusedparams = true;
-            shadow = true;
-          };
-          staticcheck = true;
-        };
-      };
+      "rust-analyzer".initialization_options = lspSettings.rust-analyzer;
+      gopls.settings = lspSettings.gopls;
 
       wakatime = {
         binary = {

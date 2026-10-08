@@ -1,5 +1,3 @@
-{ ... }:
-
 let
   windowRule = spec: { _args = [ spec ]; };
 in

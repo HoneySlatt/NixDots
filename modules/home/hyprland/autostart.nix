@@ -17,8 +17,6 @@ in
             hl.exec_cmd("awww-daemon")
             hl.exec_cmd("wallpaper-rotation")
             hl.exec_cmd("steam -silent")
-            hl.exec_cmd("sleep 15 && jellyfin-mpv-shim")
-            hl.exec_cmd("seanime")
             hl.exec_cmd("mode=$(cat ~/.config/hypr/layout-mode 2>/dev/null); if [ \"$mode\" = scrolling ]; then hyprctl eval 'hl.config({ general = { layout = \"scrolling\" } }); hl.animation({ leaf = \"workspaces\", enabled = true, speed = 5, bezier = \"default\", style = \"slidevert\" })'; fi")
           end
         '')

@@ -4,12 +4,9 @@
   nixpkgs.overlays = [
     inputs.millennium.overlays.default
     (final: prev: {
-      steam-metadata-editor = final.callPackage ../../modules/home/pkgs/steam-metadata-editor.nix { };
-      nuvio = final.callPackage ../../modules/home/pkgs/nuvio.nix { };
-
       # Sort library by overridden title when set
       heroic-unwrapped = prev.heroic-unwrapped.overrideAttrs (old: {
-        patches = (old.patches or [ ]) ++ [ ../../modules/home/pkgs/heroic-gog-profile.patch ];
+        patches = (old.patches or [ ]) ++ [ ../../pkgs/heroic-gog-profile.patch ];
         postPatch = (old.postPatch or "") + ''
           substituteInPlace src/frontend/screens/Library/index.tsx \
             --replace-fail "a.title.toUpperCase()" "(a.overrides?.title || a.title).toUpperCase()" \
@@ -27,7 +24,7 @@
           cp -rL "$(${final.jq}/bin/jq -r .build.frontendDist tauri.conf.json)" "$frontend"
           chmod -R u+w "$frontend"
           substituteInPlace "$frontend/index.html" \
-            --replace-fail "</head>" "$(cat ${../../modules/home/pkgs/cinny-desktop-theme.html})</head>"
+            --replace-fail "</head>" "$(cat ${../../pkgs/cinny-desktop-theme.html})</head>"
           ${final.jq}/bin/jq --arg dist "$frontend" '.build.frontendDist = $dist' tauri.conf.json \
             | ${final.moreutils}/bin/sponge tauri.conf.json
 
@@ -48,12 +45,8 @@
     brave-origin
 
     # Desktop Apps
-    (pkgs.callPackage ../../modules/home/pkgs/claude-desktop.nix {
-      claudeDesktop = inputs.claude-desktop-nix-flake.packages.${pkgs.stdenv.hostPlatform.system}.default;
-    })
-    (pkgs.callPackage ../../modules/home/pkgs/chatgpt-desktop.nix {
-      chatgptDesktop = inputs.chatgpt-desktop.packages.${pkgs.stdenv.hostPlatform.system}.default;
-    })
+    claude-desktop
+    chatgpt-desktop
     pkgsRocm.blender
     gimp
     kopuz
@@ -66,7 +59,7 @@
     cinny-desktop
     signal-desktop
     tutanota-desktop
-    (pkgs.callPackage ../../modules/home/pkgs/opencode-desktop.nix { })
+    opencode-desktop
     jellyfin-desktop
     kdePackages.kdenlive
 

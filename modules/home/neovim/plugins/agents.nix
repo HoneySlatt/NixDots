@@ -1,39 +1,32 @@
-{ pkgs, ... }:
-
 {
-  programs.nixvim = {
-    extraPlugins = with pkgs.vimPlugins; [
-      claude-code-nvim
-      codex-nvim
-    ];
-
-    extraConfigLua = ''
-      require("claude-code").setup({
-        command = "${pkgs.claude-code}/bin/claude",
+  programs.nixvim.plugins = {
+    claude-code = {
+      enable = true;
+      settings = {
         window = {
-          position = "vertical",
-          split_ratio = 0.3,
-        },
+          position = "vertical";
+          split_ratio = 0.3;
+        };
         keymaps = {
           toggle = {
-            normal = false,
-            terminal = false,
+            normal = false;
+            terminal = false;
             variants = {
-              continue = false,
-              verbose = false,
-            },
-          },
-          window_navigation = false,
-        },
-      })
+              continue = false;
+              verbose = false;
+            };
+          };
+          window_navigation = false;
+        };
+      };
+    };
 
-      require("codex").setup({
-        autoinstall = false,
-        panel = true,
-        keymaps = {
-          toggle = nil,
-        },
-      })
-    '';
+    codex = {
+      enable = true;
+      settings = {
+        autoinstall = false;
+        panel = true;
+      };
+    };
   };
 }

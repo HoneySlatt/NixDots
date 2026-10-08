@@ -2,7 +2,7 @@
 
 {
   programs.nixvim = {
-    extraPlugins = [ pkgs.vimPlugins.vim-wakatime ];
+    plugins.wakatime.enable = true;
     extraPackages = [ pkgs.wakatime-cli ];
   };
 }

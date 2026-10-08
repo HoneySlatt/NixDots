@@ -1,16 +1,14 @@
-{ pkgs, ... }:
+{ config, ... }:
 
 {
   programs.ghostty = {
     enable = true;
-    systemd.enable = true;
     settings = {
+      font-family = "Google Sans Code";
+      font-size = 11;
       adjust-cell-height = "18%";
 
-      config-file = [
-        "?/home/honey/.config/ghostty/fonts.conf"
-        "?/home/honey/.config/ghostty/themes/current.conf"
-      ];
+      config-file = [ "?${config.xdg.configHome}/ghostty/themes/current.conf" ];
 
       shell-integration = "zsh";
       confirm-close-surface = false;
@@ -24,5 +22,5 @@
   };
 
   xdg.configFile."systemd/user/graphical-session.target.wants/app-com.mitchellh.ghostty.service".source =
-    "${pkgs.ghostty}/share/systemd/user/app-com.mitchellh.ghostty.service";
+    "${config.programs.ghostty.package}/share/systemd/user/app-com.mitchellh.ghostty.service";
 }

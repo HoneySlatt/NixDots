@@ -1,5 +1,3 @@
-{ ... }:
-
 let
   palette = {
     gruvbox = {
@@ -101,7 +99,7 @@ let
     };
   };
 
-  mkTheme = name: pal: {
+  mkTheme = _name: pal: {
     "ui.background" = { };
     "ui.background.separator" = { fg = pal.bg1; };
     "ui.cursor" = { modifiers = [ "reversed" ]; };

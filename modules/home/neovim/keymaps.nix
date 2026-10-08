@@ -47,7 +47,7 @@
     {
       mode = "n";
       key = "<leader>cf";
-      action.__raw = ''function() require("conform").format({ async = true, lsp_fallback = true }) end'';
+      action.__raw = ''function() require("conform").format({ async = true, lsp_format = "fallback" }) end'';
       options.desc = "Format file";
     }
 

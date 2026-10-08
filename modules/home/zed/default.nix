@@ -1,9 +1,6 @@
-{ pkgs, config, lib, inputs, ... }:
-
 {
   imports = [
     ./settings.nix
-    ./keymaps.nix
     ./languages.nix
     ./agents.nix
     ./themes.nix

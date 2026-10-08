@@ -1,5 +1,3 @@
-{ ... }:
-
 {
   programs.niri.settings.outputs = {
     "DP-2" = {

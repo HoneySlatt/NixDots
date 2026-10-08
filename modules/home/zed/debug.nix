@@ -1,5 +1,3 @@
-{ ... }:
-
 {
   programs.zed-editor.userDebug = [
     {

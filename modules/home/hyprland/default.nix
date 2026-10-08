@@ -2,7 +2,7 @@
 
 let
   scrolloverview = pkgs.hyprlandPlugins.mkHyprlandPlugin {
-    hyprland = pkgs.hyprland;
+    inherit (pkgs) hyprland;
     pluginName = "scrolloverview";
     version = inputs.scrolloverview.shortRev or "unstable";
     src = inputs.scrolloverview;
@@ -34,7 +34,7 @@ let
   };
 
   hymission = pkgs.hyprlandPlugins.mkHyprlandPlugin {
-    hyprland = pkgs.hyprland;
+    inherit (pkgs) hyprland;
     pluginName = "hymission";
     version = "0.5.0";
     src = inputs.hymission;
@@ -69,8 +69,9 @@ in
     ./autostart.nix
     ./keybindings.nix
     ./windowrules.nix
-    ./hyprlock.nix
+    ../hyprlock.nix
     ./hypridle.nix
+    ../quickshell
   ];
 
   services.gnome-keyring.enable = true;

@@ -12,11 +12,8 @@
         "<leader>ca"  = { action = "code_action";     desc = "Code action"; };
         "<leader>cr"  = { action = "rename";          desc = "Rename symbol"; };
       };
-      diagnostic = {
-        "[d"         = { action = "goto_prev";   desc = "Previous diagnostic"; };
-        "]d"         = { action = "goto_next";   desc = "Next diagnostic"; };
-        "<leader>cd" = { action = "open_float";  desc = "Show diagnostic"; };
-      };
+      # [d and ]d are Neovim defaults
+      diagnostic."<leader>cd" = { action = "open_float"; desc = "Show diagnostic"; };
     };
 
     servers = {
@@ -33,37 +30,18 @@
       # Go
       gopls = {
         enable = true;
-        filetypes = [ "go" "gomod" "gowork" "gotmpl" ];
-        rootMarkers = [ "go.work" "go.mod" ".git" ];
-        settings = {
-          gopls = {
-            analyses = {
-              unusedparams = true;
-              shadow = true;
-            };
-            staticcheck = true;
-            hints = {
-              assignVariableTypes = true;
-              compositeLiteralFields = true;
-              functionTypeParameters = true;
-              parameterNames = true;
-              rangeVariableTypes = true;
-            };
-          };
-        };
+        settings.gopls = (import ../../lsp-settings.nix).gopls;
       };
 
       # TOML
       taplo = {
         enable = true;
-        filetypes = [ "toml" ];
         rootMarkers = [ "Cargo.toml" ".git" ];
       };
 
       # Lua
       lua_ls = {
         enable = true;
-        filetypes = [ "lua" ];
         rootMarkers = [ ".luarc.json" ".git" ];
         settings = {
           Lua = {
@@ -77,26 +55,13 @@
       # Python
       pyright = {
         enable = true;
-        filetypes = [ "python" ];
         rootMarkers = [ "pyproject.toml" "requirements.txt" ".git" ];
       };
 
       # Web
-      ts_ls = {
-        enable = true;
-        filetypes = [ "javascript" "javascriptreact" "typescript" "typescriptreact" ];
-        rootMarkers = [ "package.json" "tsconfig.json" ".git" ];
-      };
-      html = {
-        enable = true;
-        filetypes = [ "html" ];
-        rootMarkers = [ "package.json" ".git" ];
-      };
-      cssls = {
-        enable = true;
-        filetypes = [ "css" "scss" "less" ];
-        rootMarkers = [ "package.json" ".git" ];
-      };
+      ts_ls.enable = true;
+      html.enable = true;
+      cssls.enable = true;
     };
   };
 }

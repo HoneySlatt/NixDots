@@ -1,5 +1,3 @@
-{ ... }:
-
 {
   services.immich = {
     enable       = true;
