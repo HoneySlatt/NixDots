@@ -318,7 +318,7 @@ fn icon_entry(path: &std::path::Path) -> Option<(String, u32)> {
     Some((String::from(name), score))
 }
 
-fn icon_file(name: &str, theme_path: &str) -> Option<String> {
+pub fn icon_file(name: &str, theme_path: &str) -> Option<String> {
     if name.is_empty() {
         return None;
     }

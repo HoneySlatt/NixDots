@@ -111,7 +111,7 @@ switch_wallpaper
 systemctl --user restart --no-block amane-theme-background.service
 
 for fn in switch_btop switch_fastfetch switch_ghostty switch_rio gen_yazi_theme nvim_reload \
-          zed_reload switch_gtk switch_qt gen_hyprlock_theme switch_swaync switch_serein switch_cosmic switch_rqbit; do
+          zed_reload switch_gtk switch_qt gen_hyprlock_theme switch_serein switch_cosmic switch_rqbit; do
   "$fn" &
 done
 wait

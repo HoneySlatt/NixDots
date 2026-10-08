@@ -9,6 +9,7 @@ use amane::{
 };
 
 use crate::m3::{self, Grow, Variant};
+use crate::notifications;
 use crate::popups::{self, Anchor, Popup};
 use crate::system::{self, NIGHT_LIGHT_TOGGLE, SystemState, Vpn, toggle_and_refresh};
 use crate::theme::{Roles, SHAPE_L, SHAPE_XL, SHAPE_XLI, TYPE_BODY, TYPE_HEADLINE, TYPE_LABEL, TYPE_TITLE, Theme};
@@ -75,7 +76,7 @@ fn trigger(index: usize) {
         0 => toggle_wifi(),
         1 => toggle_bluetooth(),
         2 => amane::spawn("toggle-nym"),
-        3 => toggle_and_refresh("swaync-client -d"),
+        3 => notifications::toggle_dnd(),
         VOLUME => Audio::toggle_mute(),
         6 => Media::previous(),
         7 => Media::play_pause(),
@@ -120,7 +121,7 @@ fn on_key(key: Key) {
             'w' => toggle_wifi(),
             'b' => toggle_bluetooth(),
             'v' => amane::spawn("toggle-nym"),
-            'd' => toggle_and_refresh("swaync-client -d"),
+            'd' => notifications::toggle_dnd(),
             'p' => Media::play_pause(),
             'j' => select(selected + 1),
             'k' => select(selected.saturating_sub(1)),

@@ -10,6 +10,7 @@ use amane::{
 
 use crate::anim::{self, EFFECTS, SPRING_DEFAULT};
 use crate::m3::{self, Grow, Variant};
+use crate::notifications;
 use crate::popups::{self, Anchor, Popup};
 use crate::system::{self, NIGHT_LIGHT_TOGGLE, SystemState, Vpn, toggle_and_refresh};
 use crate::theme::{Roles, SHAPE_L, SHAPE_XL, SHAPE_XLI, TYPE_LABEL, TYPE_TITLE, TYPE_TITLE_L, Theme};
@@ -204,7 +205,7 @@ fn tiles(roles: &Roles) -> Column {
         width,
         ("do_not_disturb_on", "Do not disturb", if system.dnd { "On" } else { "Off" }),
         system.dnd,
-        || toggle_and_refresh("swaync-client -d"),
+        notifications::toggle_dnd,
     );
     let night_tile = m3::quick_tile(
         roles,

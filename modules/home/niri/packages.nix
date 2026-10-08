@@ -9,7 +9,6 @@
     wf-recorder
     wl-clipboard
     playerctl
-    swaynotificationcenter
     hyprpicker
     wlsunset
     swayosd

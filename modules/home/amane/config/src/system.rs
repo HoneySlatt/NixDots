@@ -8,6 +8,7 @@ use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 use amane::{Bus, Link, Network, Service};
 
+use crate::notifications;
 use crate::popups::{self, Popup};
 
 pub struct Clock {
@@ -230,47 +231,6 @@ impl Service for Vpn {
     }
 }
 
-// U+F009A notification, U+F009C none, U+F009B dnd-notification, U+F0A91 dnd-none
-pub struct SwayncIcon {
-    pub icon: char,
-}
-
-fn swaync_icon(alt: &str) -> char {
-    match alt {
-        "notification" | "inhibited-notification" => '\u{f009a}',
-        "dnd-notification" | "dnd-inhibited-notification" => '\u{f009b}',
-        "dnd-none" | "dnd-inhibited-none" => '\u{f0a91}',
-        _ => '\u{f009c}',
-    }
-}
-
-// The string value of a top-level key in a flat JSON line
-fn json_string<'a>(line: &'a str, key: &str) -> Option<&'a str> {
-    let start = line.find(&format!("\"{key}\":"))? + key.len() + 3;
-    let rest = line[start..].trim_start().strip_prefix('"')?;
-    rest.split('"').next()
-}
-
-impl Service for SwayncIcon {
-    fn new() -> Self {
-        Self { icon: swaync_icon("none") }
-    }
-
-    fn listen() {
-        loop {
-            for line in amane::lines("swaync-client -swb") {
-                let icon = swaync_icon(json_string(&line, "alt").unwrap_or("none"));
-
-                if icon != Self::read().icon {
-                    Self::write().icon = icon;
-                }
-            }
-
-            thread::sleep(Duration::from_secs(1));
-        }
-    }
-}
-
 pub static DISTRO_ICON: LazyLock<char> = LazyLock::new(distro_icon);
 
 fn distro_icon() -> char {
@@ -346,7 +306,7 @@ fn connection() -> String {
 impl SystemState {
     fn read_now() -> Self {
         Self {
-            dnd: amane::output("swaync-client -D") == "true",
+            dnd: notifications::dnd(),
             night_light: !amane::output("pgrep -x wlsunset").is_empty(),
             battery: battery(),
             connection: connection(),

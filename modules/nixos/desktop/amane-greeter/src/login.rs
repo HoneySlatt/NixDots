@@ -9,8 +9,7 @@ use std::thread;
 use amane::{Service, TextInput};
 
 use crate::greetd::{Greetd, Reply};
-
-pub const INPUT: &str = "greeter/answer";
+use crate::login_screen::INPUT;
 
 #[derive(Clone, Copy, PartialEq)]
 pub enum Stage {
@@ -27,7 +26,6 @@ pub struct Session {
 
 pub struct Login {
     pub user: String,
-    pub full_name: String,
     pub stage: Stage,
     pub question: String,
     pub secret: bool,
@@ -42,12 +40,9 @@ static GREETD: Mutex<Option<Greetd>> = Mutex::new(None);
 impl Service for Login {
     fn new() -> Self {
         let user = env::var("AMANE_GREETER_USER").unwrap_or_default();
-        let full_name = amane::output(&format!("getent passwd '{user}' | cut -d: -f5 | cut -d, -f1"));
-        let full_name = if full_name.trim().is_empty() { user.clone() } else { full_name.trim().to_string() };
 
         Self {
             user,
-            full_name,
             stage: Stage::Connecting,
             question: String::new(),
             secret: true,

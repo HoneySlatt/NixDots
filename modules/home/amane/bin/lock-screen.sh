@@ -1,3 +1,9 @@
+# The shell draws the lock screen (lock.rs); it answers nothing once locked.
+# hyprlock covers for a shell that is not running or was built before lock.rs.
+if [ -z "$(amane ipc call lock-screen 2>&1)" ]; then
+  exit 0
+fi
+
 if pgrep -x hyprlock > /dev/null; then
   exit 0
 fi

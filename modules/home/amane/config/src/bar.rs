@@ -8,7 +8,8 @@ use amane::{
 
 use crate::anim::{self, Motion};
 use crate::popups::{self, Popup};
-use crate::system::{Blink, Clock, DISTRO_ICON, HOT_PERCENT, Load, NetBar, SwayncIcon, Vpn};
+use crate::notifications;
+use crate::system::{Blink, Clock, DISTRO_ICON, HOT_PERCENT, Load, NetBar, Vpn};
 use crate::tray::Tray;
 use crate::tray_menu;
 use crate::theme::{
@@ -454,12 +455,12 @@ impl Bar<'_> {
     }
 
     fn notifications(&self) -> Rectangle {
-        let icon = self.symbol(SwayncIcon::read().icon, FONT_SIZE, self.palette.text);
+        let icon = self.symbol(notifications::bar_icon(), FONT_SIZE, self.palette.text);
 
         self.module("notifications", icon, horizontal(MODULE_PADDING, MODULE_PADDING), |button| {
             match button {
-                Button::Right => amane::spawn("swaync-client -d -sw"),
-                _ => amane::spawn("swaync-client -t -sw"),
+                Button::Right => notifications::toggle_dnd(),
+                _ => popups::toggle(Popup::Notifications),
             }
         })
     }

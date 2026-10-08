@@ -9,7 +9,7 @@ use amane::{
 use crate::bar::Position;
 use crate::theme::{MARGIN, POPUP_GAP};
 use crate::{
-    calendar, control_center, launcher, network_popup, power_menu, small_launcher, steam_launcher, system_monitor,
+    calendar, control_center, launcher, network_popup, notifications, power_menu, small_launcher, steam_launcher, system_monitor,
     theme_launcher, tray_menu, volume_popup, vpn_launcher, wallpaper_launcher,
 };
 
@@ -28,6 +28,7 @@ pub enum Popup {
     SteamLauncher,
     VpnLauncher,
     TrayMenu,
+    Notifications,
 }
 
 // One popup at a time, shown on the output that had focus when it opened
@@ -105,6 +106,7 @@ pub fn show(popup: Popup) {
         Popup::VpnLauncher => vpn_launcher::reset(),
         // filled in by tray_menu::open before showing
         Popup::TrayMenu => {}
+        Popup::Notifications => {}
     }
 
     let output = focused_output().unwrap_or_default();
@@ -222,6 +224,7 @@ pub fn view(monitor: &Monitor) -> LayerWindow {
         Some(Popup::SteamLauncher) => steam_launcher::view(monitor),
         Some(Popup::VpnLauncher) => vpn_launcher::view(monitor),
         Some(Popup::TrayMenu) => tray_menu::view(monitor),
+        Some(Popup::Notifications) => notifications::view(monitor),
         None => LayerWindow::new().width(Full).height(Full).layer(Layer::Overlay).namespace("amane:popup").visible(false),
     }
 }
