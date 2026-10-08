@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ config, lib, pkgs, ... }:
 
 let
   icons = "${config.home.homeDirectory}/Pictures/Icons";
@@ -229,20 +229,12 @@ in
       categories = [ "AudioVideo" "Video" ];
     };
 
-    imv = {
-      name       = "imv";
-      exec       = "imv %F";
-      icon       = "imv";
+    viu = {
+      name       = "viu";
+      exec       = "rio -e ${pkgs.writeShellScript "viu-hold" ''viu "$@"; read -rsn1''} %F";
+      icon       = "image-viewer";
       noDisplay  = true;
       mimeType   = imageTypes;
-      categories = [ "Graphics" "Viewer" ];
-    };
-
-    imv-dir = {
-      name       = "imv";
-      exec       = "imv %F";
-      icon       = "imv";
-      noDisplay  = true;
       categories = [ "Graphics" "Viewer" ];
     };
 
@@ -292,7 +284,7 @@ in
   xdg.mimeApps = {
     enable = true;
     defaultApplications =
-      lib.genAttrs imageTypes (_: "imv.desktop")
+      lib.genAttrs imageTypes (_: "viu.desktop")
       // lib.genAttrs mediaTypes (_: "mpv.desktop")
       // lib.genAttrs textTypes (_: "nvim.desktop")
       // lib.genAttrs webTypes (_: "brave-origin.desktop")

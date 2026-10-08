@@ -41,6 +41,8 @@
     # Files and network
     nautilus
     localsend
+    rqbit
+    rqbit-desktop
 
     # Development
     git
@@ -68,7 +70,6 @@
     bat
     eza
     ripgrep
-    gdu
     dua
     btop
     viu

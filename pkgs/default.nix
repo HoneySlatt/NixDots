@@ -8,6 +8,7 @@ in
   google-sans = final.callPackage ./google-sans { };
   nuvio = final.callPackage ./nuvio { };
   nym-vpnd = final.callPackage ./nym-vpnd { };
+  rqbit-desktop = final.callPackage ./rqbit-desktop { };
 
   claude-desktop = final.callPackage ./claude-desktop {
     claudeDesktop = inputs.claude-desktop-nix-flake.packages.${system}.default;
