@@ -13,7 +13,7 @@ Item {
     property string lastTheme: ""
     property bool lastNsfw: false
     property bool wallpaperThumbnailsReady: false
-    readonly property string thumbnailDir: Quickshell.env("HOME") + "/.cache/quickshell/wallpaper-launcher/" + Theme.currentTheme
+    readonly property string thumbnailDir: Quickshell.env("HOME") + "/.cache/amane/wallpaper-launcher/" + Theme.currentTheme
 
     function filenameFromPath(fullPath) {
         return fullPath.split("/").pop();

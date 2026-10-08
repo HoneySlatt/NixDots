@@ -47,8 +47,8 @@
       url = "github:Kopuz-org/kopuz";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    sonora = {
-      url = "github:sonorahq/sonora";
+    serein = {
+      url = "github:ViceVerse-cz/Serein";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };

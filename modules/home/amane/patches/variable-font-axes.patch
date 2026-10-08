@@ -1,0 +1,85 @@
+diff --git a/Cargo.toml b/Cargo.toml
+index b1e4050..4538100 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -17,7 +17,8 @@ wayland-client = "0.31.15"
+ # only for client_system, which hands the gpu libwayland's own display pointer
+ wayland-backend = { version = "0.3.17", features = ["client_system"] }
+ fontconfig = "0.11"
+-ttf-parser = "0.25.1"
++# gvar-alloc: glyphs with more than 32 variation tuples, like Google Sans Flex
++ttf-parser = { version = "0.25.1", features = ["gvar-alloc"] }
+ zune-jpeg = "0.5.15"
+ png = "0.18.1"
+ inotify = { version = "0.11.5", default-features = false }
+diff --git a/src/graphics/font.rs b/src/graphics/font.rs
+index d98f6f6..2354e1e 100644
+--- a/src/graphics/font.rs
++++ b/src/graphics/font.rs
+@@ -2,7 +2,7 @@ use std::collections::HashMap;
+ use std::sync::{LazyLock, Mutex, PoisonError};
+ 
+ use fontconfig::{CharSet, Fontconfig, Pattern, UnicodeCoverage};
+-use ttf_parser::{Face, GlyphId};
++use ttf_parser::{Face, GlyphId, Tag};
+ 
+ use crate::Weight;
+ 
+@@ -57,6 +57,9 @@ pub fn load_weighted(family: Option<&str>, weight: Weight) -> &'static Face<'sta
+ }
+ 
+ fn read(family: &str, weight: Weight) -> Face<'static> {
++    // "Family:wdth=118,FILL=1" also sets variable font axes
++    let (family, axes) = family.split_once(':').unwrap_or((family, ""));
++
+     let fontconfig = Fontconfig::new().expect("failed to start fontconfig");
+ 
+     // regular asks for no style, so plain text finds the same file it always did
+@@ -70,14 +73,44 @@ fn read(family: &str, weight: Weight) -> Face<'static> {
+     // a .ttc file holds several fonts, the index says which one
+     let index = found.index.unwrap_or(0) as u32;
+ 
+-    open(&found.path.to_string_lossy(), index)
++    let mut face = open(&found.path.to_string_lossy(), index);
++
++    // a variable font is one file for every weight, so the weight goes on its axis
++    let _ = face.set_variation(Tag::from_bytes(b"wght"), axis_weight(weight));
++
++    for (tag, value) in axes.split(',').filter_map(|axis| axis.split_once('=')) {
++        if let (Ok(tag), Ok(value)) = (<[u8; 4]>::try_from(tag.trim().as_bytes()), value.trim().parse()) {
++            let _ = face.set_variation(Tag::from_bytes(&tag), value);
++        }
++    }
++
++    face
+ }
+ 
++fn axis_weight(weight: Weight) -> f32 {
++    match weight {
++        Weight::Thin => 100.0,
++        Weight::ExtraLight => 200.0,
++        Weight::Light => 300.0,
++        Weight::Regular => 400.0,
++        Weight::Medium => 500.0,
++        Weight::SemiBold => 600.0,
++        Weight::Bold => 700.0,
++        Weight::ExtraBold => 800.0,
++        Weight::Black => 900.0,
++    }
++}
++
++// one copy of each file, shared by every weight and axis setting read from it
++static FILES: LazyLock<Mutex<HashMap<String, &'static [u8]>>> = LazyLock::new(|| Mutex::new(HashMap::new()));
++
+ fn open(path: &str, index: u32) -> Face<'static> {
+-    let bytes = std::fs::read(path).expect("failed to read font file");
++    let mut files = FILES.lock().unwrap_or_else(PoisonError::into_inner);
+ 
+     // the face borrows the bytes, so they have to live as long as it
+-    let bytes = Vec::leak(bytes);
++    let bytes: &'static [u8] = files
++        .entry(String::from(path))
++        .or_insert_with(|| Vec::leak(std::fs::read(path).expect("failed to read font file")));
+ 
+     // fontconfig keeps a variable font's named style in the upper half, the file only knows the lower
+     let face_index = index & 0xffff;

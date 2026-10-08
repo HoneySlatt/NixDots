@@ -54,7 +54,7 @@ QtObject {
     readonly property int fontSize: 12
     readonly property int fontWeight: Font.DemiBold
 
-    readonly property string _themeFile: Quickshell.env("HOME") + "/.config/quickshell/.current-theme"
+    readonly property string _themeFile: Quickshell.env("HOME") + "/.config/amane/.current-theme"
 
     readonly property var _reader: Process {
         command: ["cat", _themeFile]

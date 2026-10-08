@@ -4,7 +4,8 @@
     { argv = [ "wallpaper-rotation" ]; }
     { argv = [ "swaync" ]; }
     { argv = [ "swayosd-server" ]; }
-    { argv = [ "start-quickshell" ]; }
+    # Shell compiled by `amane compile` (modules/home/amane)
+    { argv = [ "amane" "run" ]; }
     #{ argv = [ "steam" "-silent" ]; }
   ];
 }

@@ -18,5 +18,5 @@ in
   opencode-desktop = final.callPackage ./opencode-desktop { inherit (prev) opencode-desktop; };
 
   kopuz = inputs.kopuz.packages.${system}.default;
-  sonora = inputs.sonora.packages.${system}.default;
+  serein = inputs.serein.packages.${system}.default;
 }

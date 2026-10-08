@@ -226,7 +226,7 @@ QtObject {
 
     // Per-theme metadata shared with the theme scripts, Neovim and wallpaper-rotation
     readonly property var _metaFile: FileView {
-        path: Quickshell.env("HOME") + "/.config/quickshell/themes/themes.json"
+        path: Quickshell.env("HOME") + "/.config/amane/themes/themes.json"
         blockLoading: true
     }
     readonly property var themeMeta: JSON.parse(_metaFile.text())
@@ -258,8 +258,8 @@ QtObject {
     readonly property int modulePadding: 8
 
     // ── Persistence ──
-    readonly property string _themeFile: Quickshell.env("HOME") + "/.config/quickshell/.current-theme"
-    readonly property string _nsfwFile: Quickshell.env("HOME") + "/.config/quickshell/.nsfw-enabled"
+    readonly property string _themeFile: Quickshell.env("HOME") + "/.config/amane/.current-theme"
+    readonly property string _nsfwFile: Quickshell.env("HOME") + "/.config/amane/.nsfw-enabled"
 
     property bool nsfwEnabled: false
 
@@ -293,7 +293,7 @@ QtObject {
             currentTheme = key;
             _themeRequestSequence = (_themeRequestSequence + 1) % 100;
             const requestId = Math.floor(Date.now() * 100) + _themeRequestSequence;
-            Quickshell.execDetached([Quickshell.env("HOME") + "/.config/quickshell/themes/switch-theme.sh", key, requestId.toString()]);
+            Quickshell.execDetached([Quickshell.env("HOME") + "/.config/amane/themes/switch-theme.sh", key, requestId.toString()]);
         }
     }
 }

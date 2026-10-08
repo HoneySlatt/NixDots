@@ -58,7 +58,7 @@
 
       ZSH_AUTOSUGGEST_USE_ASYNC=1
 
-      if [[ -o interactive ]] && [[ -z "$NVIM" ]]; then
+      if [[ -o interactive ]] && [[ -z "$NVIM" ]] && [[ "$TERM_PROGRAM" != "zed" ]]; then
         fastfetch
       fi
 
@@ -85,7 +85,9 @@
       la   = "eza -la";
       tree = "eza --tree";
       cat  = "bat";
+      fzf  = "sk";
       grep = "rg";
+      dua = "dua i";
       "g++" = "g++ -Wall -Wextra -Werror -std=c++20";
       gcc = "gcc -Wall -Wextra -Werror";
     };

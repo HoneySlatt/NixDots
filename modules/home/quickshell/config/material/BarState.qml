@@ -9,7 +9,7 @@ QtObject {
     id: root
 
     property bool isTop: true
-    readonly property string positionFile: Quickshell.env("HOME") + "/.config/quickshell/.bar-position"
+    readonly property string positionFile: Quickshell.env("HOME") + "/.config/amane/.bar-position"
     readonly property string niriModeFile: Quickshell.env("HOME") + "/.config/niri/bar-mode.kdl"
 
     readonly property string niriTopMode: "// Barre en haut : pas de surcharge."
@@ -57,7 +57,7 @@ QtObject {
 
     readonly property var writer: Process {
         property string position: "top"
-        command: ["sh", "-c", "mkdir -p \"$HOME/.config/quickshell\" && printf '%s\\n' '" + position + "' > '" + root.positionFile + "'"]
+        command: ["sh", "-c", "mkdir -p \"$HOME/.config/amane\" && printf '%s\\n' '" + position + "' > '" + root.positionFile + "'"]
         running: false
     }
 }

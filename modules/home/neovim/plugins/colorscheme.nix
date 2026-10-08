@@ -108,7 +108,7 @@
       })
 
       -- Dynamic colorscheme from .current-theme, names from themes.json
-      local qs = vim.fn.expand("~/.config/quickshell")
+      local qs = vim.fn.expand("~/.config/amane")
       local ok, themes = pcall(function()
         return vim.json.decode(table.concat(vim.fn.readfile(qs .. "/themes/themes.json"), "\n"))
       end)

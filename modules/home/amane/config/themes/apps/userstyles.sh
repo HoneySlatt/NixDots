@@ -1,7 +1,7 @@
 gen_userstyles() {
-  local cache_dir="$HOME/.config/quickshell/themes/userstyles-cache"
-  local compile_js="$HOME/.config/quickshell/themes/compile-userstyle.js"
-  local userstyles_css="$HOME/.config/quickshell/themes/userstyles.user.css"
+  local cache_dir="$HOME/.config/amane/themes/userstyles-cache"
+  local compile_js="$HOME/.config/amane/themes/compile-userstyle.js"
+  local userstyles_css="$HOME/.config/amane/themes/userstyles.user.css"
 
   local gecko_user_contents=()
 
@@ -95,7 +95,7 @@ EOF
     # Cinny Desktop polls this script from qs-userstyles-server
     if [ "$site" = cinny ]; then
       (
-        cinny_js="$HOME/.config/quickshell/themes/cinny.js"
+        cinny_js="$HOME/.config/amane/themes/cinny.js"
         [ -f "$desktop_compiled" ] && cinny_css=$(<"$desktop_compiled") &&
           cinny_tmp=$(mktemp "${cinny_js}.XXXXXX") || exit 1
         trap 'rm -f "$cinny_tmp"' EXIT

@@ -9,6 +9,7 @@
     brave-origin
 
     # Communication
+    serein
     cinny-desktop
     signal-desktop
     tutanota-desktop
@@ -24,13 +25,13 @@
 
     # Media
     kopuz
-    sonora
     cider-2
     jellyfin-desktop
     nuvio
 
     # Creation and office
     pkgsRocm.blender
+    graphite
     gimp
     inkscape
     kdePackages.kdenlive
@@ -40,7 +41,6 @@
     # Files and network
     nautilus
     localsend
-    qbittorrent
 
     # Development
     git
@@ -64,12 +64,14 @@
     # Command line
     fd
     fzf
+    skim
     bat
     eza
     ripgrep
     gdu
+    dua
     btop
-    imv
+    viu
     cava
     ffmpeg
     fastfetch

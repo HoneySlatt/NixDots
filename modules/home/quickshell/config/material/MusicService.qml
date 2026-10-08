@@ -7,7 +7,7 @@ import Quickshell.Io
 QtObject {
     id: root
 
-    property string configPath: Quickshell.env("HOME") + "/.config/quickshell/navidrome.json"
+    property string configPath: Quickshell.env("HOME") + "/.config/amane/navidrome.json"
     property string socketPath: "/tmp/quickshell-music.sock"
     property string server: "http://localhost:4533"
     property string username: ""

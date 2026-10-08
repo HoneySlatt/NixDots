@@ -15,7 +15,7 @@ Item {
     property var cavaValues: []
     property var wallpaperList: []
     property int wallpaperPage: 0
-    readonly property string wallpaperThumbnailDir: Quickshell.env("HOME") + "/.cache/quickshell/wallpapers/" + Theme.currentTheme
+    readonly property string wallpaperThumbnailDir: Quickshell.env("HOME") + "/.cache/amane/wallpapers/" + Theme.currentTheme
     readonly property int wallpapersPerPage: 12
     readonly property int wallpaperTotalPages: Math.max(1, Math.ceil(wallpaperList.length / wallpapersPerPage))
     property string selectedWallpaper: ""

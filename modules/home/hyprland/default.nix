@@ -72,6 +72,7 @@ in
     ../hyprlock.nix
     ./hypridle.nix
     ../quickshell
+    ../amane
   ];
 
   wayland.windowManager.hyprland = {

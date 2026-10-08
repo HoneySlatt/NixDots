@@ -1,0 +1,49 @@
+diff --git a/src/graphics/gpu/forget.rs b/src/graphics/gpu/forget.rs
+index 8c2399d..3b0fd3c 100644
+--- a/src/graphics/gpu/forget.rs
++++ b/src/graphics/gpu/forget.rs
+@@ -43,4 +43,31 @@ impl Gpu {
+ 
+         self.drawn.clear();
+     }
++
++    /*
++     * a hidden window draws nothing, so what it holds on the gpu goes back:
++     * window-sized textures, kept results, image copies and the swapchain;
++     * the decoded images stay with the loader, so showing again is instant
++     */
++    pub fn release(&mut self) {
++        for (key, _) in self.shown.drain() {
++            self.images.remove(&key);
++
++            self.quads.forget(key);
++        }
++
++        self.drawn.clear();
++
++        self.painting = 0;
++
++        self.forget_unpainted();
++
++        self.spare.clear();
++
++        // a swapchain needs a size, the smallest one stands in until the next draw resizes it
++        self.config.width = 1;
++        self.config.height = 1;
++
++        self.surface.configure(&self.device, &self.config);
++    }
+ }
+diff --git a/src/wayland/update.rs b/src/wayland/update.rs
+index c08001f..ab2b70b 100644
+--- a/src/wayland/update.rs
++++ b/src/wayland/update.rs
+@@ -99,6 +99,8 @@ impl OpenWindow {
+ 
+         // a frame callback asked for before hiding may never come
+         self.frame_requested = false;
++
++        self.gpu.release();
+     }
+ }
+ 

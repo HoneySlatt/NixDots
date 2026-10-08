@@ -33,6 +33,10 @@ in
   xdg.configFile."quickshell".source =
     config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/NixOS/modules/home/quickshell/config";
 
+  # Themes and theme state, read by the Quickshell theme (the amane shell itself is not installed here)
+  xdg.configFile."amane".source =
+    config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/NixOS/modules/home/amane/config";
+
   programs.niri.settings = {
     outputs."eDP-1".scale = 1.0;
 

@@ -1,5 +1,5 @@
 gen_yazi_theme() {
-  local tmpl="$HOME/.config/quickshell/templates/yazi-theme.toml.tmpl"
+  local tmpl="$HOME/.config/amane/templates/yazi-theme.toml.tmpl"
   [ -f "$tmpl" ] || return
   mkdir -p "$HOME/.config/yazi"
   sed \

@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # Switch theme — btop, gdu, fastfetch, ghostty, yazi, nvim, gtk, qt, niri, hyprland, wallpaper,
 # discord, steam, heroic, obsidian, obs, firefox, userstyles, jellyfin, kopuz, cider,
-# blender, kdeglobals, hyprlock, tuta, opencode
+# blender, kdeglobals, hyprlock, tuta, opencode, serein
 
 MODE="full"
-THEME_FILE="$HOME/.config/quickshell/.current-theme"
+THEME_FILE="$HOME/.config/amane/.current-theme"
 THEME="${1:-pastelglow}"
 REQUEST_ID="${2:-$(date +%s%3N)00}"
 
@@ -81,7 +81,7 @@ if [ "$MODE" = "background" ]; then
   exit 0
 fi
 
-request_dir="$HOME/.cache/quickshell"
+request_dir="$HOME/.cache/amane"
 request_file="$request_dir/theme-request-id"
 mkdir -p "$request_dir"
 exec 9>"$request_dir/theme-switch.lock"
@@ -112,7 +112,7 @@ switch_wallpaper
 systemctl --user restart --no-block quickshell-theme-background.service
 
 for fn in switch_btop switch_gdu switch_fastfetch switch_ghostty switch_rio gen_yazi_theme nvim_reload \
-          zed_reload switch_gtk switch_qt gen_hyprlock_theme switch_swaync; do
+          zed_reload switch_gtk switch_qt gen_hyprlock_theme switch_swaync switch_serein; do
   "$fn" &
 done
 wait
