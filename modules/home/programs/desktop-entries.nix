@@ -61,7 +61,7 @@ in
     "moe.tsuna.tsukimi" = {
       name       = "Tsukimi";
       exec       = "tsukimi";
-      icon       = "org.jellyfin.JellyfinDesktop"";
+      icon       = "org.jellyfin.JellyfinDesktop";
       comment    = "Jellyfin client";
       categories = [ "AudioVideo" "Video" ];
     };
@@ -93,7 +93,7 @@ in
     "rqbit-desktop" = {
       name       = "rqbit";
       exec       = "rqbit-desktop";
-      icon       = "org.qbittorrent.qBittorrent";
+      icon       = "/home/honey/Pictures/Icons/rqbit.png";
       comment    = "BitTorrent client";
       categories = [ "Network" "FileTransfer" "P2P" ];
     };
@@ -147,6 +147,15 @@ in
       categories = [ "System" "Documentation" ];
     };
 
+    "com.system76.CosmicFiles" = {
+      name       = "Files";
+      exec       = "cosmic-files %U";
+      icon       = "com.system76.CosmicFiles";
+      comment    = "File manager";
+      mimeType   = [ "inode/directory" ];
+      categories = [ "Utility" "FileManager" ];
+    };
+
     rio = {
       name       = "Rio";
       exec       = "rio";
@@ -175,15 +184,6 @@ in
     };
 
     # ─── Others (hidden overrides) ───────────────────────────────────────────
-
-    "org.gnome.Nautilus" = {
-      name       = "Files";
-      exec       = "nautilus --new-window %U";
-      icon       = "org.gnome.Nautilus";
-      comment    = "Access and organize files";
-      noDisplay  = true;
-      categories = [ "GNOME" "GTK" "Utility" "Core" "FileManager" ];
-    };
 
     btop = {
       name       = "Btop";
@@ -279,6 +279,9 @@ in
       // lib.genAttrs mediaTypes (_: "mpv.desktop")
       // lib.genAttrs textTypes (_: "nvim.desktop")
       // lib.genAttrs webTypes (_: "brave-origin.desktop")
-      // { "x-scheme-handler/tuta" = "tutanota-desktop.desktop"; };
+      // {
+        "x-scheme-handler/tuta" = "tutanota-desktop.desktop";
+        "inode/directory" = "com.system76.CosmicFiles.desktop";
+      };
   };
 }

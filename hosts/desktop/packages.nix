@@ -27,7 +27,6 @@
     kopuz
     tsukimi
     cider-2
-    jellyfin-desktop
     nuvio
 
     # Creation and office
@@ -40,7 +39,7 @@
     obsidian
 
     # Files and network
-    nautilus
+    cosmic-files
     oculante
     localsend
     rqbit

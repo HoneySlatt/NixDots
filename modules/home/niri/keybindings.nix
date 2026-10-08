@@ -24,8 +24,8 @@ in
       action.close-window = { };
       repeat = false;
     };
-    "Mod+E".action.spawn = [ "rio" "-e" "yazi" ];
-    "Mod+Shift+E".action.spawn = "nautilus";
+    "Mod+E".action.spawn = "cosmic-files";
+    "Mod+Shift+E".action.spawn = [ "rio" "-e" "yazi" ];
     "Mod+V".action.toggle-window-floating = { };
     "Mod+Space".action.spawn = "toggle-launcher";
     "Mod+T".action.spawn = "toggle-theme-launcher";
@@ -54,8 +54,8 @@ in
     "Mod+Shift+C".action.spawn = "chatgpt";
     "Mod+Ctrl+C".action.spawn = [ "opencode-desktop" ];
     "Mod+O".action.spawn = "obsidian";
-    "Mod+N".action.spawn = [ "rio" "-e" "nvim" ];
-    "Mod+Shift+N".action.spawn = "zeditor";
+    "Mod+N".action.spawn = "zeditor";
+    "Mod+Shift+N".action.spawn = [ "rio" "-e" "nvim" ];
     "Ctrl+Alt+Delete".action.spawn = [ "rio" "-e" "btop" ];
 
     # ── Focus / Move ─────────────────────────────────────────────────────

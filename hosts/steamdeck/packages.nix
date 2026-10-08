@@ -19,7 +19,7 @@
     moonlight-qt
 
     # Files
-    nautilus
+    cosmic-files
 
     # Command line
     git
