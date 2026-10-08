@@ -1,13 +1,21 @@
 {
   services.samba = {
     enable = true;
-    openFirewall = true; # opens ports 139 and 445
+    # Standalone server over SMB3 only: no NetBIOS name service, no domain membership
+    nmbd.enable = false;
+    winbindd.enable = false;
 
     settings = {
       global = {
         "workgroup"     = "WORKGROUP";
         "server string" = "NixBTW NAS";
         "security"      = "user";
+
+        "server min protocol" = "SMB3";
+        "server smb encrypt"  = "required";
+        "disable netbios"     = "yes";
+        "smb ports"           = "445";
+        "restrict anonymous"  = "2";
 
         # Performance tweaks
         "socket options" = "TCP_NODELAY IPTOS_LOWDELAY";
@@ -23,4 +31,6 @@
       };
     };
   };
+
+  networking.firewall.allowedTCPPorts = [ 445 ];
 }

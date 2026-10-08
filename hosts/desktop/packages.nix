@@ -40,7 +40,6 @@
   environment.systemPackages = with pkgs; [
 
     # Web Browsers
-    firefox
     ladybird
     brave-origin
 
@@ -126,7 +125,6 @@
   programs.steam = {
     enable = true;
     remotePlay.openFirewall = true;
-    dedicatedServer.openFirewall = true;
     protontricks.enable = true;
     package = pkgs.millennium-steam;
   };

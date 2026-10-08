@@ -3,8 +3,7 @@
 {
   services.ollama = {
     enable = true;
-    openFirewall = true;
-    host = "0.0.0.0";
+    host = "127.0.0.1";
     port = 11434;
     environmentVariables = {
       HSA_OVERRIDE_GFX_VERSION = "10.3.0";

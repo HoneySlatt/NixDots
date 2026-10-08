@@ -3,13 +3,6 @@
 let
   lspSettings = import ../lsp-settings.nix;
   prettierCmd = "${pkgs.prettier}/bin/prettier";
-  helixWakatimeLs = pkgs.zed-wakatime-ls.overrideAttrs (oldAttrs: {
-    postPatch = (oldAttrs.postPatch or "") + ''
-      substituteInPlace wakatime-ls/src/main.rs \
-        --replace-fail 'platform.push_str("Zed");' 'platform.push_str("Helix");' \
-        --replace-fail '"Zed-wakatime/{}"' '"Helix-wakatime/{}"'
-    '';
-  });
 in
 {
   programs.helix.languages = {
@@ -17,7 +10,7 @@ in
       {
         name = "rust";
         auto-format = true;
-        language-servers = [ "rust-analyzer" "wakatime" ];
+        language-servers = [ "rust-analyzer" ];
         formatter = { command = "${pkgs.rustfmt}/bin/rustfmt"; args = [ "--edition" "2021" ]; };
         indent = { tab-width = 4; unit = "    "; };
         persistent-diagnostic-sources = [ "rustc" "clippy" ];
@@ -38,7 +31,7 @@ in
       {
         name = "go";
         auto-format = true;
-        language-servers = [ "gopls" "wakatime" ];
+        language-servers = [ "gopls" ];
         formatter = { command = "${pkgs.gotools}/bin/goimports"; };
         indent = { tab-width = 4; unit = "\t"; };
         debugger = {
@@ -71,25 +64,25 @@ in
       }
       {
         name = "gomod";
-        language-servers = [ "gopls" "wakatime" ];
+        language-servers = [ "gopls" ];
         auto-format = true;
         indent = { tab-width = 4; unit = "\t"; };
       }
       {
         name = "gowork";
-        language-servers = [ "gopls" "wakatime" ];
+        language-servers = [ "gopls" ];
         auto-format = true;
         indent = { tab-width = 4; unit = "\t"; };
       }
       {
         name = "gotmpl";
-        language-servers = [ "gopls" "wakatime" ];
+        language-servers = [ "gopls" ];
         indent = { tab-width = 2; unit = "  "; };
       }
       {
         name = "c";
         auto-format = true;
-        language-servers = [ "clangd" "wakatime" ];
+        language-servers = [ "clangd" ];
         formatter = { command = "${pkgs.clang-tools}/bin/clang-format"; };
         indent = { tab-width = 4; unit = "    "; };
         debugger = {
@@ -109,7 +102,7 @@ in
       {
         name = "cpp";
         auto-format = true;
-        language-servers = [ "clangd" "wakatime" ];
+        language-servers = [ "clangd" ];
         formatter = { command = "${pkgs.clang-tools}/bin/clang-format"; };
         indent = { tab-width = 4; unit = "    "; };
         debugger = {
@@ -129,14 +122,14 @@ in
       {
         name = "lua";
         auto-format = true;
-        language-servers = [ "lua-language-server" "wakatime" ];
+        language-servers = [ "lua-language-server" ];
         formatter = { command = "${pkgs.stylua}/bin/stylua"; args = [ "-" ]; };
         indent = { tab-width = 2; unit = "  "; };
       }
       {
         name = "python";
         auto-format = true;
-        language-servers = [ "pyright" "ruff" "wakatime" ];
+        language-servers = [ "pyright" "ruff" ];
         formatter = { command = "${pkgs.ruff}/bin/ruff"; args = [ "format" "-" ]; };
         indent = { tab-width = 4; unit = "    "; };
         debugger = {
@@ -157,49 +150,49 @@ in
       {
         name = "javascript";
         auto-format = true;
-        language-servers = [ "typescript-language-server" "wakatime" ];
+        language-servers = [ "typescript-language-server" ];
         formatter = { command = "${prettierCmd}"; args = [ "--stdin-filepath" "%{buffer_name}" ]; };
         indent = { tab-width = 2; unit = "  "; };
       }
       {
         name = "jsx";
         auto-format = true;
-        language-servers = [ "typescript-language-server" "wakatime" ];
+        language-servers = [ "typescript-language-server" ];
         formatter = { command = "${prettierCmd}"; args = [ "--stdin-filepath" "%{buffer_name}" ]; };
         indent = { tab-width = 2; unit = "  "; };
       }
       {
         name = "typescript";
         auto-format = true;
-        language-servers = [ "typescript-language-server" "wakatime" ];
+        language-servers = [ "typescript-language-server" ];
         formatter = { command = "${prettierCmd}"; args = [ "--stdin-filepath" "%{buffer_name}" ]; };
         indent = { tab-width = 2; unit = "  "; };
       }
       {
         name = "tsx";
         auto-format = true;
-        language-servers = [ "typescript-language-server" "wakatime" ];
+        language-servers = [ "typescript-language-server" ];
         formatter = { command = "${prettierCmd}"; args = [ "--stdin-filepath" "%{buffer_name}" ]; };
         indent = { tab-width = 2; unit = "  "; };
       }
       {
         name = "html";
         auto-format = true;
-        language-servers = [ "vscode-html-language-server" "emmet-ls" "wakatime" ];
+        language-servers = [ "vscode-html-language-server" "emmet-ls" ];
         formatter = { command = "${prettierCmd}"; args = [ "--stdin-filepath" "%{buffer_name}" ]; };
         indent = { tab-width = 2; unit = "  "; };
       }
       {
         name = "css";
         auto-format = true;
-        language-servers = [ "vscode-css-language-server" "emmet-ls" "wakatime" ];
+        language-servers = [ "vscode-css-language-server" "emmet-ls" ];
         formatter = { command = "${prettierCmd}"; args = [ "--stdin-filepath" "%{buffer_name}" ]; };
         indent = { tab-width = 2; unit = "  "; };
       }
       {
         name = "scss";
         auto-format = true;
-        language-servers = [ "vscode-css-language-server" "emmet-ls" "wakatime" ];
+        language-servers = [ "vscode-css-language-server" "emmet-ls" ];
         formatter = { command = "${prettierCmd}"; args = [ "--stdin-filepath" "%{buffer_name}" ]; };
         indent = { tab-width = 2; unit = "  "; };
       }
@@ -208,11 +201,11 @@ in
         auto-format = true;
         formatter = { command = "${prettierCmd}"; args = [ "--stdin-filepath" "%{buffer_name}" ]; };
         indent = { tab-width = 2; unit = "  "; };
-        language-servers = [ "vscode-json-language-server" "wakatime" ];
+        language-servers = [ "vscode-json-language-server" ];
       }
       {
         name = "markdown";
-        language-servers = [ "wakatime" ];
+        language-servers = [ ];
         auto-format = true;
         formatter = { command = "${prettierCmd}"; args = [ "--stdin-filepath" "%{buffer_name}" "--parser" "markdown" ]; };
         indent = { tab-width = 2; unit = "  "; };
@@ -220,7 +213,7 @@ in
       }
       {
         name = "toml";
-        language-servers = [ "wakatime" ];
+        language-servers = [ ];
         auto-format = true;
         formatter = { command = "${pkgs.taplo}/bin/taplo"; args = [ "fmt" "-" ]; };
         indent = { tab-width = 2; unit = "  "; };
@@ -228,11 +221,6 @@ in
     ];
 
     "language-server" = {
-      wakatime = {
-        command = "${helixWakatimeLs}/bin/wakatime-ls";
-        args = [ "--wakatime-cli" "${pkgs.wakatime-cli}/bin/wakatime-cli" ];
-      };
-
       clangd = {
         command = "clangd";
         args = [ "--background-index" "--clang-tidy" ];

@@ -18,7 +18,6 @@
       "git-firefly"
       "make"
       "github-actions"
-      "wakatime"
     ];
   };
 }

@@ -30,11 +30,12 @@
 
       server = {
         port = 8888;
-        bind_address = "0.0.0.0";
+        bind_address = "127.0.0.1";
         secret_key = "@SEARXNG_SECRET@";
         limiter = false;
         public_instance = false;
-        image_proxy = false;
+        # Result images are fetched by SearXNG instead of the browser
+        image_proxy = true;
         method = "GET";
       };
 

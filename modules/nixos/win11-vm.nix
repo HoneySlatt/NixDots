@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 
 # Windows 11 VM with single GPU passthrough: starting it stops the host
-# graphical session, stopping it brings niri back through greetd.
+# graphical session, stopping it brings back the GDM login screen.
 
 let
   name   = "win11";
@@ -280,7 +280,7 @@ let
 
     case "$2/$3" in
       prepare/begin)
-        systemctl stop greetd.service ollama.service lactd.service
+        systemctl stop display-manager.service ollama.service lactd.service
         systemctl --user -M honey@ stop graphical-session.target
         for _ in $(seq 20); do
           fuser -s "$gpu-card" "$gpu-render" /dev/kfd || break
@@ -302,7 +302,7 @@ let
       release/end)
         pinHost 0-15
         for vt in /sys/class/vtconsole/vtcon*/bind; do echo 1 > "$vt"; done
-        systemctl start lactd.service ollama.service greetd.service
+        systemctl start lactd.service ollama.service display-manager.service
         ;;
     esac
     exit 0

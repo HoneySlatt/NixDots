@@ -13,6 +13,4 @@
     ./hypridle.nix
     ../quickshell
   ];
-
-  services.gnome-keyring.enable = true;
 }

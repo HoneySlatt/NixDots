@@ -5,6 +5,8 @@
     ./hardware.nix
     ./packages.nix
     ../../modules/nixos/common.nix
+    ../../modules/nixos/hardening.nix
+    ../../modules/nixos/brave.nix
     ../../modules/nixos/audio.nix
     ../../modules/nixos/niri.nix
     inputs.jovian.nixosModules.default

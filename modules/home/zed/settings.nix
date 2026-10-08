@@ -24,19 +24,17 @@ in
     scroll_beyond_last_line = "off";
     autosave = "off";
 
+    telemetry = {
+      diagnostics = false;
+      metrics = false;
+      anthropic_retention = false;
+    };
+    # Updates come from Nix, so never ping zed.dev
+    auto_update = false;
+
     lsp = {
       "rust-analyzer".initialization_options = lspSettings.rust-analyzer;
       gopls.settings = lspSettings.gopls;
-
-      wakatime = {
-        binary = {
-          path = "${pkgs.zed-wakatime-ls}/bin/wakatime-ls";
-          arguments = [
-            "--wakatime-cli"
-            "${pkgs.wakatime-cli}/bin/wakatime-cli"
-          ];
-        };
-      };
     };
 
     theme = {

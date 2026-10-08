@@ -1,6 +1,5 @@
 switch_btop() {
   local config_dir="${XDG_CONFIG_HOME:-$HOME/.config}/btop"
-  local config="$config_dir/btop.conf"
   local theme_dir="$config_dir/themes"
   local theme="$theme_dir/quickshell.theme"
 
@@ -51,18 +50,6 @@ theme[process_start]="${C[sapphire]}"
 theme[process_mid]="${C[lavender]}"
 theme[process_end]="${C[mauve]}"
 EOF
-
-  [ -f "$config" ] || return 0
-
-  local tmp
-  tmp="$(mktemp "$config.XXXXXX")" || return 0
-  if grep -q '^[[:space:]]*color_theme[[:space:]]*=' "$config"; then
-    sed 's/^[[:space:]]*color_theme[[:space:]]*=.*/color_theme = "quickshell"/' "$config" > "$tmp"
-  else
-    cp "$config" "$tmp"
-    printf '\ncolor_theme = "quickshell"\n' >> "$tmp"
-  fi
-  mv "$tmp" "$config"
 
   pkill -USR2 -x btop 2>/dev/null || true
 }

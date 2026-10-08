@@ -1,6 +1,6 @@
 switch_fastfetch() {
-  local config="${XDG_CONFIG_HOME:-$HOME/.config}/fastfetch/config.jsonc"
-  [ -f "$config" ] || return 0
+  local dir="${XDG_CONFIG_HOME:-$HOME/.config}/fastfetch"
+  [ -f "$dir/base.json" ] || return 0
 
   local accent="${C[accent]}"
   local h="${accent#\#}"
@@ -25,33 +25,13 @@ switch_fastfetch() {
       $((0x${h:4:2} * 85 / 100)))
   fi
 
-  local colors
-  colors=$(cat <<EOF
-        // quickshell-theme:fastfetch-colors:start
-        "color": {
-            "1": "$accent",
-            "2": "$shade",
-            "3": "$accent",
-            "4": "$shade",
-            "5": "$accent",
-            "6": "$shade"
-        },
-        // quickshell-theme:fastfetch-colors:end
-EOF
-)
-
+  # Layout comes from base.json (Home Manager), only the logo colors follow the theme
   local tmp
-  tmp=$(mktemp "$config.XXXXXX") || return 0
-  FASTFETCH_COLORS="$colors" perl -0pe '
-    BEGIN { $colors = $ENV{FASTFETCH_COLORS} . "\n" }
-    if (!s{^[ \t]*// quickshell-theme:fastfetch-colors:start\n.*?^[ \t]*// quickshell-theme:fastfetch-colors:end\n}{$colors}ms) {
-      s{(^[ \t]*"type"[ \t]*:[ \t]*"builtin",[ \t]*\n)}{$1$colors}m;
-    }
-  ' "$config" > "$tmp"
-
-  if grep -q 'quickshell-theme:fastfetch-colors:start' "$tmp"; then
-    chmod --reference="$config" "$tmp"
-    mv "$tmp" "$config"
+  tmp=$(mktemp "$dir/config.jsonc.XXXXXX") || return 0
+  if jq --arg a "$accent" --arg s "$shade" \
+    '.logo.color = {"1": $a, "2": $s, "3": $a, "4": $s, "5": $a, "6": $s}' \
+    "$dir/base.json" > "$tmp"; then
+    mv "$tmp" "$dir/config.jsonc"
   else
     rm -f "$tmp"
   fi

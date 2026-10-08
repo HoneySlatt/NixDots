@@ -5,6 +5,6 @@
     { argv = [ "swaync" ]; }
     { argv = [ "swayosd-server" ]; }
     { argv = [ "start-quickshell" ]; }
-    { argv = [ "steam" "-silent" ]; }
+    #{ argv = [ "steam" "-silent" ]; }
   ];
 }

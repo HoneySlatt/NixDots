@@ -6,9 +6,11 @@
       ./hardware.nix
       ./packages.nix
       ../../modules/nixos/common.nix
+      ../../modules/nixos/hardening.nix
+      ../../modules/nixos/brave.nix
       ../../modules/nixos/nas
       ../../modules/nixos/services
-      ../../modules/nixos/greetd.nix
+      ../../modules/nixos/gdm.nix
       ../../modules/nixos/audio.nix
       ../../modules/nixos/niri.nix
       ../../modules/nixos/win11-vm.nix

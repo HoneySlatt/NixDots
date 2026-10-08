@@ -7,6 +7,11 @@
   programs.atuin = {
     enable = true;
     enableZshIntegration = true;
+    settings = {
+      enter_accept = true;
+      sync.records = true;
+      update_check = false;
+    };
   };
 
   programs.zoxide = {
