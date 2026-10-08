@@ -40,7 +40,7 @@
 
     # Files and network
     cosmic-files
-    oculante
+    cosmic-viewer
     localsend
     rqbit
     rqbit-desktop

@@ -185,6 +185,16 @@ in
 
     # ─── Others (hidden overrides) ───────────────────────────────────────────
 
+    "com.system76.CosmicViewer" = {
+      name       = "COSMIC Viewer";
+      exec       = "cosmic-viewer %F";
+      icon       = "com.system76.CosmicViewer";
+      comment    = "View and annotate images";
+      mimeType   = imageTypes;
+      noDisplay  = true;
+      categories = [ "Graphics" "Viewer" ];
+    };
+
     btop = {
       name       = "Btop";
       exec       = "rio -e btop";
@@ -275,7 +285,7 @@ in
   xdg.mimeApps = {
     enable = true;
     defaultApplications =
-      lib.genAttrs imageTypes (_: "oculante.desktop")
+      lib.genAttrs imageTypes (_: "com.system76.CosmicViewer.desktop")
       // lib.genAttrs mediaTypes (_: "mpv.desktop")
       // lib.genAttrs textTypes (_: "nvim.desktop")
       // lib.genAttrs webTypes (_: "brave-origin.desktop")
