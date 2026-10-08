@@ -24,6 +24,7 @@
 
     # Media
     kopuz
+    sonora
     cider-2
     jellyfin-desktop
     nuvio

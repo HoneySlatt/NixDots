@@ -1,5 +1,5 @@
 //@ pragma UseQApplication
-//@ pragma IconTheme Papirus-Dark
+//@ pragma IconTheme kora
 //@ pragma Env QT_QUICK_CONTROLS_STYLE=Basic
 
 import QtQuick

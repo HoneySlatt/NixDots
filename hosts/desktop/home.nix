@@ -7,6 +7,7 @@
     ../../modules/home/zed
     ../../modules/home/neovim
     ../../modules/home/niri
+    ../../modules/home/amane
   ];
 
   # Shortcut to the NAS drive in the home folder

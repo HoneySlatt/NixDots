@@ -16,4 +16,7 @@ in
     chatgptDesktop = inputs.chatgpt-desktop.packages.${system}.default;
   };
   opencode-desktop = final.callPackage ./opencode-desktop { inherit (prev) opencode-desktop; };
+
+  kopuz = inputs.kopuz.packages.${system}.default;
+  sonora = inputs.sonora.packages.${system}.default;
 }

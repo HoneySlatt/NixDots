@@ -39,6 +39,18 @@
       url = "github:gfhdhytghd/hymission/v0.5.0-v0.56.0";
       flake = false;
     };
+    amane = {
+      url = "github:MystiaFin/amane";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    kopuz = {
+      url = "github:Kopuz-org/kopuz";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    sonora = {
+      url = "github:sonorahq/sonora";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = { nixpkgs, home-manager, ... }@inputs:

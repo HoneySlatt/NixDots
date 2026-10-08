@@ -24,8 +24,8 @@ in
   gtk = {
     enable = true;
     iconTheme = {
-      package = pkgs.papirus-icon-theme;
-      name = "Papirus-Dark";
+      package = pkgs.kora-icon-theme;
+      name = "kora";
     };
     gtk4.theme = null;
   };

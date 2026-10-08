@@ -18,7 +18,7 @@
     lessc
     netcat-openbsd
     adw-gtk3
-    papirus-icon-theme
+    kora-icon-theme
     glib
     gsettings-desktop-schemas
   ];

@@ -1,6 +1,6 @@
 switch_gtk() {
   local scheme="${C[gtk_scheme]}"
-  local icons="${C[icon_theme]:-Papirus-Dark}"
+  local icons="${C[icon_theme]:-kora}"
   local prefer_dark
   prefer_dark=$([ "$scheme" = "prefer-dark" ] && echo 1 || echo 0)
 

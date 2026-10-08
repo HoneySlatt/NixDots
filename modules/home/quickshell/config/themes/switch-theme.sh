@@ -33,7 +33,7 @@ case "$THEME" in
   pastelglow)
     C[cat_accent]="pink"
     C[gtk_theme]="Gruvbox-Light" C[gtk_scheme]="prefer-light"
-    C[icon_theme]="Papirus-Light"
+    C[icon_theme]="kora-light"
     ;;
   rosepine)
     C[cat_accent]="lavender"
@@ -54,7 +54,7 @@ case "$THEME" in
   gruvbox-light)
     C[cat_accent]="yellow"
     C[gtk_theme]="Gruvbox-Light" C[gtk_scheme]="prefer-light"
-    C[icon_theme]="Papirus-Light"
+    C[icon_theme]="kora-light"
     ;;
 esac
 

@@ -1,5 +1,5 @@
 switch_qt() {
-  local icons="${C[icon_theme]:-Papirus-Dark}"
+  local icons="${C[icon_theme]:-kora}"
   local local_kvantum="$HOME/.config/Kvantum"
   local theme_dir="$local_kvantum/quickshell-theme"
   local stock_dir="${XDG_DATA_HOME:-$HOME/.local/share}/Kvantum/KvAdaptaDark"
