@@ -4,11 +4,10 @@
   imports = [
     ./hardware.nix
     ./packages.nix
-    ../../modules/nixos/common.nix
-    ../../modules/nixos/hardening.nix
-    ../../modules/nixos/brave.nix
-    ../../modules/nixos/audio.nix
-    ../../modules/nixos/niri.nix
+    ../../modules/nixos/base
+    ../../modules/nixos/desktop/brave.nix
+    ../../modules/nixos/desktop/audio.nix
+    ../../modules/nixos/desktop/niri.nix
     inputs.jovian.nixosModules.default
   ];
 

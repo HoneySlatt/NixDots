@@ -65,7 +65,7 @@
       nym() {
         case "$1" in
           update)
-            bash ~/NixOS/modules/nixos/services/scripts/update-nym-vpnd.sh
+            bash ~/NixOS/pkgs/nym-vpnd/update.sh
             ;;
           *)
             echo "Usage: nym update"

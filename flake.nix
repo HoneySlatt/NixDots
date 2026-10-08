@@ -43,7 +43,7 @@
 
   outputs = { nixpkgs, home-manager, ... }@inputs:
     let
-      mkHost = host: homeModule: nixpkgs.lib.nixosSystem {
+      mkHost = host: nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs; };
         modules = [
           ./hosts/${host}
@@ -56,7 +56,7 @@
               backupCommand = ''rm -f "$1"'';
               sharedModules = [ inputs.nixvim.homeModules.nixvim ];
               extraSpecialArgs = { inherit inputs; };
-              users.honey = import homeModule;
+              users.honey = import ./hosts/${host}/home.nix;
             };
           }
         ];
@@ -66,8 +66,8 @@
       packages.x86_64-linux.nym-vpnd = (nixpkgs.legacyPackages.x86_64-linux.extend (import ./pkgs inputs)).nym-vpnd;
 
       nixosConfigurations = {
-        desktop = mkHost "desktop" ./modules/home/desktop.nix;
-        steamdeck = mkHost "steamdeck" ./modules/home/deck.nix;
+        desktop = mkHost "desktop";
+        steamdeck = mkHost "steamdeck";
       };
     };
 }

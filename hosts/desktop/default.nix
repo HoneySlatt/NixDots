@@ -1,85 +1,36 @@
-{ pkgs, ... }:
-
 {
-  imports =
-    [
-      ./hardware.nix
-      ./packages.nix
-      ../../modules/nixos/common.nix
-      ../../modules/nixos/hardening.nix
-      ../../modules/nixos/brave.nix
-      ../../modules/nixos/nas
-      ../../modules/nixos/services
-      ../../modules/nixos/gdm.nix
-      ../../modules/nixos/audio.nix
-      ../../modules/nixos/niri.nix
-      ../../modules/nixos/win11-vm.nix
-    ];
+  imports = [
+    ./hardware.nix
+    ./boot.nix
+    ./packages.nix
+    ../../modules/nixos/base
+    ../../modules/nixos/desktop/brave.nix
+    ../../modules/nixos/services
+    ../../modules/nixos/desktop/gdm.nix
+    ../../modules/nixos/desktop/audio.nix
+    ../../modules/nixos/desktop/niri.nix
+    ../../modules/nixos/virtualisation
+    ../../modules/nixos/gaming.nix
+  ];
 
-  boot = {
-    loader = {
-      systemd-boot.enable = false;
-      timeout = 1;
-      efi.canTouchEfiVariables = true;
-      limine = {
-        enable = true;
-        efiSupport = true;
-        maxGenerations = 5;
-        style = {
-          wallpapers = [ ];
-          interface = {
-            brandingColor = "B4BEFE";
-            helpColor = "B4BEFE";
-            helpColorBright = "B4BEFE";
-          };
-          graphicalTerminal = {
-            palette = "1E1E2E;F38BA8;A6E3A1;F9E2AF;89B4FA;F5C2E7;94E2D5;CDD6F4";
-            brightPalette = "585B70;F38BA8;A6E3A1;F9E2AF;89B4FA;F5C2E7;94E2D5;CDD6F4";
-            background = "1E1E2E";
-            foreground = "CDD6F4";
-            brightBackground = "585B70";
-            brightForeground = "CDD6F4";
-          };
-        };
-      };
-    };
-    kernelPackages = pkgs.linuxPackages_latest;
-    kernelParams = [ "amdgpu.ppfeaturemask=0xffffffff" ];
-    initrd.kernelModules = [ "amdgpu" ];
-    kernelModules = [ "ntsync" ];
-  };
+  networking.hostName = "NixBTW";
 
-  powerManagement.cpuFreqGovernor = "performance";
-
-  # Compressed swap in RAM
-  zramSwap.enable = true;
-
+  # AMD GPU, tuned with LACT
   hardware.graphics = {
     enable = true;
     enable32Bit = true;
   };
+  services.xserver.videoDrivers = [ "amdgpu" ];
+  services.lact.enable = true;
 
-  networking.hostName = "NixBTW";
+  powerManagement.cpuFreqGovernor = "performance";
+  # Compressed swap in RAM
+  zramSwap.enable = true;
 
-  # Run the Claude Code binary downloaded by Claude Desktop.
+  services.libinput.mouse.accelProfile = "flat";
+
+  # Run the Claude Code binary downloaded by Claude Desktop
   programs.nix-ld.enable = true;
-
-  services = {
-    xserver.videoDrivers = [ "amdgpu" ];
-    libinput.mouse.accelProfile = "flat";
-    lact.enable = true;
-  };
-
-  virtualisation = {
-    libvirtd = {
-      enable = true;
-      qemu = {
-        package = pkgs.qemu_kvm;
-        swtpm.enable = true;
-      };
-    };
-    spiceUSBRedirection.enable = true;
-  };
 
   system.stateVersion = "25.11";
 }

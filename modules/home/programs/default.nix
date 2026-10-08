@@ -4,7 +4,7 @@
     ./rio.nix
     ./mpv.nix
     ./yazi.nix
-    ./applications.nix
+    ./desktop-entries.nix
     ./git.nix
     ./btop.nix
     ./opencode.nix

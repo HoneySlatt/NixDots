@@ -58,7 +58,7 @@ case "$THEME" in
     ;;
 esac
 
-# Metadata shared with Theme.qml, Neovim and wallpaper-rotation: light, wallpaperDir, nvim, helix
+# Metadata shared with Theme.qml, Neovim and wallpaper-rotation: light, wallpaperDir, nvim
 while IFS="=" read -r key value; do
   C[$key]="$value"
 done < <(jq -r --arg t "$THEME" '.[$t] | to_entries[] | "\(.key)=\(.value)"' "$SCRIPT_DIR/themes.json")
@@ -112,7 +112,7 @@ switch_wallpaper
 systemctl --user restart --no-block quickshell-theme-background.service
 
 for fn in switch_btop switch_gdu switch_fastfetch switch_ghostty switch_rio gen_yazi_theme nvim_reload \
-          helix_reload zed_reload switch_gtk switch_qt gen_hyprlock_theme switch_swaync; do
+          zed_reload switch_gtk switch_qt gen_hyprlock_theme switch_swaync; do
   "$fn" &
 done
 wait

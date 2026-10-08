@@ -1,11 +1,17 @@
 { config, pkgs, ... }:
 
+let
+  wpctl = args: {
+    action.spawn = [ "wpctl" ] ++ args;
+    allow-when-locked = true;
+  };
+in
 {
   imports = [
-    ./common.nix
-    ./config/ghostty.nix
-    ./config/zsh.nix
-    ./zed
+    ../../modules/home/base.nix
+    ../../modules/home/programs/ghostty.nix
+    ../../modules/home/programs/zsh.nix
+    ../../modules/home/zed
   ];
 
   home.packages = with pkgs; [
@@ -73,18 +79,9 @@
         repeat = false;
       };
 
-      "XF86AudioRaiseVolume" = {
-        action.spawn = [ "wpctl" "set-volume" "-l" "1.0" "@DEFAULT_AUDIO_SINK@" "5%+" ];
-        allow-when-locked = true;
-      };
-      "XF86AudioLowerVolume" = {
-        action.spawn = [ "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%-" ];
-        allow-when-locked = true;
-      };
-      "XF86AudioMute" = {
-        action.spawn = [ "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle" ];
-        allow-when-locked = true;
-      };
+      "XF86AudioRaiseVolume" = wpctl [ "set-volume" "-l" "1.0" "@DEFAULT_AUDIO_SINK@" "5%+" ];
+      "XF86AudioLowerVolume" = wpctl [ "set-volume" "@DEFAULT_AUDIO_SINK@" "5%-" ];
+      "XF86AudioMute" = wpctl [ "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle" ];
     };
   };
 }

@@ -5,16 +5,15 @@ let
   inherit (final.stdenv.hostPlatform) system;
 in
 {
-  google-sans = final.callPackage ./google-sans.nix { };
-  nuvio = final.callPackage ./nuvio.nix { };
-  nym-vpnd = final.callPackage ./nym-vpnd.nix { };
-  steam-metadata-editor = final.callPackage ./steam-metadata-editor.nix { };
+  google-sans = final.callPackage ./google-sans { };
+  nuvio = final.callPackage ./nuvio { };
+  nym-vpnd = final.callPackage ./nym-vpnd { };
 
-  claude-desktop = final.callPackage ./claude-desktop.nix {
+  claude-desktop = final.callPackage ./claude-desktop {
     claudeDesktop = inputs.claude-desktop-nix-flake.packages.${system}.default;
   };
-  chatgpt-desktop = final.callPackage ./chatgpt-desktop.nix {
+  chatgpt-desktop = final.callPackage ./chatgpt-desktop {
     chatgptDesktop = inputs.chatgpt-desktop.packages.${system}.default;
   };
-  opencode-desktop = final.callPackage ./opencode-desktop.nix { inherit (prev) opencode-desktop; };
+  opencode-desktop = final.callPackage ./opencode-desktop { inherit (prev) opencode-desktop; };
 }

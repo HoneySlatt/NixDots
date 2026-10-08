@@ -30,7 +30,7 @@
       # Go
       gopls = {
         enable = true;
-        settings.gopls = (import ../../lsp-settings.nix).gopls;
+        settings.gopls = (import ../../../../lib/lsp-settings.nix).gopls;
       };
 
       # TOML

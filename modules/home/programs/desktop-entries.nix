@@ -185,15 +185,6 @@ in
       categories = [ "GNOME" "GTK" "Utility" "Core" "FileManager" ];
     };
 
-    "steam-metadata-editor" = {
-      name       = "Steam Metadata Editor";
-      exec       = "steam-metadata-editor";
-      icon       = "steam-metadata-editor";
-      comment    = "Edit metadata of your Steam apps";
-      noDisplay  = true;
-      categories = [ "Utility" "Game" ];
-    };
-
     btop = {
       name       = "Btop";
       exec       = "rio -e btop";

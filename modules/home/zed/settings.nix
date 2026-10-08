@@ -1,11 +1,10 @@
-{ pkgs, ... }:
-
 let
-  lspSettings = import ../lsp-settings.nix;
+  lspSettings = import ../../../lib/lsp-settings.nix;
 in
 {
   programs.zed-editor.userSettings = {
-    helix_mode = true;
+    vim_mode = true;
+    helix_mode = false;
     relative_line_numbers = "enabled";
     current_line_highlight = "all";
     vertical_scroll_margin = 8;

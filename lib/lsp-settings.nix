@@ -1,4 +1,4 @@
-# Language server settings shared by Neovim, Helix and Zed
+# Language server settings shared by Neovim and Zed
 {
   rust-analyzer = {
     check = {

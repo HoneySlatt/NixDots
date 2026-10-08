@@ -1,8 +1,8 @@
 {
-  "carbonfox":     { "light": false, "wallpaperDir": "Carbonfox",    "nvim": "carbonfox",  "helix": "carbonfox" },
-  "everforest":    { "light": false, "wallpaperDir": "Everforest",   "nvim": "everforest", "helix": "everforest_dark" },
-  "rosepine":      { "light": false, "wallpaperDir": "RosePine",     "nvim": "rose-pine",  "helix": "rose_pine" },
-  "pastelglow":    { "light": true,  "wallpaperDir": "PastelGlow",   "nvim": "pastelglow", "helix": "pastelglow" },
-  "gruvbox":       { "light": false, "wallpaperDir": "GruvboxDark",  "nvim": "gruvbox",    "helix": "gruvbox_dark" },
-  "gruvbox-light": { "light": true,  "wallpaperDir": "GruvboxLight", "nvim": "gruvbox",    "helix": "gruvbox_light" }
+  "carbonfox":     { "light": false, "wallpaperDir": "Carbonfox",    "nvim": "carbonfox" },
+  "everforest":    { "light": false, "wallpaperDir": "Everforest",   "nvim": "everforest" },
+  "rosepine":      { "light": false, "wallpaperDir": "RosePine",     "nvim": "rose-pine" },
+  "pastelglow":    { "light": true,  "wallpaperDir": "PastelGlow",   "nvim": "pastelglow" },
+  "gruvbox":       { "light": false, "wallpaperDir": "GruvboxDark",  "nvim": "gruvbox" },
+  "gruvbox-light": { "light": true,  "wallpaperDir": "GruvboxLight", "nvim": "gruvbox" }
 }

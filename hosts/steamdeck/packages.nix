@@ -2,23 +2,27 @@
 
 {
   environment.systemPackages = with pkgs; [
-    # Web Browsers
+    # Browsers
     brave-origin
 
-    # Desktop Apps
+    # Communication
     discord
-    protonplus
-    moonlight-qt
-    nautilus
+
+    # AI
+    claude-code
+    codex
 
     # Gaming
     heroic
     xivlauncher
+    protonplus
+    moonlight-qt
 
-    # TUI/CLI
+    # Files
+    nautilus
+
+    # Command line
     git
-    codex
     neovim
-    claude-code
   ];
 }

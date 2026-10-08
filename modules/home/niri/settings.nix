@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, lib, ... }:
 
 {
   programs.niri.settings = {
@@ -52,15 +52,15 @@
       };
     };
 
-    workspaces = builtins.listToAttrs (builtins.genList (i:
-      let ws = i + 1; in {
-        name = if ws < 10 then "0${toString ws}" else toString ws;
-        value = {
-          name = toString ws;
-          open-on-output = if ws / 2 * 2 == ws then "DP-3" else "DP-2";
-        };
-      }
-    ) 10);
+    # Workspaces 1-10: odd ones on the main screen, even ones on the side screen.
+    # Keys are zero-padded so niri keeps them in numeric order.
+    workspaces = lib.listToAttrs (map (ws: {
+      name = lib.fixedWidthNumber 2 ws;
+      value = {
+        name = toString ws;
+        open-on-output = if lib.mod ws 2 == 0 then "DP-3" else "DP-2";
+      };
+    }) (lib.range 1 10));
 
     prefer-no-csd = true;
 
