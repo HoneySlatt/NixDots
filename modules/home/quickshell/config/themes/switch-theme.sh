@@ -70,20 +70,13 @@ done
 
 # Slow application updates run in a restartable user service.
 if [ "$MODE" = "background" ]; then
-  switch_discord
-  switch_steam
-  switch_heroic
-  switch_obsidian
-  switch_obs
-  switch_firefox
-  gen_userstyles
-  switch_jellyfin
-  switch_kopuz
-  switch_cider
-  switch_blender
-  gen_kdeglobals
-  switch_tuta
-  switch_opencode
+  # gen_userstyles appends to the userContent.css written by switch_firefox
+  { switch_firefox; gen_userstyles; } &
+  for fn in switch_discord switch_steam switch_heroic switch_obsidian switch_obs switch_jellyfin \
+            switch_kopuz switch_cider switch_blender gen_kdeglobals switch_tuta switch_opencode; do
+    "$fn" &
+  done
+  wait
   echo "Finished background theme update: ${C[name]}"
   exit 0
 fi
@@ -112,24 +105,16 @@ theme_tmp="$(mktemp "${THEME_FILE}.XXXXXX")"
 printf '%s\n' "$THEME" > "$theme_tmp"
 mv "$theme_tmp" "$THEME_FILE"
 
-# Apply the visible desktop first.
-switch_btop
-switch_gdu
-switch_fastfetch
-switch_ghostty
-switch_rio
-gen_yazi_theme
-nvim_reload
-helix_reload
-zed_reload
-switch_gtk
-switch_qt
+# Desktop-wide changes first, then every app in parallel (each writes its own files).
 switch_niri
 live_reload
 switch_wallpaper
-gen_hyprlock_theme
-switch_swaync
-
 systemctl --user restart --no-block quickshell-theme-background.service
+
+for fn in switch_btop switch_gdu switch_fastfetch switch_ghostty switch_rio gen_yazi_theme nvim_reload \
+          helix_reload zed_reload switch_gtk switch_qt gen_hyprlock_theme switch_swaync; do
+  "$fn" &
+done
+wait
 flock -u 9
 echo "Applied desktop theme: ${C[name]}"

@@ -32,11 +32,12 @@ gen_userstyles() {
     "${C[surface2]}"  "${C[surface1]}" "${C[surface0]}"                 \
     "${C[base]}"      "${C[mantle]}"   "${C[crust]}"    "${C[cat_accent]}")
 
-  local gecko_tmp gecko_styles_tmp userstyles_tmp
+  local gecko_tmp gecko_styles_tmp userstyles_tmp compiled_dir
   gecko_tmp=$(mktemp)
   gecko_styles_tmp=$(mktemp)
   userstyles_tmp=$(mktemp)
-  trap 'rm -f "$gecko_tmp" "$gecko_styles_tmp" "$userstyles_tmp"' EXIT
+  compiled_dir=$(mktemp -d)
+  trap 'rm -rf "$gecko_tmp" "$gecko_styles_tmp" "$userstyles_tmp" "$compiled_dir"' EXIT
 
   echo "/* --- userstyles --- */" >> "$gecko_styles_tmp"
 
@@ -54,11 +55,26 @@ gen_userstyles() {
 EOF
 
   local sites=(twitch twitter instagram reddit github codeberg tuta anilist duckduckgo brave-search wikipedia searxng materialious youtube chatgpt mastodon claude cinny)
+  local desktop_sites=(claude chatgpt cinny)
+
+  # One node process per stylesheet: compile them all in parallel, assemble in order below
+  local site
   for site in "${sites[@]}"; do
-    local less_file="$cache_dir/$site.user.less"
-    [ -f "$less_file" ] || continue
+    [ -f "$cache_dir/$site.user.less" ] || continue
+    qs-compile-userstyle "$cache_dir/$site.user.less" "$palette" > "$compiled_dir/$site.css" 2>/dev/null \
+      || rm -f "$compiled_dir/$site.css" &
+  done
+  for site in "${desktop_sites[@]}"; do
+    [ -f "$cache_dir/$site.user.less" ] || continue
+    qs-compile-userstyle "$cache_dir/$site.user.less" "$palette" --desktop > "$compiled_dir/$site.desktop.css" 2>/dev/null \
+      || rm -f "$compiled_dir/$site.desktop.css" &
+  done
+  wait
+
+  for site in "${sites[@]}"; do
+    [ -f "$compiled_dir/$site.css" ] || continue
     local compiled
-    compiled=$(qs-compile-userstyle "$less_file" "$palette" 2>/dev/null) || continue
+    compiled=$(<"$compiled_dir/$site.css")
     echo "/* == $site == */" >> "$userstyles_tmp"
     echo "/* == $site == */" >> "$gecko_styles_tmp"
     printf '%s\n' "$compiled" >> "$userstyles_tmp"
@@ -68,20 +84,19 @@ EOF
       claude) desktop_app=claude-desktop ;;
       chatgpt) desktop_app=chatgpt-desktop ;;
     esac
+    local desktop_compiled="$compiled_dir/$site.desktop.css"
     if [ -n "$desktop_app" ]; then
       (
         desktop_css="${XDG_CONFIG_HOME:-$HOME/.config}/$desktop_app/quickshell.css"
-        mkdir -p "$(dirname "$desktop_css")" && desktop_tmp=$(mktemp "${desktop_css}.XXXXXX") || exit 1
-        trap 'rm -f "$desktop_tmp"' EXIT
-        qs-compile-userstyle "$less_file" "$palette" --desktop > "$desktop_tmp" &&
-          mv "$desktop_tmp" "$desktop_css"
+        [ -f "$desktop_compiled" ] && mkdir -p "$(dirname "$desktop_css")" &&
+          cp "$desktop_compiled" "$desktop_css.tmp" && mv "$desktop_css.tmp" "$desktop_css"
       ) || printf 'Could not update %s theme; keeping the previous CSS.\n' "$desktop_app" >&2
     fi
     # Cinny Desktop polls this script from qs-userstyles-server
     if [ "$site" = cinny ]; then
       (
         cinny_js="$HOME/.config/quickshell/themes/cinny.js"
-        cinny_css=$(qs-compile-userstyle "$less_file" "$palette" --desktop) &&
+        [ -f "$desktop_compiled" ] && cinny_css=$(<"$desktop_compiled") &&
           cinny_tmp=$(mktemp "${cinny_js}.XXXXXX") || exit 1
         trap 'rm -f "$cinny_tmp"' EXIT
         printf 'window.qsCinnyTheme?.(%s);\n' "$(jq -Rs . <<< "$cinny_css")" > "$cinny_tmp" &&

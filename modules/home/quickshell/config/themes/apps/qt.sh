@@ -2,14 +2,12 @@ switch_qt() {
   local icons="${C[icon_theme]:-Papirus-Dark}"
   local local_kvantum="$HOME/.config/Kvantum"
   local theme_dir="$local_kvantum/quickshell-theme"
+  local stock_dir="${XDG_DATA_HOME:-$HOME/.local/share}/Kvantum/KvAdaptaDark"
 
   mkdir -p "$theme_dir"
 
   local svg_src="$local_kvantum/KvAdaptaDark/KvAdaptaDark.svg"
-  if [ ! -f "$svg_src" ]; then
-    svg_src=$(find /nix/store -maxdepth 5 -name "KvAdaptaDark.svg" \
-      -path "*/Kvantum/*" 2>/dev/null | head -1)
-  fi
+  [ -f "$svg_src" ] || svg_src="$stock_dir/KvAdaptaDark.svg"
 
   if [ -n "$svg_src" ] && [ -f "$svg_src" ]; then
     local svg_tmp
@@ -53,10 +51,7 @@ switch_qt() {
   fi
 
   local kvcfg_src="$local_kvantum/KvAdaptaDark/KvAdaptaDark.kvconfig"
-  if [ ! -f "$kvcfg_src" ]; then
-    kvcfg_src=$(find /nix/store -maxdepth 5 -name "KvAdaptaDark.kvconfig" \
-      -path "*/Kvantum/*" 2>/dev/null | head -1)
-  fi
+  [ -f "$kvcfg_src" ] || kvcfg_src="$stock_dir/KvAdaptaDark.kvconfig"
   if [ -n "$kvcfg_src" ] && [ -f "$kvcfg_src" ]; then
     local kvcfg_tmp
     kvcfg_tmp=$(mktemp)

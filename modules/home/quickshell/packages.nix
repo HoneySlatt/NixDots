@@ -8,6 +8,10 @@
     style.name = "kvantum";
   };
 
+  # Stock theme recolored by qt.sh, at a fixed path instead of searching the store
+  xdg.dataFile."Kvantum/KvAdaptaDark".source =
+    "${pkgs.qt6Packages.qtstyleplugin-kvantum}/share/Kvantum/KvAdaptaDark";
+
   home.packages = with pkgs; [
     jq
     nodejs
