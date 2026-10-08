@@ -47,7 +47,7 @@ in
     "Mod+D".action.spawn = "serein";
     "Mod+Shift+D".action.spawn = "cinny";
     "Ctrl+Shift+M".action.spawn = [ "tutanota-desktop" "--no-sandbox" "%U" ];
-    "Mod+Ctrl+N".action.spawn = "jellyfin-desktop";
+    "Mod+Ctrl+N".action.spawn = "nuvio";
     "Mod+Shift+G".action.spawn = "heroic";
     "Mod+Ctrl+G".action.spawn = "steam";
     "Mod+C".action.spawn = "claude-desktop";

@@ -25,6 +25,7 @@
 
     # Media
     kopuz
+    tsukimi
     cider-2
     jellyfin-desktop
     nuvio
@@ -40,6 +41,7 @@
 
     # Files and network
     nautilus
+    oculante
     localsend
     rqbit
     rqbit-desktop

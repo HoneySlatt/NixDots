@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, ... }:
 
 let
   icons = "${config.home.homeDirectory}/Pictures/Icons";
@@ -58,11 +58,11 @@ in
       categories = [ "AudioVideo" "Video" ];
     };
 
-    "org.jellyfin.JellyfinDesktop" = {
-      name       = "Jellyfin";
-      exec       = "jellyfin-desktop";
-      icon       = "org.jellyfin.JellyfinDesktop";
-      comment    = "Jellyfin desktop client";
+    "moe.tsuna.tsukimi" = {
+      name       = "Tsukimi";
+      exec       = "tsukimi";
+      icon       = "org.jellyfin.JellyfinDesktop"";
+      comment    = "Jellyfin client";
       categories = [ "AudioVideo" "Video" ];
     };
 
@@ -90,9 +90,9 @@ in
       comment    = "LibreOffice start center";
     };
 
-    "org.qbittorrent.qBittorrent" = {
-      name       = "qBittorrent";
-      exec       = "qbittorrent %U";
+    "rqbit-desktop" = {
+      name       = "rqbit";
+      exec       = "rqbit-desktop";
       icon       = "org.qbittorrent.qBittorrent";
       comment    = "BitTorrent client";
       categories = [ "Network" "FileTransfer" "P2P" ];
@@ -150,7 +150,7 @@ in
     rio = {
       name       = "Rio";
       exec       = "rio";
-      icon       = "rio";
+      icon       = "/home/honey/Pictures/Icons/rio.png";
       comment    = "A terminal emulator";
       categories = [ "System" "TerminalEmulator" ];
     };
@@ -229,15 +229,6 @@ in
       categories = [ "AudioVideo" "Video" ];
     };
 
-    viu = {
-      name       = "viu";
-      exec       = "rio -e ${pkgs.writeShellScript "viu-hold" ''viu "$@"; read -rsn1''} %F";
-      icon       = "image-viewer";
-      noDisplay  = true;
-      mimeType   = imageTypes;
-      categories = [ "Graphics" "Viewer" ];
-    };
-
     "io.github.ilya_zlobintsev.LACT" = {
       name       = "LACT";
       exec       = "lact gui";
@@ -284,7 +275,7 @@ in
   xdg.mimeApps = {
     enable = true;
     defaultApplications =
-      lib.genAttrs imageTypes (_: "viu.desktop")
+      lib.genAttrs imageTypes (_: "oculante.desktop")
       // lib.genAttrs mediaTypes (_: "mpv.desktop")
       // lib.genAttrs textTypes (_: "nvim.desktop")
       // lib.genAttrs webTypes (_: "brave-origin.desktop")

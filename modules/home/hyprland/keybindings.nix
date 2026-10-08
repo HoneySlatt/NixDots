@@ -143,7 +143,7 @@ in
       (bind "SUPER + D" (exec "serein"))
       (bind "SUPER + SHIFT + D" (exec "cinny"))
       (bind "CTRL + SHIFT + M" (exec "tutanota-desktop --no-sandbox %U"))
-      (bind "SUPER + CTRL + N" (exec "jellyfin-desktop"))
+      (bind "SUPER + CTRL + N" (exec "nuvio"))
       (bind "SUPER + SHIFT +G" (exec "heroic"))
       (bind "SUPER + CTRL +G" (exec "steam"))
       (bind "SUPER + F" (layoutAware (layoutExpr "fit active") "hl.dsp.window.fullscreen({ mode = 'maximized', action = 'toggle' })"))
