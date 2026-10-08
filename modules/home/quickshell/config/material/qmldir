@@ -39,3 +39,4 @@ MusicLauncher 1.0 MusicLauncher.qml
 singleton VpnLauncherState 1.0 VpnLauncherState.qml
 VpnLauncher 1.0 VpnLauncher.qml
 ClickOutside 1.0 ClickOutside.qml
+singleton NotificationState 1.0 NotificationState.qml

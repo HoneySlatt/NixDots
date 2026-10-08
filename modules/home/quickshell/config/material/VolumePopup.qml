@@ -141,12 +141,7 @@ Item {
             Connections {
                 target: VolumePopupState
                 function onVisibleChanged() {
-                    if (VolumePopupState.visible) {
-                        VolumeState.popupVisible = true;
-                        VolumeState.refreshSinks();
-                        VolumeState.refreshAppStreams();
-                    } else {
-                        VolumeState.popupVisible = false;
+                    if (!VolumePopupState.visible) {
                         root.showDevices = false;
                         root.showApps = false;
                     }
@@ -249,10 +244,7 @@ Item {
                                 title: "Output device"
                                 summary: VolumeState.sinks.find(s => s.active)?.label ?? ""
                                 expanded: root.showDevices
-                                onToggled: {
-                                    root.showDevices = !root.showDevices;
-                                    if (root.showDevices) VolumeState.refreshSinks();
-                                }
+                                onToggled: root.showDevices = !root.showDevices
 
                                 Repeater {
                                     model: VolumeState.sinks
@@ -317,10 +309,7 @@ Item {
                                 title: "App volumes"
                                 summary: VolumeState.appStreams.length + (VolumeState.appStreams.length === 1 ? " stream" : " streams")
                                 expanded: root.showApps
-                                onToggled: {
-                                    root.showApps = !root.showApps;
-                                    if (root.showApps) VolumeState.refreshAppStreams();
-                                }
+                                onToggled: root.showApps = !root.showApps
 
                                 M3.Label {
                                     visible: VolumeState.appStreams.length === 0

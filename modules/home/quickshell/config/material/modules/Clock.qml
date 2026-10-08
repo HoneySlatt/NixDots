@@ -1,11 +1,10 @@
 import QtQuick
 import QtQuick.Layouts
+import Quickshell
 import ".."
 
 Item {
     id: clock
-
-    property date now: new Date()
 
     Layout.alignment: Qt.AlignVCenter
     implicitWidth: clockText.implicitWidth
@@ -20,7 +19,7 @@ Item {
         scale: Theme.barTextScale
         font.pixelSize: Theme.fontSize
         font.weight: Theme.fontWeight
-        text: Qt.formatDateTime(clock.now, "hh:mm AP\u2003-\u2003ddd dd")
+        text: Qt.formatDateTime(systemClock.date, "hh:mm AP\u2003-\u2003ddd dd")
     }
 
     opacity: mouseArea.containsMouse ? 0.6 : 1.0
@@ -34,11 +33,9 @@ Item {
         onClicked: CalendarPopupState.toggle()
     }
 
-    // Long Qt timers are coarse and can fire seconds early, so poll instead
-    Timer {
-        interval: 1000
-        running: true
-        repeat: true
-        onTriggered: clock.now = new Date()
+    // Wakes up once per minute, aligned on the minute change
+    SystemClock {
+        id: systemClock
+        precision: SystemClock.Minutes
     }
 }

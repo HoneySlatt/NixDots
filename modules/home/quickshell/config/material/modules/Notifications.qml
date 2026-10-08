@@ -9,13 +9,10 @@ Item {
     implicitWidth: notifText.implicitWidth + Theme.modulePadding * 2
     implicitHeight: Theme.barHeight
 
-    // U+F009A=notification, U+F009C=none, U+F009B=dnd-notification, U+F0A91=dnd-none
-    property string notifIcon: "\u{f009c}"
-
     Text {
         id: notifText
         anchors.centerIn: parent
-        text: notifIcon
+        text: NotificationState.icon
         color: Theme.text
         font.family: Theme.symbolFontFamily
         font.pixelSize: Theme.fontSize
@@ -36,41 +33,6 @@ Item {
                 dndProc.running = true;
             } else {
                 toggleProc.running = true;
-            }
-        }
-    }
-
-    Process {
-        id: notifProc
-        command: ["swaync-client", "-swb"]
-        running: true
-
-        stdout: SplitParser {
-            onRead: function(data) {
-                try {
-                    let json = JSON.parse(data);
-                    let alt = json.alt || "none";
-
-                    switch (alt) {
-                        case "notification":
-                        case "inhibited-notification":
-                            notifIcon = "\u{f009a}";
-                            break;
-                        case "dnd-notification":
-                        case "dnd-inhibited-notification":
-                            notifIcon = "\u{f009b}";
-                            break;
-                        case "dnd-none":
-                        case "dnd-inhibited-none":
-                            notifIcon = "\u{f0a91}";
-                            break;
-                        case "none":
-                        case "inhibited-none":
-                        default:
-                            notifIcon = "\u{f009c}";
-                            break;
-                    }
-                } catch (e) {}
             }
         }
     }

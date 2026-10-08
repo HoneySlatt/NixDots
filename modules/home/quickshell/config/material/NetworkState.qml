@@ -93,14 +93,22 @@ QtObject {
 
     // Treat VPN as active only when the NymVPN tunnel is connected.
     readonly property var _vpnIfaceProc: Process {
-        command: ["sh", "-c", "/run/current-system/sw/bin/nym-vpnc status 2>/dev/null | grep -q '^State: Connected' && printf true || printf false"]
+        command: ["sh", "-c", "/run/current-system/sw/bin/nym-vpnc status 2>/dev/null | sed -n 's/^State: \\([A-Za-z]*\\).*/\\1/p'"]
         running: false
 
         stdout: StdioCollector {
             onStreamFinished: {
-                root.vpnConnected = this.text.trim() === "true";
+                const state = this.text.trim();
+                root.vpnConnected = state === "Connected";
+                // Connecting, Disconnecting...: follow the transition until it settles
+                if (state.endsWith("ing")) root._vpnRecheckTimer.start();
             }
         }
+    }
+
+    readonly property var _vpnRecheckTimer: Timer {
+        interval: 1000
+        onTriggered: root._vpnIfaceProc.running = true
     }
 
     readonly property var _savedConnsProc: Process {
@@ -128,15 +136,39 @@ QtObject {
         root.scan();
     }
 
+    function _refreshStatus() {
+        root._netProc.running = true;
+        root._wifiRadioProc.running = true;
+    }
+
+    // One line per device, connectivity or VPN tunnel change (radio toggles change the device state)
+    readonly property var _monitorProc: Process {
+        command: ["nmcli", "monitor"]
+        running: true
+        stdout: SplitParser {
+            onRead: root._changeTimer.restart()
+        }
+        onRunningChanged: if (!running) root._monitorRestartTimer.start()
+    }
+
+    readonly property var _monitorRestartTimer: Timer {
+        interval: 1000
+        onTriggered: root._monitorProc.running = true
+    }
+
+    // Coalesce bursts of events into a single refresh
+    readonly property var _changeTimer: Timer {
+        interval: 200
+        onTriggered: root._refreshStatus()
+    }
+
+    // Signal strength and the Nym connection state emit no events
     readonly property var _pollTimer: Timer {
-        interval: 500
+        interval: 10000
         running: true
         repeat: true
         triggeredOnStart: true
-        onTriggered: {
-            root._netProc.running = true;
-            root._wifiRadioProc.running = true;
-        }
+        onTriggered: root._refreshStatus()
     }
 
     // ── Network scanning ──

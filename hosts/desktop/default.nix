@@ -49,6 +49,9 @@
 
   powerManagement.cpuFreqGovernor = "performance";
 
+  # Compressed swap in RAM
+  zramSwap.enable = true;
+
   hardware.graphics = {
     enable = true;
     enable32Bit = true;

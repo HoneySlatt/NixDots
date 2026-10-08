@@ -30,17 +30,13 @@ QtObject {
         }
     }
 
-    readonly property var _proc: Process {
-        command: ["cat", root.hwmonPath]
-        running: false
-
-        stdout: StdioCollector {
-            onStreamFinished: {
-                let val = parseInt(this.text.trim());
-                if (!isNaN(val)) {
-                    root.tempC = Math.round(val / 1000);
-                    root._pushHistory(root.tempC);
-                }
+    readonly property var _file: FileView {
+        path: root.hwmonPath
+        onLoaded: {
+            let val = parseInt(text().trim());
+            if (!isNaN(val)) {
+                root.tempC = Math.round(val / 1000);
+                root._pushHistory(root.tempC);
             }
         }
     }
@@ -49,7 +45,6 @@ QtObject {
         interval: 2000
         running: root.hwmonPath !== ""
         repeat: true
-        triggeredOnStart: true
-        onTriggered: root._proc.running = true
+        onTriggered: root._file.reload()
     }
 }

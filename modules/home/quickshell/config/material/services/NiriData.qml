@@ -71,7 +71,8 @@ Singleton {
         command: ["niri", "msg", "--json", "event-stream"]
         running: true
         stdout: SplitParser {
-            onRead: debounce.restart()
+            // Only workspace events change what the bar shows; window events are frequent (title updates)
+            onRead: data => { if (data.startsWith("{\"Workspace")) debounce.restart(); }
         }
         onExited: restartStream.start()
     }

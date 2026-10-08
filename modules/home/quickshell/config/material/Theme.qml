@@ -274,37 +274,18 @@ QtObject {
         }
     }
 
-    readonly property var _nsfwReader: Process {
-        command: ["cat", _nsfwFile]
-        running: true
-        stdout: SplitParser {
-            onRead: data => {
-                let val = data.trim();
-                nsfwEnabled = (val === "true");
-            }
-        }
-    }
-
-    readonly property var _nsfwTimer: Timer {
-        interval: 2000
-        running: true
-        repeat: true
-        onTriggered: {
-            _nsfwReader.running = false;
-            _nsfwReader.running = true;
-        }
-    }
-
-    readonly property var _nsfwWriter: Process {
-        property bool nsfwValue: false
-        command: ["sh", "-c", "echo '" + (nsfwValue ? "true" : "false") + "' > '" + _nsfwFile + "'"]
-        running: false
+    // Watched (inotify) so toggle-nsfw, which writes it outside the shell, applies at once
+    readonly property var _nsfwView: FileView {
+        path: _nsfwFile
+        watchChanges: true
+        onFileChanged: reload()
+        onLoaded: nsfwEnabled = text().trim() === "true"
+        onLoadFailed: setText("false\n")
     }
 
     function toggleNsfw() {
         nsfwEnabled = !nsfwEnabled;
-        _nsfwWriter.nsfwValue = nsfwEnabled;
-        _nsfwWriter.running = true;
+        _nsfwView.setText((nsfwEnabled ? "true" : "false") + "\n");
     }
 
     function setTheme(key) {
