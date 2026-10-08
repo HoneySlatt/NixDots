@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 
 # Windows 11 VM with single GPU passthrough: starting it stops the host
-# graphical session, stopping it brings back the GDM login screen.
+# graphical session, stopping it brings back the login screen.
 
 let
   name   = "win11";

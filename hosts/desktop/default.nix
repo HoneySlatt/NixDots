@@ -6,7 +6,7 @@
     ../../modules/nixos/base
     ../../modules/nixos/desktop/brave.nix
     ../../modules/nixos/services
-    ../../modules/nixos/desktop/gdm.nix
+    ../../modules/nixos/desktop/cosmic-greeter.nix
     ../../modules/nixos/desktop/audio.nix
     ../../modules/nixos/desktop/niri.nix
     ../../modules/nixos/virtualisation

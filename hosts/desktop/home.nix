@@ -8,6 +8,7 @@
     ../../modules/home/neovim
     ../../modules/home/niri
     ../../modules/home/amane
+    ../../modules/home/cosmic-greeter.nix
   ];
 
   # Shortcut to the NAS drive in the home folder

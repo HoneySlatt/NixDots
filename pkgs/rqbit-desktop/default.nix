@@ -2,6 +2,8 @@
 , stdenv
 , fetchurl
 , dpkg
+, pkg-config
+, bash
 , autoPatchelfHook
 , wrapGAppsHook3
 , webkitgtk_4_1
@@ -20,14 +22,28 @@ stdenv.mkDerivation rec {
     hash = "sha256-MU3VUwYBO9e0WVak+7t2EG1fyRdnwZyf+G1+dC0PUmk=";
   };
 
-  nativeBuildInputs = [ dpkg autoPatchelfHook wrapGAppsHook3 ];
+  nativeBuildInputs = [ dpkg pkg-config autoPatchelfHook wrapGAppsHook3 ];
 
   buildInputs = [ webkitgtk_4_1 gtk3 libsoup_3 openssl dbus ];
+
+  buildPhase = ''
+    runHook preBuild
+    $CC -shared -fPIC -O2 -Wall -Wextra ${./rqbit-theme.c} \
+      -o librqbit-theme.so $(pkg-config --cflags --libs webkit2gtk-4.1) -ldl
+    runHook postBuild
+  '';
 
   installPhase = ''
     runHook preInstall
     mkdir -p $out
     cp -r usr/* $out
+    mkdir -p $out/lib $out/libexec $out/share/rqbit-desktop
+    mv $out/bin/rqbit-desktop $out/libexec/rqbit-desktop
+    install -m755 librqbit-theme.so $out/lib/librqbit-theme.so
+    install -m644 ${../../modules/home/amane/config/themes/apps/rqbit.sh} $out/share/rqbit-desktop/rqbit.sh
+    substitute ${./rqbit-desktop.sh} $out/bin/rqbit-desktop \
+      --subst-var-by shell ${bash}/bin/bash --subst-var-by out "$out"
+    chmod +x $out/bin/rqbit-desktop
     runHook postInstall
   '';
 
