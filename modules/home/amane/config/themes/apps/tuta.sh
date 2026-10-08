@@ -3,7 +3,7 @@ switch_tuta() {
 
   local theme_json
   theme_json=$(printf '{
-    "themeId":"quickshell",
+    "themeId":"amane",
     "primary":"%s","on_primary":"%s",
     "primary_container":"%s","on_primary_container":"%s",
     "primary_fixed":"%s","on_primary_fixed":"%s",

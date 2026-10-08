@@ -109,7 +109,7 @@ fn on_key(key: Key) {
     }
 }
 
-// One entry per name, strongest first, like the Quickshell list
+// One entry per name, strongest first
 fn networks(access_points: &[AccessPoint]) -> Vec<&AccessPoint> {
     let mut shown: Vec<&AccessPoint> = Vec::new();
 

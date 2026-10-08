@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Switch theme — btop, fastfetch, ghostty, yazi, nvim, gtk, qt, niri, hyprland, wallpaper,
+# Switch theme — btop, fastfetch, ghostty, yazi, nvim, gtk, qt, niri, wallpaper,
 # discord, steam, heroic, obsidian, obs, firefox, userstyles, jellyfin, kopuz, cider,
 # blender, kdeglobals, hyprlock, tuta, opencode, serein, cosmic, rqbit
 
@@ -48,7 +48,7 @@ case "$THEME" in
     C[gtk_theme]="adw-gtk3-dark" C[gtk_scheme]="prefer-dark"
     ;;
   carbonfox)
-    C[cat_accent]="mauve" C[hypr_accent]="#3a3a3a" C[accent_ui]="#3a3a3a"
+    C[cat_accent]="mauve" C[accent_ui]="#3a3a3a"
     C[gtk_theme]="catppuccin-mocha-lavender-standard" C[gtk_scheme]="prefer-dark"
     ;;
   gruvbox-light)
@@ -107,9 +107,8 @@ mv "$theme_tmp" "$THEME_FILE"
 
 # Desktop-wide changes first, then every app in parallel (each writes its own files).
 switch_niri
-live_reload
 switch_wallpaper
-systemctl --user restart --no-block quickshell-theme-background.service
+systemctl --user restart --no-block amane-theme-background.service
 
 for fn in switch_btop switch_fastfetch switch_ghostty switch_rio gen_yazi_theme nvim_reload \
           zed_reload switch_gtk switch_qt gen_hyprlock_theme switch_swaync switch_serein switch_cosmic switch_rqbit; do

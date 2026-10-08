@@ -10,7 +10,6 @@
     wl-clipboard
     playerctl
     swaynotificationcenter
-    quickshell
     hyprpicker
     wlsunset
     swayosd

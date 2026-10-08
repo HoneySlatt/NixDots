@@ -3,7 +3,7 @@ switch_opencode() {
   local tui_conf="$HOME/.config/opencode/tui.json"
   mkdir -p "$themes_dir"
 
-  cat > "$themes_dir/quickshell.json" << EOF
+  cat > "$themes_dir/amane.json" << EOF
 {
   "\$schema": "https://opencode.ai/theme.json",
   "theme": {
@@ -61,10 +61,10 @@ switch_opencode() {
 }
 EOF
 
-  printf '{ "theme": "quickshell" }\n' > "$tui_conf"
+  printf '{ "theme": "amane" }\n' > "$tui_conf"
 
   # Desktop has its own palette format and native v1/v2 color tokens.
-  local desktop_conf="${XDG_CONFIG_HOME:-$HOME/.config}/opencode/quickshell-desktop.json"
+  local desktop_conf="${XDG_CONFIG_HOME:-$HOME/.config}/opencode/amane-desktop.json"
   local mode="dark" desktop_tmp
   [ "${C[gtk_scheme]}" = "prefer-light" ] && mode="light"
   mkdir -p "$(dirname "$desktop_conf")"
@@ -104,7 +104,7 @@ EOF
         }
       }
     }
-  ' "$themes_dir/quickshell.json" > "$desktop_tmp"; then
+  ' "$themes_dir/amane.json" > "$desktop_tmp"; then
     mv "$desktop_tmp" "$desktop_conf"
   else
     rm -f "$desktop_tmp"

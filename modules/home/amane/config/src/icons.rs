@@ -1,5 +1,5 @@
 // Material Symbols codepoints by icon name, generated from the installed font
-// for every name used by the Quickshell config, plus the tray menu radio buttons
+// for every name used by the shell, plus the tray menu radio buttons
 
 pub fn glyph(name: &str) -> char {
     let code = match name {

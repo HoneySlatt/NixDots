@@ -10,7 +10,7 @@ pub const SYMBOL_FONT: &str = "Symbols Nerd Font";
 pub const BAR_FONT: &str = "Google Sans Flex:wdth=118";
 
 pub const FONT_SIZE: f32 = 13.0;
-// Quickshell scales the bar text down slightly
+// Scale the bar text down slightly
 pub const BAR_TEXT_SIZE: f32 = FONT_SIZE * 0.96;
 
 pub const BAR_HEIGHT: f32 = 30.0;
@@ -280,7 +280,7 @@ pub fn home() -> String {
     std::env::var("HOME").unwrap_or_default()
 }
 
-// Theme state is shared with Quickshell and the theme scripts
+// Theme state is shared with the Steam Deck shell and the theme scripts
 pub fn config_dir() -> String {
     format!("{}/.config/amane", home())
 }

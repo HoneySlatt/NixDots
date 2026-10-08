@@ -28,7 +28,7 @@ switch_firefox() {
   } > "$user_js"
 
   cat > "$user_chrome" << EOF
-/* Quickshell theme - auto-generated, do not edit */
+/* Amane theme - auto-generated, do not edit */
 :root {
   --toolbox-bgcolor-inactive:     ${C[mantle]} !important;
   --toolbarbutton-icon-fill:      ${C[accent]} !important;
@@ -89,7 +89,7 @@ hbox#titlebar {
 EOF
 
   cat > "$user_content" << EOF
-/* Quickshell theme - auto-generated, do not edit */
+/* Amane theme - auto-generated, do not edit */
 @-moz-document url-prefix("about:") {
   :root {
     --in-content-page-color:      ${C[text]} !important;

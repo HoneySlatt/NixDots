@@ -288,7 +288,7 @@ fn toggle_nsfw() {
 
 const PER_PAGE: usize = 12;
 
-// Wallpapers of the current theme, with thumbnails cached like Quickshell's
+// Wallpapers of the current theme, with cached thumbnails
 #[derive(Default)]
 pub struct Wallpapers {
     theme: String,

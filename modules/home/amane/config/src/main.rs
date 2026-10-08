@@ -26,7 +26,7 @@ use amane::{App, Service};
 use popups::Popup;
 
 fn main() {
-    // samples are collected from the start, like the Quickshell singletons
+    // samples are collected from the start
     drop(system::History::read());
     // the tray watcher has to be there before programs register their items
     drop(tray::Tray::read());

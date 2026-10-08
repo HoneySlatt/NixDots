@@ -1,8 +1,8 @@
 /* Heroic 2.22.x: shared layout; all colors come from switch_heroic. */
-body.quickshell {
-  --qs-link: color-mix(in srgb, var(--accent) 55%, var(--text-default));
+body.amane {
+  --amane-link: color-mix(in srgb, var(--accent) 55%, var(--text-default));
   --navbar-inactive: var(--text-secondary);
-  --navbar-active: var(--qs-link);
+  --navbar-active: var(--amane-link);
   --navbar-active-background: color-mix(in srgb, var(--accent) 14%, var(--navbar-background));
   --gradient-body-background: var(--body-background);
   --gamecard-title-color: var(--background);
@@ -24,14 +24,14 @@ body.quickshell {
   --status-default-hover: var(--text-default);
   --status-success: var(--success);
   --status-success-hover: var(--success-hover);
-  --status-warning: var(--qs-warning);
-  --status-warning-hover: var(--qs-warning);
+  --status-warning: var(--amane-warning);
+  --status-warning-hover: var(--amane-warning);
   --status-danger: var(--danger);
   --status-info: var(--accent);
-  --text-tertiary: var(--qs-on-accent);
-  --primary-button-overlay: var(--qs-on-accent);
-  --secondary-button-overlay: var(--qs-on-accent);
-  --success-button-overlay: var(--qs-on-accent);
+  --text-tertiary: var(--amane-on-accent);
+  --primary-button-overlay: var(--amane-on-accent);
+  --secondary-button-overlay: var(--amane-on-accent);
+  --success-button-overlay: var(--amane-on-accent);
   --success: var(--accent);
   --success-hover: var(--accent-overlay);
   --success-button: var(--accent);
@@ -107,7 +107,7 @@ body.quickshell {
   .Sidebar .currentDownloads { margin: 0; align-self: center; }
   .Sidebar .currentDownload .full-size { display: none; }
   .Sidebar .currentDownload .statusIcon { display: block; margin: 0 10px 8px 0; }
-  .Sidebar .currentDownload .MuiBadge-badge { background: var(--accent); color: var(--qs-on-accent); }
+  .Sidebar .currentDownload .MuiBadge-badge { background: var(--accent); color: var(--amane-on-accent); }
 
   .Header .Header__filters { display: none; }
 
@@ -140,7 +140,7 @@ body.quickshell {
   }
   .libraryHeaderWrapper .ActionIcons .FormControl > button:not(:has([data-tour="library-sort-az"], [data-tour="library-sort-installed"], [data-tour="library-refresh"])) { display: none; }
   .libraryHeaderWrapper .ActionIcons .FormControl > button:is(:hover, :focus-visible, .active) {
-    color: var(--qs-link);
+    color: var(--amane-link);
     background: color-mix(in srgb, var(--accent) 12%, var(--background));
   }
   &.frameless:not(.fullscreen) .libraryHeaderWrapper .ActionIcons {
@@ -270,12 +270,12 @@ body.quickshell {
   .gameConfigContainer .mainInfo .buttons { margin: 4px 0 0; }
   .gameConfigContainer .mainInfo > :last-child { margin-bottom: 0; }
   .gameConfigContainer .mainBtn { min-height: 50px; border-radius: 8px; padding: 12px 24px; }
-  .gameConfigContainer .mainBtn.is-success { background: var(--accent); color: var(--qs-on-accent); }
-  .gameConfigContainer .mainInfoWrapper .mainInfo .mainBtn.is-success svg { color: var(--qs-on-accent); }
+  .gameConfigContainer .mainBtn.is-success { background: var(--accent); color: var(--amane-on-accent); }
+  .gameConfigContainer .mainInfoWrapper .mainInfo .mainBtn.is-success svg { color: var(--amane-on-accent); }
   /* Change only the idle play label, never Stop, Install or Syncing. */
   .gameConfigContainer .mainBtn > .buttonWithIcon:has(> svg[data-icon="play"]) { font-size: 0; gap: 12px; }
   .gameConfigContainer .mainBtn > .buttonWithIcon:has(> svg[data-icon="play"])::after { content: "PLAY"; font-size: 16px; }
-  .gameConfigContainer .altPlay { color: var(--qs-on-accent); background: var(--accent); border-radius: 8px; }
+  .gameConfigContainer .altPlay { color: var(--amane-on-accent); background: var(--accent); border-radius: 8px; }
 
   /* Small metadata/successes panel at the lower right. */
   .gameConfigContainer .extraInfoWrapper {
@@ -308,7 +308,7 @@ body.quickshell {
     color: var(--text-secondary);
     font: inherit;
   }
-  .gameConfigContainer .gameInfoTabs .tabButton.Mui-selected { color: var(--qs-link); }
+  .gameConfigContainer .gameInfoTabs .tabButton.Mui-selected { color: var(--amane-link); }
   /* Heroic 2.22's production SVGs have no data-testid: match the trophy path. */
   .gameConfigContainer .tabButton:not(:first-child):not(:has(path[d^="M19 5h-2V3H7v2H5"])) { display: none; }
   .gameConfigContainer .tabButton:first-child { font-size: 0; }
@@ -331,7 +331,7 @@ body.quickshell {
     overflow-wrap: anywhere;
   }
   .gameConfigContainer .extraInfoWrapper .extraInfo .infoTab > div > * > b { flex: 1; flex-basis: auto; font-weight: 400; text-align: start; }
-  .gameConfigContainer .extraInfoWrapper .extraInfo .infoTab > div > p.iconWithText { color: var(--qs-link) !important; text-decoration: none !important; }
+  .gameConfigContainer .extraInfoWrapper .extraInfo .infoTab > div > p.iconWithText { color: var(--amane-link) !important; text-decoration: none !important; }
   .gameConfigContainer .extraInfoWrapper .extraInfo .infoTab > div > p.iconWithText:last-child { border: 0; }
   .gameConfigContainer .achievementsTab .achievement-container { gap: 16px; }
   .gameConfigContainer .reportProblem { display: none; }
@@ -383,7 +383,7 @@ body.quickshell {
     transition: transform .35s var(--m3-spring), opacity .2s var(--m3-effects);
   }
   .Sidebar .Sidebar__item:not(.SidebarLinks__subItem):is(:hover, :focus-visible) { background: var(--m3-state); }
-  .Sidebar .Sidebar__item.active { color: var(--qs-link); background: none; }
+  .Sidebar .Sidebar__item.active { color: var(--amane-link); background: none; }
   .Sidebar .Sidebar__item.active::before { opacity: 1; transform: scaleX(1); }
   .Sidebar .SidebarItemWithSubmenu:is(:hover, :focus-within) .SidebarSubmenu {
     padding: 8px;
@@ -542,7 +542,7 @@ body.quickshell {
     left: 28px;
     width: 24px;
     height: 24px;
-    background: var(--qs-on-accent);
+    background: var(--amane-on-accent);
   }
   .hiddenCheckbox:checked + .toggleSwitchWrapper:not(.dropdown .toggleSwitchWrapper):active::after { left: 26px; width: 28px; height: 28px; }
   .hiddenCheckbox:focus-visible + .toggleSwitchWrapper::before { outline: 3px solid var(--accent); outline-offset: 2px; }
@@ -564,7 +564,7 @@ body.quickshell {
   .gameCard > .icons .svg-button:has(circle) { width: 48px; background: var(--accent); }
   .gameCard > .icons .svg-button:has(circle):hover { background: var(--accent-overlay); }
   .gameCard > .icons .svg-button circle { fill: transparent; }
-  .gameCard > .icons .svg-button:has(circle) path { fill: var(--qs-on-accent); }
+  .gameCard > .icons .svg-button:has(circle) path { fill: var(--amane-on-accent); }
   .gameCard > .icons .svg-button:has(circle) > svg { height: 30px; }
   .gameCard > .icons .svg-button:active { border-radius: 12px; }
 
@@ -573,7 +573,7 @@ body.quickshell {
     padding: 2px 10px;
     border-radius: 999px;
     background: var(--m3-tonal);
-    color: var(--qs-link);
+    color: var(--amane-link);
     font-size: 13px;
   }
   .libraryHeaderWrapper .libraryTitle > .sideloadGameButton {
@@ -587,7 +587,7 @@ body.quickshell {
     height: 32px;
     padding: 0 16px;
     background: var(--m3-tonal);
-    color: var(--qs-link);
+    color: var(--amane-link);
     text-transform: none;
   }
 
@@ -661,7 +661,7 @@ body.quickshell {
     text-transform: none;
     transition: background-color .2s var(--m3-effects);
   }
-  .MuiTab-root.Mui-selected { background: var(--m3-tonal); color: var(--qs-link); }
+  .MuiTab-root.Mui-selected { background: var(--m3-tonal); color: var(--amane-link); }
 
   @media (prefers-reduced-motion: reduce) {
     .Sidebar__item, .Sidebar__item::before, .button, .gameCard, .SearchBar, .GogProfile__button,
@@ -670,11 +670,11 @@ body.quickshell {
 }
 
 /* Thin pill scrollbars, including the document one. */
-:is(html:has(body.quickshell), html:has(body.quickshell) *)::-webkit-scrollbar { width: 12px; height: 12px; }
-:is(html:has(body.quickshell), html:has(body.quickshell) *)::-webkit-scrollbar-track { background: transparent; }
-:is(html:has(body.quickshell), html:has(body.quickshell) *)::-webkit-scrollbar-thumb {
+:is(html:has(body.amane), html:has(body.amane) *)::-webkit-scrollbar { width: 12px; height: 12px; }
+:is(html:has(body.amane), html:has(body.amane) *)::-webkit-scrollbar-track { background: transparent; }
+:is(html:has(body.amane), html:has(body.amane) *)::-webkit-scrollbar-thumb {
   border: 4px solid transparent;
   border-radius: 999px;
   background: color-mix(in srgb, var(--text-default, #888) 28%, transparent) padding-box;
 }
-:is(html:has(body.quickshell), html:has(body.quickshell) *)::-webkit-scrollbar-thumb:hover { background-color: var(--accent, #999); }
+:is(html:has(body.amane), html:has(body.amane) *)::-webkit-scrollbar-thumb:hover { background-color: var(--accent, #999); }

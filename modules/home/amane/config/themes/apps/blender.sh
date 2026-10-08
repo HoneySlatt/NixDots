@@ -1,8 +1,8 @@
 switch_blender() {
   local blender_dir="$HOME/.config/blender/5.0"
   local preset_dir="$blender_dir/scripts/presets/interface_theme"
-  local preset="$preset_dir/Quickshell.py"
-  local apply_script="$blender_dir/scripts/apply-quickshell-theme.py"
+  local preset="$preset_dir/Amane.py"
+  local apply_script="$blender_dir/scripts/apply-amane-theme.py"
 
   mkdir -p "$preset_dir"
 
@@ -153,7 +153,7 @@ EOF
 import bpy, os
 exec(open(os.path.expanduser('$preset')).read())
 bpy.ops.wm.save_userpref()
-print("Quickshell theme applied.")
+print("Amane theme applied.")
 EOF
 
   if ! pgrep -x blender > /dev/null; then

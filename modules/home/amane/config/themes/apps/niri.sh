@@ -1,6 +1,6 @@
 switch_niri() {
   local theme_file="$HOME/.config/niri/theme.kdl"
-  local active="${C[hypr_accent]:-${C[accent]}}"
+  local active="${C[accent_ui]:-${C[accent]}}"
   local inactive="${C[surface0]}"
 
   mkdir -p "$(dirname "$theme_file")"

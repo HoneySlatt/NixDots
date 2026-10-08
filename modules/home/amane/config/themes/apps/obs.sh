@@ -1,6 +1,6 @@
 switch_obs() {
   local theme_dir="$HOME/.config/obs-studio/themes"
-  local theme_file="$theme_dir/Quickshell.obt"
+  local theme_file="$theme_dir/Amane.obt"
   local user_ini="$HOME/.config/obs-studio/user.ini"
   mkdir -p "$theme_dir"
 
@@ -9,10 +9,10 @@ switch_obs() {
 
   cat > "$theme_file" << EOF
 @OBSThemeMeta {
-    name: 'Quickshell';
-    id: 'io.github.quickshell';
+    name: 'Amane';
+    id: 'io.github.amane';
     extends: 'com.obsproject.Yami';
-    author: 'quickshell';
+    author: 'amane';
     dark: '$is_dark';
 }
 
@@ -72,9 +72,9 @@ EOF
 
   if [ -f "$user_ini" ]; then
     if grep -q "^Theme=" "$user_ini"; then
-      sed -i "s|^Theme=.*|Theme=io.github.quickshell|" "$user_ini"
+      sed -i "s|^Theme=.*|Theme=io.github.amane|" "$user_ini"
     else
-      sed -i '/^\[Appearance\]/a Theme=io.github.quickshell' "$user_ini"
+      sed -i '/^\[Appearance\]/a Theme=io.github.amane' "$user_ini"
     fi
   fi
 }

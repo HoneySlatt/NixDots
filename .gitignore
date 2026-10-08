@@ -19,10 +19,3 @@ result
 
 # Flake
 .flake/
-
-# Quickshell : état runtime et thèmes générés par switch-theme.sh
-modules/home/quickshell/config/.bar-position
-modules/home/quickshell/config/.current-theme
-modules/home/quickshell/config/.nsfw-enabled
-modules/home/quickshell/config/themes/cinny.js
-modules/home/quickshell/config/themes/userstyles.user.css

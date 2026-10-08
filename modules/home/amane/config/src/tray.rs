@@ -14,7 +14,7 @@ const ITEM: &str = "org.kde.StatusNotifierItem";
 const PROPERTIES: &str = "org.freedesktop.DBus.Properties";
 const INTROSPECTABLE: &str = "org.freedesktop.DBus.Introspectable";
 
-// Quickshell's tray used the kora icon theme
+// Tray icons use the kora icon theme
 const ICON_THEMES: [&str; 2] = ["kora", "hicolor"];
 
 const INTROSPECTION: &str = r#"<node>
@@ -132,7 +132,7 @@ impl Service for Tray {
         let properties = session.methods(WATCHER_PATH, PROPERTIES);
         let introspection = session.methods(WATCHER_PATH, INTROSPECTABLE);
 
-        // another tray, like Quickshell's, already runs
+        // another tray already runs
         if !session.own(WATCHER) {
             return;
         }

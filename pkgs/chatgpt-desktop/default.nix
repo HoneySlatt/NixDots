@@ -68,10 +68,10 @@ chatgptDesktop.overrideAttrs (old: {
     if (!manifest.main || !entry(manifest.main)) {
       throw new Error('ChatGPT Desktop entry point not found');
     }
-    add('quickshell-theme.cjs', fs.readFileSync(themePath));
-    add('quickshell-entry.cjs', 'require("./quickshell-theme.cjs");\nrequire(' +
+    add('amane-theme.cjs', fs.readFileSync(themePath));
+    add('amane-entry.cjs', 'require("./amane-theme.cjs");\nrequire(' +
       JSON.stringify('./' + manifest.main) + ');\n');
-    manifest.main = 'quickshell-entry.cjs';
+    manifest.main = 'amane-entry.cjs';
     add('package.json', JSON.stringify(manifest));
 
     const json = Buffer.from(JSON.stringify(header));

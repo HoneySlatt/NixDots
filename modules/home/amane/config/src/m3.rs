@@ -1,4 +1,4 @@
-// Material 3 Expressive building blocks shared by the popups (Quickshell's m3/ folder)
+// Material 3 Expressive building blocks shared by the popups
 
 use std::rc::Rc;
 use std::time::Instant;

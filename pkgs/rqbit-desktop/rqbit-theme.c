@@ -30,9 +30,9 @@ static void apply_theme(WebKitWebView *view) {
     // Base64 keeps arbitrary CSS out of JavaScript string syntax.
     gchar *encoded = g_base64_encode((const guchar *)css, length);
     gchar *script = g_strdup_printf(
-        "(() => { let s = document.getElementById('rqbit-quickshell-theme');"
+        "(() => { let s = document.getElementById('rqbit-amane-theme');"
         "if (!s) { s = document.createElement('style');"
-        "s.id = 'rqbit-quickshell-theme'; document.head.appendChild(s); }"
+        "s.id = 'rqbit-amane-theme'; document.head.appendChild(s); }"
         "s.textContent = new TextDecoder().decode(Uint8Array.from(atob('%s'),"
         "c => c.charCodeAt(0))); })()", encoded);
     webkit_web_view_evaluate_javascript(view, script, -1, NULL, NULL, NULL, NULL, NULL);
@@ -52,7 +52,7 @@ static void changed(GFileMonitor *monitor, GFile *file, GFile *other,
     (void)other;
     (void)event;
     gchar *name = g_file_get_basename(file);
-    if (g_strcmp0(name, "quickshell.css") == 0) apply_theme(view);
+    if (g_strcmp0(name, "amane.css") == 0) apply_theme(view);
     g_free(name);
 }
 
@@ -64,7 +64,7 @@ WebKitUserContentManager *webkit_web_view_get_user_content_manager(WebKitWebView
 
     gchar *dir = g_build_filename(g_get_user_config_dir(), "rqbit-desktop", NULL);
     g_mkdir_with_parents(dir, 0700);
-    gchar *path = g_build_filename(dir, "quickshell.css", NULL);
+    gchar *path = g_build_filename(dir, "amane.css", NULL);
     g_object_set_data_full(G_OBJECT(view), "rqbit-theme-path", path, g_free);
     g_signal_connect(view, "load-changed", G_CALLBACK(loaded), NULL);
 

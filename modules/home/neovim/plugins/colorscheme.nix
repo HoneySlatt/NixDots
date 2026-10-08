@@ -108,13 +108,13 @@
       })
 
       -- Dynamic colorscheme from .current-theme, names from themes.json
-      local qs = vim.fn.expand("~/.config/amane")
+      local amane = vim.fn.expand("~/.config/amane")
       local ok, themes = pcall(function()
-        return vim.json.decode(table.concat(vim.fn.readfile(qs .. "/themes/themes.json"), "\n"))
+        return vim.json.decode(table.concat(vim.fn.readfile(amane .. "/themes/themes.json"), "\n"))
       end)
       if ok then
-        local current = vim.fn.filereadable(qs .. "/.current-theme") == 1
-          and vim.fn.readfile(qs .. "/.current-theme")[1]:gsub("%s+", "")
+        local current = vim.fn.filereadable(amane .. "/.current-theme") == 1
+          and vim.fn.readfile(amane .. "/.current-theme")[1]:gsub("%s+", "")
         local entry = themes[current] or themes.pastelglow
         vim.opt.background = entry.light and "light" or "dark"
         vim.cmd.colorscheme(entry.nvim)

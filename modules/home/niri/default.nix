@@ -11,6 +11,5 @@
     ./windowrules.nix
     ../hyprlock.nix
     ./hypridle.nix
-    ../quickshell
   ];
 }

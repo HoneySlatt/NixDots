@@ -1,7 +1,7 @@
 switch_qt() {
   local icons="${C[icon_theme]:-kora}"
   local local_kvantum="$HOME/.config/Kvantum"
-  local theme_dir="$local_kvantum/quickshell-theme"
+  local theme_dir="$local_kvantum/amane-theme"
   local stock_dir="${XDG_DATA_HOME:-$HOME/.local/share}/Kvantum/KvAdaptaDark"
 
   mkdir -p "$theme_dir"
@@ -46,8 +46,8 @@ switch_qt() {
       -e "s/#000931/${C[crust]}/g" \
       -e "s/#192023/${C[crust]}/g" \
       -e "s/#252f35/${C[mantle]}/g" \
-      "$svg_src" > "$svg_tmp" && mv -f "$svg_tmp" "$theme_dir/quickshell-theme.svg"
-    chmod 644 "$theme_dir/quickshell-theme.svg"
+      "$svg_src" > "$svg_tmp" && mv -f "$svg_tmp" "$theme_dir/amane-theme.svg"
+    chmod 644 "$theme_dir/amane-theme.svg"
   fi
 
   local kvcfg_src="$local_kvantum/KvAdaptaDark/KvAdaptaDark.kvconfig"
@@ -75,12 +75,12 @@ switch_qt() {
       -e "s|^link\.color=.*|link.color=${C[blue]}|" \
       -e "s|^link\.visited\.color=.*|link.visited.color=${C[mauve]}|" \
       -e "s|^progress\.indicator\.text\.color=.*|progress.indicator.text.color=${C[base]}|" \
-      "$kvcfg_src" > "$kvcfg_tmp" && mv -f "$kvcfg_tmp" "$theme_dir/quickshell-theme.kvconfig"
+      "$kvcfg_src" > "$kvcfg_tmp" && mv -f "$kvcfg_tmp" "$theme_dir/amane-theme.kvconfig"
   fi
 
   cat > "$local_kvantum/kvantum.kvconfig" << EOF
 [General]
-theme=quickshell-theme
+theme=amane-theme
 EOF
 
   local font_str="Google Sans Flex,10,-1,5,50,0,0,0,0,0"

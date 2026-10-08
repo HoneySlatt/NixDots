@@ -62,7 +62,7 @@ impl Service for Blink {
     }
 }
 
-// CPU, RAM and GPU temperature, sampled together every 2 seconds like Quickshell's states
+// CPU, RAM and GPU temperature, sampled together every 2 seconds
 pub struct Load {
     pub cpu: u8,
     pub ram: u8,
@@ -213,7 +213,7 @@ impl Service for Vpn {
         Self { connected: false }
     }
 
-    // NetworkManager announces the tunnel devices coming and going, the rest is a slow poll like Quickshell's
+    // NetworkManager announces the tunnel devices coming and going, the rest is a slow poll
     fn listen() {
         for signal in ["DeviceAdded", "DeviceRemoved", "StateChanged"] {
             thread::spawn(move || {

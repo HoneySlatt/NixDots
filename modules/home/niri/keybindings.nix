@@ -2,19 +2,35 @@
 
 let
   osd = args: {
-    action.spawn = [ "swayosd-client" "--monitor" "DP-2" ] ++ args;
+    action.spawn = [
+      "swayosd-client"
+      "--monitor"
+      "DP-2"
+    ]
+    ++ args;
     allow-when-locked = true;
   };
   media = command: {
-    action.spawn = [ "playerctl" command ];
+    action.spawn = [
+      "playerctl"
+      command
+    ];
     allow-when-locked = true;
   };
   # Mod+1..9, Mod+0 for workspace 10
-  workspaceBinds = lib.mergeAttrsList (map (i:
-    let ws = toString i; key = toString (lib.mod i 10); in {
-      "Mod+${key}".action.focus-workspace = ws;
-      "Mod+Shift+${key}".action.move-window-to-workspace = ws;
-    }) (lib.range 1 10));
+  workspaceBinds = lib.mergeAttrsList (
+    map (
+      i:
+      let
+        ws = toString i;
+        key = toString (lib.mod i 10);
+      in
+      {
+        "Mod+${key}".action.focus-workspace = ws;
+        "Mod+Shift+${key}".action.move-window-to-workspace = ws;
+      }
+    ) (lib.range 1 10)
+  );
 in
 {
   programs.niri.settings.binds = workspaceBinds // {
@@ -25,13 +41,16 @@ in
       repeat = false;
     };
     "Mod+E".action.spawn = "cosmic-files";
-    "Mod+Shift+E".action.spawn = [ "rio" "-e" "yazi" ];
+    "Mod+Shift+E".action.spawn = [
+      "rio"
+      "-e"
+      "yazi"
+    ];
     "Mod+V".action.toggle-window-floating = { };
     "Mod+Space".action.spawn = "toggle-launcher";
     "Mod+T".action.spawn = "toggle-theme-launcher";
     "Mod+W".action.spawn = "toggle-wallpaper-launcher";
     "Mod+G".action.spawn = "toggle-game-launcher";
-    "Mod+Alt+M".action.spawn = "toggle-music-launcher";
     "Mod+P".action.spawn = "toggle-power-launcher";
     "Mod+Tab".action.toggle-overview = { };
     "Mod+B".action.spawn = "brave-origin";
@@ -46,7 +65,11 @@ in
     "Mod+Shift+P".action.spawn = "hyprpicker";
     "Mod+D".action.spawn = "serein";
     "Mod+Shift+D".action.spawn = "cinny";
-    "Ctrl+Shift+M".action.spawn = [ "tutanota-desktop" "--no-sandbox" "%U" ];
+    "Ctrl+Shift+M".action.spawn = [
+      "tutanota-desktop"
+      "--no-sandbox"
+      "%U"
+    ];
     "Mod+Ctrl+N".action.spawn = "nuvio";
     "Mod+Shift+G".action.spawn = "heroic";
     "Mod+Ctrl+G".action.spawn = "steam";
@@ -55,8 +78,16 @@ in
     "Mod+Ctrl+C".action.spawn = [ "opencode-desktop" ];
     "Mod+O".action.spawn = "obsidian";
     "Mod+N".action.spawn = "zeditor";
-    "Mod+Shift+N".action.spawn = [ "rio" "-e" "nvim" ];
-    "Ctrl+Alt+Delete".action.spawn = [ "rio" "-e" "btop" ];
+    "Mod+Shift+N".action.spawn = [
+      "rio"
+      "-e"
+      "nvim"
+    ];
+    "Ctrl+Alt+Delete".action.spawn = [
+      "rio"
+      "-e"
+      "btop"
+    ];
 
     # ── Focus / Move ─────────────────────────────────────────────────────
     "Mod+H".action.focus-column-left = { };
@@ -124,12 +155,30 @@ in
     };
 
     # ── Media / Volume / Brightness ──────────────────────────────────────
-    "XF86AudioRaiseVolume" = osd [ "--output-volume" "raise" ];
-    "XF86AudioLowerVolume" = osd [ "--output-volume" "lower" ];
-    "XF86AudioMute" = osd [ "--output-volume" "mute-toggle" ];
-    "XF86AudioMicMute" = osd [ "--input-volume" "mute-toggle" ];
-    "XF86MonBrightnessUp" = osd [ "--brightness" "raise" ];
-    "XF86MonBrightnessDown" = osd [ "--brightness" "lower" ];
+    "XF86AudioRaiseVolume" = osd [
+      "--output-volume"
+      "raise"
+    ];
+    "XF86AudioLowerVolume" = osd [
+      "--output-volume"
+      "lower"
+    ];
+    "XF86AudioMute" = osd [
+      "--output-volume"
+      "mute-toggle"
+    ];
+    "XF86AudioMicMute" = osd [
+      "--input-volume"
+      "mute-toggle"
+    ];
+    "XF86MonBrightnessUp" = osd [
+      "--brightness"
+      "raise"
+    ];
+    "XF86MonBrightnessDown" = osd [
+      "--brightness"
+      "lower"
+    ];
 
     "XF86AudioNext" = media "next";
     "XF86AudioPause" = media "play-pause";

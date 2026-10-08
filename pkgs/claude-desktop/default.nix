@@ -4,9 +4,9 @@ claudeDesktop.overrideAttrs (old: {
   nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ nodejs makeWrapper ];
 
   postInstall = (old.postInstall or "") + ''
-    themeRoot="$TMPDIR/claude-quickshell"
+    themeRoot="$TMPDIR/claude-amane"
     asar extract "$out/lib/claude-desktop/resources/app.asar" "$themeRoot"
-    cp ${./claude-desktop-theme.cjs} "$themeRoot/quickshell-theme.cjs"
+    cp ${./claude-desktop-theme.cjs} "$themeRoot/amane-theme.cjs"
 
     node - "$themeRoot" <<'JS'
     const fs = require('fs');
@@ -17,10 +17,10 @@ claudeDesktop.overrideAttrs (old: {
     if (!manifest.main || !fs.existsSync(path.join(root, manifest.main))) {
       throw new Error('Claude Desktop entry point not found');
     }
-    fs.writeFileSync(path.join(root, 'quickshell-entry.cjs'),
-      'require("./quickshell-theme.cjs");\nrequire(' +
+    fs.writeFileSync(path.join(root, 'amane-entry.cjs'),
+      'require("./amane-theme.cjs");\nrequire(' +
       JSON.stringify('./' + manifest.main) + ');\n');
-    manifest.main = 'quickshell-entry.cjs';
+    manifest.main = 'amane-entry.cjs';
     fs.writeFileSync(manifestPath, JSON.stringify(manifest));
     JS
 

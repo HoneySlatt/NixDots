@@ -4,7 +4,7 @@ const os = require('os');
 const path = require('path');
 
 const configHome = process.env.XDG_CONFIG_HOME || path.join(os.homedir(), '.config');
-const cssFile = path.join(configHome, 'chatgpt-desktop', 'quickshell.css');
+const cssFile = path.join(configHome, 'chatgpt-desktop', 'amane.css');
 const views = new Map();
 let css = '';
 
@@ -31,7 +31,7 @@ function apply(contents, state) {
     state.key = key;
     if (previous) await contents.removeInsertedCSS(previous);
   }).catch(error => {
-    if (!contents.isDestroyed()) console.warn('[Quickshell theme]', error.message);
+    if (!contents.isDestroyed()) console.warn('[Amane theme]', error.message);
   });
 }
 
@@ -42,7 +42,7 @@ function refresh() {
     css = next;
     for (const [contents, state] of views) apply(contents, state);
   } catch (error) {
-    if (error.code !== 'ENOENT') console.warn('[Quickshell theme]', error.message);
+    if (error.code !== 'ENOENT') console.warn('[Amane theme]', error.message);
   }
 }
 

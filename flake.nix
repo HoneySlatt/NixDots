@@ -31,14 +31,6 @@
       url = "github:nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    scrolloverview = {
-      url = "github:yayuuu/hyprland-scroll-overview";
-      flake = false;
-    };
-    hymission = {
-      url = "github:gfhdhytghd/hymission/v0.5.0-v0.56.0";
-      flake = false;
-    };
     amane = {
       url = "github:MystiaFin/amane";
       inputs.nixpkgs.follows = "nixpkgs";

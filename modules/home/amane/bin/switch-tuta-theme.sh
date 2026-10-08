@@ -16,7 +16,7 @@ fi
 
 tmp=$(mktemp)
 jq --argjson theme "$theme_json" \
-  '.themes = ([((.themes // [])[]) | select(.themeId != "quickshell")] + [$theme]) | .selectedTheme = "quickshell"' \
+  '.themes = ([((.themes // [])[]) | select(.themeId != "amane" and .themeId != "quickshell")] + [$theme]) | .selectedTheme = "amane"' \
   "$conf" > "$tmp" && mv "$tmp" "$conf"
 
 if $was_running; then

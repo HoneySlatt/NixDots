@@ -116,8 +116,8 @@ ForegroundPositive=$green
 ForegroundVisited=$mauve
 
 [General]
-ColorScheme=Quickshell
-Name=Quickshell
+ColorScheme=Amane
+Name=Amane
 
 [KDE]
 contrast=4
@@ -125,13 +125,13 @@ EOF
 
   local colors_dir="$HOME/.local/share/color-schemes"
   mkdir -p "$colors_dir"
-  cp "$HOME/.config/kdeglobals" "$colors_dir/Quickshell.colors"
+  cp "$HOME/.config/kdeglobals" "$colors_dir/Amane.colors"
 
   local kdenliverc="$HOME/.config/kdenliverc"
   if [ -f "$kdenliverc" ]; then
     sed -i \
-      -e "s|^ColorScheme=.*|ColorScheme=Quickshell|" \
-      -e "s|^ColorSchemePath=.*|ColorSchemePath=$colors_dir/Quickshell.colors|" \
+      -e "s|^ColorScheme=.*|ColorScheme=Amane|" \
+      -e "s|^ColorSchemePath=.*|ColorSchemePath=$colors_dir/Amane.colors|" \
       "$kdenliverc"
   fi
 }

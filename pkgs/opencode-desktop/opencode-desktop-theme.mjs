@@ -4,7 +4,7 @@ import os from 'node:os';
 import path from 'node:path';
 
 const configHome = process.env.XDG_CONFIG_HOME || path.join(os.homedir(), '.config');
-const themeFile = path.join(configHome, 'opencode', 'quickshell-desktop.json');
+const themeFile = path.join(configHome, 'opencode', 'amane-desktop.json');
 const views = new Set();
 let theme;
 let previous = '';
@@ -13,10 +13,10 @@ function apply(contents) {
   if (!theme || contents.isDestroyed() || !contents.getURL().startsWith('oc://renderer/')) return;
   // Keep the latest value for ThemeProviders mounted after the document loads.
   contents.executeJavaScript(`
-    window.__quickshellTheme = ${JSON.stringify(theme)};
-    window.dispatchEvent(new Event('quickshell-theme'));
+    window.__amaneTheme = ${JSON.stringify(theme)};
+    window.dispatchEvent(new Event('amane-theme'));
   `).catch(error => {
-    if (!contents.isDestroyed()) console.warn('[Quickshell theme]', error.message);
+    if (!contents.isDestroyed()) console.warn('[Amane theme]', error.message);
   });
 }
 
@@ -30,7 +30,7 @@ function refresh() {
     previous = next;
     for (const contents of views) apply(contents);
   } catch (error) {
-    if (error.code !== 'ENOENT') console.warn('[Quickshell theme]', error.message);
+    if (error.code !== 'ENOENT') console.warn('[Amane theme]', error.message);
   }
 }
 

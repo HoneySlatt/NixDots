@@ -13,7 +13,7 @@ final: prev: {
     '';
   });
 
-  # No title bar, and Quickshell theme injected into the bundled frontend
+  # No title bar, and Amane theme injected into the bundled frontend
   cinny-desktop = prev.cinny-desktop.overrideAttrs (old: {
     postPatch = old.postPatch + ''
       frontend="$NIX_BUILD_TOP/frontend"

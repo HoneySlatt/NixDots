@@ -1,7 +1,7 @@
 switch_btop() {
   local config_dir="${XDG_CONFIG_HOME:-$HOME/.config}/btop"
   local theme_dir="$config_dir/themes"
-  local theme="$theme_dir/quickshell.theme"
+  local theme="$theme_dir/amane.theme"
 
   mkdir -p "$theme_dir"
 

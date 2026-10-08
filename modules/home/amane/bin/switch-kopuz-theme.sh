@@ -26,7 +26,7 @@ if [ -f "$toml_conf" ]; then
     BEGIN {
       count = 0
       first_section = 0
-      in_quickshell = 0
+      in_amane = 0
       seen_section = 0
       theme_set = 0
     }
@@ -34,14 +34,14 @@ if [ -f "$toml_conf" ]; then
       header = $0
       sub(/^[[:space:]]*\[+/, "", header)
       sub(/\]+[[:space:]]*(#.*)?$/, "", header)
-      in_quickshell = (header == "custom_themes.quickshell" || header == "custom_themes.quickshell.vars")
+      in_amane = (header ~ /^custom_themes\.(amane|quickshell)(\.vars)?$/)
       seen_section = 1
       if (first_section == 0) first_section = count + 1
-      if (in_quickshell) next
+      if (in_amane) next
     }
-    in_quickshell { next }
+    in_amane { next }
     !seen_section && !theme_set && /^[[:space:]]*theme[[:space:]]*=/ {
-      lines[++count] = "theme = \"quickshell\""
+      lines[++count] = "theme = \"amane\""
       theme_set = 1
       next
     }
@@ -49,17 +49,17 @@ if [ -f "$toml_conf" ]; then
     END {
       insert_at = first_section ? first_section : count + 1
       for (i = 1; i <= count; i++) {
-        if (!theme_set && i == insert_at) print "theme = \"quickshell\""
+        if (!theme_set && i == insert_at) print "theme = \"amane\""
         print lines[i]
       }
-      if (!theme_set && insert_at == count + 1) print "theme = \"quickshell\""
+      if (!theme_set && insert_at == count + 1) print "theme = \"amane\""
     }
   ' "$conf" > "$tmp"
 
   {
-    printf '\n[custom_themes.quickshell]\n'
+    printf '\n[custom_themes.amane]\n'
     printf 'name = "%s"\n' "$theme_name"
-    printf '\n[custom_themes.quickshell.vars]\n'
+    printf '\n[custom_themes.amane.vars]\n'
     printf 'bg = "%s"\n' "$bg"
     printf 'raised = "%s"\n' "$raised"
     printf 'surface = "%s"\n' "$surface"
@@ -99,9 +99,10 @@ jq \
   --arg highlight_dark "$highlight_dark" \
   --arg progress "$progress" \
   --arg danger "$danger" \
-  '.theme = "quickshell"
+  '.theme = "amane"
+    | del(.custom_themes.quickshell)
     | .custom_themes = (.custom_themes // {})
-    | .custom_themes.quickshell = {
+    | .custom_themes.amane = {
         name: $name,
         vars: {
           "bg": $bg,

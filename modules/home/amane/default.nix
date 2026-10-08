@@ -4,7 +4,7 @@ let
   amane = import ./package.nix { inherit inputs pkgs; };
 in
 {
-  # Themes, theme scripts and shared state; Quickshell reads them from here too
+  # Themes, theme scripts and state shared with the Steam Deck shell
   imports = [
     ./packages.nix
     ./scripts.nix
@@ -18,21 +18,21 @@ in
     force = true;
   };
 
-  systemd.user.services.qs-userstyles-server = {
+  systemd.user.services.amane-userstyles-server = {
     Unit = {
       Description = "UserCSS local server for the themes";
       After = [ "graphical-session.target" ];
     };
 
     Service = {
-      ExecStart = "${config.home.profileDirectory}/bin/qs-userstyles-server";
+      ExecStart = "${config.home.profileDirectory}/bin/amane-userstyles-server";
       Restart = "on-failure";
     };
 
     Install.WantedBy = [ "default.target" ];
   };
 
-  systemd.user.services.quickshell-theme-background = {
+  systemd.user.services.amane-theme-background = {
     Unit.Description = "Apply secondary theme updates";
 
     Service = {

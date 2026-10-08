@@ -10,16 +10,21 @@ switch_serein() {
     [ -d "$root" ] || continue
     themes_dir="$root/extensions/themes"
 
+    # Reuse the previous generated theme's slot when upgrading to the Amane name.
+    if [ -d "$themes_dir/quickshell" ] && [ ! -e "$themes_dir/amane" ]; then
+      mv "$themes_dir/quickshell" "$themes_dir/amane" || return 1
+    fi
+
     # Serein allows at most eight installed themes.
-    if [ ! -d "$themes_dir/quickshell" ] && [ -d "$themes_dir" ] &&
+    if [ ! -d "$themes_dir/amane" ] && [ -d "$themes_dir" ] &&
        [ "$(find "$themes_dir" -mindepth 1 -maxdepth 1 -type d | wc -l)" -ge 8 ]; then
-      echo "Serein: disable a theme before adding Quickshell (eight-theme limit)." >&2
+      echo "Serein: disable a theme before adding Amane (eight-theme limit)." >&2
       continue
     fi
 
-    # Both appearances use the selected Quickshell palette, regardless of OS mode.
+    # Both appearances use the selected Amane palette, regardless of OS mode.
     package="$(jq -cn \
-      --arg name "Quickshell — ${C[name]}" \
+      --arg name "Amane — ${C[name]}" \
       --arg base "${C[base]}" --arg sidebar "${C[mantle]}" \
       --arg raised "${C[surface0]}" --arg hover "${C[surface1]}" \
       --arg selected "${C[surface2]}" --arg text "${C[text]}" \
@@ -35,8 +40,8 @@ switch_serein() {
         mention_bg: $raised, mention_text: $accent
       }} as $palette | {
         manifest: {
-          api_version: 1, id: "quickshell", name: $name, version: "1.0.0",
-          author: "Quickshell", license: "CC0-1.0", source: "",
+          api_version: 1, id: "amane", name: $name, version: "1.0.0",
+          author: "Amane", license: "CC0-1.0", source: "",
           kind: "theme", capabilities: [], actions: []
         },
         theme: {light: $palette, dark: $palette}
@@ -45,14 +50,14 @@ switch_serein() {
     sha256="${sha256%% *}"
     download_bytes="$(printf '%s' "$package" | wc -c)"
 
-    mkdir -p "$themes_dir/quickshell" || return 1
-    package_tmp="$(mktemp "$themes_dir/quickshell/package.json.XXXXXX")" || return 1
+    mkdir -p "$themes_dir/amane" || return 1
+    package_tmp="$(mktemp "$themes_dir/amane/package.json.XXXXXX")" || return 1
     if jq -n --argjson package "$package" --arg sha256 "$sha256" \
       --argjson bytes "$download_bytes" '{
         package: $package, grants: [], reviewed: false, local_theme: true,
         sha256: $sha256, download_bytes: $bytes
       }' > "$package_tmp"; then
-      mv "$package_tmp" "$themes_dir/quickshell/package.json" || return 1
+      mv "$package_tmp" "$themes_dir/amane/package.json" || return 1
     else
       rm -f "$package_tmp"
       return 1
@@ -61,7 +66,7 @@ switch_serein() {
     # Despite its name, active.json contains the raw ID, without quotes/newline.
     # Serein reads it at startup; external file changes are not hot-reloaded.
     active_tmp="$(mktemp "$themes_dir/active.json.XXXXXX")" || return 1
-    printf '%s' quickshell > "$active_tmp"
+    printf '%s' amane > "$active_tmp"
     mv "$active_tmp" "$themes_dir/active.json" || return 1
   done
 }

@@ -1,6 +1,16 @@
 { pkgs, ... }:
 
 let
+  ipcToggles = [
+    "toggle-bar-position"
+    "toggle-launcher"
+    "toggle-theme-launcher"
+    "toggle-wallpaper-launcher"
+    "toggle-game-launcher"
+    "toggle-vpn-launcher"
+    "toggle-power-launcher"
+  ];
+
   # Script whose body lives in ./bin/<name>.sh
   fromFile = name: args: pkgs.writeShellApplication ({
     inherit name;
@@ -8,20 +18,25 @@ let
   } // args);
 in
 {
-  home.packages = [
+  home.packages = map (name: pkgs.writeShellApplication {
+    inherit name;
+    text = ''
+      exec amane ipc call ${name}
+    '';
+  }) ipcToggles ++ [
     # Installed Steam and Heroic games, for the game launcher
     (fromFile "steam-games" { runtimeInputs = with pkgs; [ jq coreutils ]; })
 
     # Theming of apps outside the shell
     (pkgs.writeShellApplication {
-      name = "qs-compile-userstyle";
+      name = "amane-compile-userstyle";
       runtimeInputs = [ pkgs.nodejs pkgs.lessc ];
       text = ''
         LESS_MODULE_PATH="${pkgs.lessc}/lib/lessc/packages/less" node "$HOME/.config/amane/themes/compile-userstyle.js" "$@"
       '';
     })
     (pkgs.writeShellApplication {
-      name = "qs-userstyles-server";
+      name = "amane-userstyles-server";
       runtimeInputs = [ pkgs.python3 ];
       text = ''
         # Skip per-request logs (Cinny polls every 2s); errors are still logged

@@ -1,6 +1,6 @@
 switch_rqbit() {
   local theme_dir="${XDG_CONFIG_HOME:-$HOME/.config}/rqbit-desktop"
-  local theme_file="$theme_dir/quickshell.css"
+  local theme_file="$theme_dir/amane.css"
   local scheme="dark"
   case "${THEME:-}" in pastelglow|gruvbox-light) scheme="light" ;; esac
   mkdir -p "$theme_dir"
