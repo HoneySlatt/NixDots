@@ -15,6 +15,13 @@
 
   networking.hostName = "NixBTW";
 
+  nix.settings = {
+    substituters = [ "https://kopuz.cachix.org" ];
+    trusted-public-keys = [
+      "kopuz.cachix.org-1:J2X3AnAYhKTJW5S3aCLoA1ckonQXVNZMQvhZA0YAufw="
+    ];
+  };
+
   # AMD GPU, tuned with LACT
   hardware.graphics = {
     enable = true;

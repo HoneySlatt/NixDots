@@ -31,7 +31,6 @@
 
     # Creation and office
     pkgsRocm.blender
-    graphite
     gimp
     inkscape
     kdePackages.kdenlive

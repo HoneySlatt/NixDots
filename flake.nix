@@ -37,7 +37,6 @@
     };
     kopuz = {
       url = "github:Kopuz-org/kopuz";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
     serein = {
       url = "github:ViceVerse-cz/Serein";
