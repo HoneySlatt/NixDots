@@ -50,7 +50,6 @@ in
       '';
     })
     (fromFile "switch-tuta-theme" { runtimeInputs = [ pkgs.jq ]; })
-    (fromFile "switch-kopuz-theme" { runtimeInputs = with pkgs; [ jq gawk coreutils ]; })
 
     # NymVPN
     (pkgs.writeShellApplication {

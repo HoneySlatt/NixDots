@@ -1,85 +1,31 @@
 switch_kopuz() {
-  local toml_conf="$HOME/.config/kopuz/settings.toml"
-  if [ -f "$toml_conf" ]; then
-    local theme_name="Amane ${C[name]}"
-    local tmp
+  local dir="$HOME/.config/kopuz"
+  [ -d "$dir" ] || return 0
 
-    tmp=$(mktemp "$toml_conf.XXXXXX") || return 0
-    awk '
-      BEGIN {
-        count = 0
-        first_section = 0
-        in_amane = 0
-        seen_section = 0
-        theme_set = 0
-      }
-      /^[[:space:]]*\[/ {
-        header = $0
-        sub(/^[[:space:]]*\[+/, "", header)
-        sub(/\]+[[:space:]]*(#.*)?$/, "", header)
-        in_amane = (header ~ /^custom_themes\.(amane|quickshell)(\.vars)?$/)
-        seen_section = 1
-        if (first_section == 0) first_section = count + 1
-        if (in_amane) next
-      }
-      in_amane { next }
-      !seen_section && !theme_set && /^[[:space:]]*theme[[:space:]]*=/ {
-        lines[++count] = "theme = \"amane\""
-        theme_set = 1
-        next
-      }
-      { lines[++count] = $0 }
-      END {
-        insert_at = first_section ? first_section : count + 1
-        for (i = 1; i <= count; i++) {
-          if (!theme_set && i == insert_at) print "theme = \"amane\""
-          print lines[i]
-        }
-        if (!theme_set && insert_at == count + 1) print "theme = \"amane\""
-      }
-    ' "$toml_conf" > "$tmp" || {
-      rm -f "$tmp"
-      return 0
-    }
+  # Kopuz polls this palette while its "live" theme is selected and recolours in place.
+  local tmp
+  tmp=$(mktemp "$dir/matugen.json.XXXXXX") || return 0
+  printf '{
+  "bg": "%s",
+  "raised": "%s",
+  "surface": "%s",
+  "text": "%s",
+  "text-muted": "%s",
+  "accent": "%s",
+  "accent-soft": "%s",
+  "accent-alt": "%s",
+  "accent-deep": "%s",
+  "highlight": "%s",
+  "highlight-dark": "%s",
+  "progress": "%s",
+  "danger": "%s"
+}\n' \
+    "${C[base]}" "${C[surface0]}" "${C[surface1]}" "${C[text]}" "${C[subtext0]}" \
+    "${C[accent]}" "${C[sapphire]}" "${C[blue]}" "${C[crust]}" \
+    "${C[mauve]}" "${C[pink]}" "${C[green]}" "${C[red]}" > "$tmp"
+  mv "$tmp" "$dir/matugen.json"
 
-    {
-      printf '\n[custom_themes.amane]\n'
-      printf 'name = "%s"\n' "$theme_name"
-      printf '\n[custom_themes.amane.vars]\n'
-      printf 'bg = "%s"\n' "${C[base]}"
-      printf 'raised = "%s"\n' "${C[surface0]}"
-      printf 'surface = "%s"\n' "${C[surface1]}"
-      printf 'text = "%s"\n' "${C[text]}"
-      printf 'text-muted = "%s"\n' "${C[subtext0]}"
-      printf 'accent = "%s"\n' "${C[accent]}"
-      printf 'accent-soft = "%s"\n' "${C[sapphire]}"
-      printf 'accent-alt = "%s"\n' "${C[blue]}"
-      printf 'accent-deep = "%s"\n' "${C[crust]}"
-      printf 'highlight = "%s"\n' "${C[mauve]}"
-      printf 'highlight-dark = "%s"\n' "${C[pink]}"
-      printf 'progress = "%s"\n' "${C[green]}"
-      printf 'danger = "%s"\n' "${C[red]}"
-    } >> "$tmp"
-
-    mv "$tmp" "$toml_conf"
-    return 0
-  fi
-
-  command -v switch-kopuz-theme >/dev/null 2>&1 || return 0
-
-  switch-kopuz-theme \
-    "Amane ${C[name]}" \
-    "${C[base]}" \
-    "${C[surface0]}" \
-    "${C[surface1]}" \
-    "${C[text]}" \
-    "${C[subtext0]}" \
-    "${C[accent]}" \
-    "${C[sapphire]}" \
-    "${C[blue]}" \
-    "${C[crust]}" \
-    "${C[mauve]}" \
-    "${C[pink]}" \
-    "${C[green]}" \
-    "${C[red]}"
+  local toml_conf="$dir/settings.toml"
+  [ -f "$toml_conf" ] && sed -i '0,/^\[/ s/^theme = .*/theme = "live"/' "$toml_conf"
+  return 0
 }

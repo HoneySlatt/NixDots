@@ -20,7 +20,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     chatgpt-desktop = {
-      url = "github:stslex/chatgpt-desktop-nix";
+      url = "github:poeck/chatgpt-desktop-app-nix-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     millennium = {
@@ -37,6 +37,7 @@
     };
     kopuz = {
       url = "github:Kopuz-org/kopuz";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     serein = {
       url = "github:ViceVerse-cz/Serein";

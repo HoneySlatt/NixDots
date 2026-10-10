@@ -39,6 +39,7 @@
     '';
 
   home.packages = with pkgs; [
+    geist-font
     google-sans
     material-symbols
     nerd-fonts.symbols-only

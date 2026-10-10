@@ -27,16 +27,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1790597498,
-        "narHash": "sha256-jDwjJ3bi9gtdGGaCK+2Wa1fp2wrymlATZCQEmjtJgLQ=",
-        "owner": "stslex",
-        "repo": "chatgpt-desktop-nix",
-        "rev": "6f64dbaaa40fa933044c86bb0c9041296bd1a84b",
+        "lastModified": 1791511847,
+        "narHash": "sha256-g7g6D4FYvPo1awo88Nmuy+A9ktucOD7OZdrYzXTAwJA=",
+        "owner": "poeck",
+        "repo": "chatgpt-desktop-app-nix-flake",
+        "rev": "2a61ece6a06a95f694e6edc55d639834789fa764",
         "type": "github"
       },
       "original": {
-        "owner": "stslex",
-        "repo": "chatgpt-desktop-nix",
+        "owner": "poeck",
+        "repo": "chatgpt-desktop-app-nix-flake",
         "type": "github"
       }
     },
@@ -161,7 +161,9 @@
     "kopuz": {
       "inputs": {
         "crane": "crane",
-        "nixpkgs": "nixpkgs",
+        "nixpkgs": [
+          "nixpkgs"
+        ],
         "rust-overlay": "rust-overlay"
       },
       "locked": {
@@ -301,15 +303,18 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1783776592,
-        "narHash": "sha256-+GVwKnbbSmf4cWMJyRzvw8H5yFknmkLoPD5v6snqPzo=",
-        "rev": "e7a3ca8092b61ff85b6a45bf863ea2b2d6a661b3",
-        "type": "tarball",
-        "url": "https://releases.nixos.org/nixos/unstable/nixos-26.11pre1032869.e7a3ca8092b6/nixexprs.tar.xz"
+        "lastModified": 1791456040,
+        "narHash": "sha256-H83yz/do+hjOO0uujHyH8RgtIQP2v7Mw+cLwcZK/xKc=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "e7439b6b14ad3cc35d05608ebca9bce01a25f5f8",
+        "type": "github"
       },
       "original": {
-        "type": "tarball",
-        "url": "https://channels.nixos.org/nixos-unstable/nixexprs.tar.xz"
+        "owner": "NixOS",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
       }
     },
     "nixpkgs-bun": {
@@ -340,22 +345,6 @@
       "original": {
         "owner": "NixOS",
         "ref": "nixos-25.11",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
-    "nixpkgs_2": {
-      "locked": {
-        "lastModified": 1791456040,
-        "narHash": "sha256-H83yz/do+hjOO0uujHyH8RgtIQP2v7Mw+cLwcZK/xKc=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "e7439b6b14ad3cc35d05608ebca9bce01a25f5f8",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "ref": "nixos-unstable",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -392,7 +381,7 @@
         "kopuz": "kopuz",
         "millennium": "millennium",
         "niri": "niri",
-        "nixpkgs": "nixpkgs_2",
+        "nixpkgs": "nixpkgs",
         "nixvim": "nixvim",
         "serein": "serein"
       }
