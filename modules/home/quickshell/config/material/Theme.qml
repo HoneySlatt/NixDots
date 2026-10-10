@@ -235,7 +235,7 @@ QtObject {
     readonly property string wallpaperDir: Quickshell.env("HOME") + "/Pictures/Wallpapers/" + (themeMeta[currentTheme] ?? themeMeta["pastelglow"]).wallpaperDir
 
     // ── Font settings ──
-    readonly property string fontFamily: "Google Sans Flex"
+    readonly property string fontFamily: "Geist"
     readonly property string iconFontFamily: "Material Symbols Rounded"
     readonly property string symbolFontFamily: "Symbols Nerd Font"
     // Width axis that gives the bar the footprint it had with a monospace font

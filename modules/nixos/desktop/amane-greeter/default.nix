@@ -63,7 +63,7 @@ in
   };
 
   # The greeter user has no home profile: its fonts and cursor come from the system
-  fonts.packages = [ pkgs.google-sans pkgs.material-symbols ];
+  fonts.packages = [ pkgs.geist-font pkgs.material-symbols ];
   environment.systemPackages = [ pkgs.phinger-cursors ];
 
   # Logging in with the password also unlocks the GNOME keyring (greetd includes login)

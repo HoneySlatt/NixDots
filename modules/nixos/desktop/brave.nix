@@ -12,7 +12,6 @@ in
       "jcokkipkhhgiakinbnnplhkdbjbgcgpe" # uBlock Origin
       "eimadpbcbfnmbkopoojfekhnkhdbieeh" # Dark Reader
       "clngdbkpkpeebahjckkjfobafhncgmne" # Stylus
-      "cbghhgpcnddeihccjmnadmkaejncjndb" # Vencord Web
     ];
 
     # All enforced. Rewards, Wallet, VPN, Leo, News and Talk are not built into Origin.

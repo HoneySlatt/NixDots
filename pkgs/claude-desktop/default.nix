@@ -48,6 +48,6 @@ claudeDesktop.overrideAttrs (old: {
 
   postFixup = (old.postFixup or "") + ''
     wrapProgram "$out/bin/claude-desktop" \
-      --set FONTCONFIG_FILE ${./google-sans-code-fonts.conf}
+      --set FONTCONFIG_FILE ${./geist-mono-fonts.conf}
   '';
 })

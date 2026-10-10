@@ -4,7 +4,7 @@
   programs.ghostty = {
     enable = true;
     settings = {
-      font-family = "Google Sans Code";
+      font-family = "Geist Mono";
       font-size = 11;
       adjust-cell-height = "18%";
 

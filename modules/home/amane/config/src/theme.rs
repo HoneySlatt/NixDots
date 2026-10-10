@@ -4,10 +4,8 @@ use std::time::{SystemTime, UNIX_EPOCH};
 
 use amane::{Color, Service};
 
-pub const FONT: &str = "Google Sans Flex";
+pub const FONT: &str = "Geist";
 pub const SYMBOL_FONT: &str = "Symbols Nerd Font";
-// Width axis that gives the bar the footprint it had with a monospace font
-pub const BAR_FONT: &str = "Google Sans Flex:wdth=118";
 
 pub const FONT_SIZE: f32 = 13.0;
 // Scale the bar text down slightly

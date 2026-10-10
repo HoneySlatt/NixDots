@@ -3,7 +3,7 @@
 
 inputs.amane.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (old: {
   patches = (old.patches or [ ]) ++ [
-    # Variable fonts: Google Sans Flex outlines, weight and other axes (wdth, FILL...)
+    # Variable fonts: weight and other axes (FILL, opsz...)
     ./patches/variable-font-axes.patch
     # Ctrl shortcuts and the Delete key reach on_key
     ./patches/keyboard-shortcuts.patch

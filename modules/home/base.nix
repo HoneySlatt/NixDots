@@ -17,8 +17,8 @@
   fonts.fontconfig = {
     enable = true;
     defaultFonts = {
-      sansSerif = [ "Google Sans Flex" "Symbols Nerd Font Mono" ];
-      monospace = [ "Google Sans Code" "Symbols Nerd Font Mono" ];
+      sansSerif = [ "Geist" "Symbols Nerd Font Mono" ];
+      monospace = [ "Geist Mono" "Symbols Nerd Font Mono" ];
     };
   };
   # Apps asking for the native UI font (-apple-system, Segoe UI, system-ui...)
@@ -35,12 +35,11 @@
       <?xml version="1.0"?>
       <!DOCTYPE fontconfig SYSTEM "urn:fontconfig:fonts.dtd">
       <fontconfig>
-      ${lib.concatMapStrings (alias "Google Sans Flex") sans}${lib.concatMapStrings (alias "Google Sans Code") mono}</fontconfig>
+      ${lib.concatMapStrings (alias "Geist") sans}${lib.concatMapStrings (alias "Geist Mono") mono}</fontconfig>
     '';
 
   home.packages = with pkgs; [
     geist-font
-    google-sans
     material-symbols
     nerd-fonts.symbols-only
   ];

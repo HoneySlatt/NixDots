@@ -13,7 +13,7 @@ use crate::system::{Blink, Clock, DISTRO_ICON, HOT_PERCENT, Load, NetBar, Vpn};
 use crate::tray::Tray;
 use crate::tray_menu;
 use crate::theme::{
-    self, BAR_FONT, BAR_HEIGHT, BAR_OPACITY, BAR_TEXT_SIZE, BORDER_RADIUS, FONT_SIZE, MARGIN, MODULE_PADDING,
+    self, BAR_HEIGHT, BAR_OPACITY, BAR_TEXT_SIZE, BORDER_RADIUS, FONT, FONT_SIZE, MARGIN, MODULE_PADDING,
     Palette, SYMBOL_FONT, Theme,
 };
 
@@ -206,7 +206,7 @@ struct Bar<'a> {
 impl Bar<'_> {
     fn label(&self, text: impl Into<String>, color: Color) -> Text {
         Text::new(text)
-            .font(BAR_FONT)
+            .font(FONT)
             .size(BAR_TEXT_SIZE)
             .weight(Weight::SemiBold)
             .color(color)

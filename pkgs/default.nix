@@ -5,7 +5,6 @@ let
   inherit (final.stdenv.hostPlatform) system;
 in
 {
-  google-sans = final.callPackage ./google-sans { };
   nuvio = final.callPackage ./nuvio { };
   nym-vpnd = final.callPackage ./nym-vpnd { };
   rqbit-desktop = final.callPackage ./rqbit-desktop { };

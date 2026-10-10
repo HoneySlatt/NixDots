@@ -8,7 +8,7 @@
       navigation."hide-if-single" = true;
       fonts = {
         size = 15;
-        family = "Google Sans Code";
+        family = "Geist Mono";
         extras = [ { family = "Symbols Nerd Font Mono"; } ];
       };
       bindings = {

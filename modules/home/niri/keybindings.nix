@@ -71,7 +71,7 @@ in
       "%U"
     ];
     "Mod+Ctrl+N".action.spawn = "nuvio";
-    "Mod+Shift+G".action.spawn = "heroic";
+    "Mod+Shift+G".action.spawn = "/home/honey/Projects/SlattyLauncher/target/debug/slatty-gui";
     "Mod+Ctrl+G".action.spawn = "steam";
     "Mod+C".action.spawn = "claude-desktop";
     "Mod+Shift+C".action.spawn = "chatgpt";

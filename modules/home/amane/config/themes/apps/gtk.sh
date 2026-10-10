@@ -18,7 +18,7 @@ switch_gtk() {
   local settings_block="[Settings]
 gtk-theme-name=$gtk_base_theme
 gtk-application-prefer-dark-theme=$prefer_dark
-gtk-font-name=Google Sans Flex 10
+gtk-font-name=Geist 10
 gtk-icon-theme-name=$icons
 gtk-cursor-theme-name=phinger-cursors-dark
 gtk-cursor-theme-size=24"
@@ -75,9 +75,9 @@ EOF
   if command -v dconf &>/dev/null; then
     dconf write /org/gnome/desktop/interface/gtk-theme      "'$gtk_base_theme'" 2>/dev/null || true
     dconf write /org/gnome/desktop/interface/color-scheme   "'$scheme'"    2>/dev/null || true
-    dconf write /org/gnome/desktop/interface/font-name      "'Google Sans Flex 10'" 2>/dev/null || true
-    dconf write /org/gnome/desktop/interface/document-font-name "'Google Sans Flex 10'" 2>/dev/null || true
-    dconf write /org/gnome/desktop/interface/monospace-font-name "'Google Sans Code 10'" 2>/dev/null || true
+    dconf write /org/gnome/desktop/interface/font-name      "'Geist 10'" 2>/dev/null || true
+    dconf write /org/gnome/desktop/interface/document-font-name "'Geist 10'" 2>/dev/null || true
+    dconf write /org/gnome/desktop/interface/monospace-font-name "'Geist Mono 10'" 2>/dev/null || true
     dconf write /org/gnome/desktop/interface/icon-theme     "'$icons'"     2>/dev/null || true
   fi
 }

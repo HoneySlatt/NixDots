@@ -5,9 +5,6 @@
     # Browsers
     brave-origin
 
-    # Communication
-    discord
-
     # AI
     claude-code
     codex

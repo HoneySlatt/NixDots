@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Switch theme — btop, fastfetch, ghostty, yazi, nvim, gtk, qt, niri, wallpaper,
-# discord, steam, heroic, obsidian, obs, firefox, userstyles, jellyfin, kopuz, cider,
+# steam, heroic, obsidian, obs, firefox, userstyles, jellyfin, kopuz, cider,
 # blender, kdeglobals, hyprlock, tuta, opencode, serein, cosmic, rqbit
 
 MODE="full"
@@ -72,7 +72,7 @@ done
 if [ "$MODE" = "background" ]; then
   # gen_userstyles appends to the userContent.css written by switch_firefox
   { switch_firefox; gen_userstyles; } &
-  for fn in switch_discord switch_steam switch_heroic switch_obsidian switch_obs switch_jellyfin \
+  for fn in switch_steam switch_heroic switch_obsidian switch_obs switch_jellyfin \
             switch_kopuz switch_cider switch_blender gen_kdeglobals switch_tuta switch_opencode; do
     "$fn" &
   done

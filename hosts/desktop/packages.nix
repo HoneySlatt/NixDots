@@ -13,7 +13,6 @@
     cinny-desktop
     signal-desktop
     tutanota-desktop
-    (discord.override { withVencord = true; })
 
     # AI
     claude-desktop
