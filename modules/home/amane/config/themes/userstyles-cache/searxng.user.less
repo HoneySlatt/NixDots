@@ -1,56 +1,51 @@
 /* ==UserStyle==
-@name SearXNG Catppuccin
-@namespace github.com/catppuccin/userstyles/styles/searxng
-@homepageURL https://github.com/catppuccin/userstyles/tree/main/styles/searxng
-@version 2026.02.28
-@updateURL https://github.com/catppuccin/userstyles/raw/main/styles/searxng/catppuccin.user.less
-@supportURL https://github.com/catppuccin/userstyles/issues?q=is%3Aopen+is%3Aissue+label%3Asearxng
-@description Soothing pastel theme for SearXNG
-@author Catppuccin
-@license MIT
+@name SearXNG Brave Amane
+@namespace amane.brave/searxng
+@version 1.0.0
+@description Brave Search layout for SearXNG, colored from the active Amane palette
+@author honey
 
 @preprocessor less
 @var select lightFlavor "Light Flavor" ["latte:Latte*", "frappe:Frappé", "macchiato:Macchiato", "mocha:Mocha"]
 @var select darkFlavor "Dark Flavor" ["latte:Latte", "frappe:Frappé", "macchiato:Macchiato", "mocha:Mocha*"]
 @var select accentColor "Accent" ["rosewater:Rosewater", "flamingo:Flamingo", "pink:Pink", "mauve:Mauve*", "red:Red", "maroon:Maroon", "peach:Peach", "yellow:Yellow", "green:Green", "teal:Teal", "blue:Blue", "sapphire:Sapphire", "sky:Sky", "lavender:Lavender", "subtext0:Gray"]
-
-@var checkbox additions "Additional Tweaks" 0
 ==/UserStyle== */
 
 @import "https://userstyles.catppuccin.com/lib/lib.less";
 
-/* Domains picked from https://searx.space/. */
-@-moz-document domain("search.bus-hit.me"), domain("search.inetol.net"), regexp("^https?://(localhost|127\\.0\\.0\\.1):8888(/.*)?$") {
+@-moz-document regexp("^https?://(localhost|127\\.0\\.0\\.1):8888(/.*)?$") {
   :root.theme-auto {
     @media (prefers-color-scheme: light) {
-      #catppuccin(@lightFlavor);
+      #brave(@lightFlavor);
     }
     @media (prefers-color-scheme: dark) {
-      #catppuccin(@darkFlavor);
+      #brave(@darkFlavor);
     }
   }
 
   :root.theme-dark {
-    #catppuccin(@darkFlavor);
+    #brave(@darkFlavor);
   }
   :root.theme-light {
-    #catppuccin(@lightFlavor);
+    #brave(@lightFlavor);
   }
 
-  #catppuccin(@flavor) {
+  #brave(@flavor) {
     #lib.palette();
     #lib.defaults();
+
+    @link-visited: mix(@accent, @mauve, 60%);
 
     --color-base-font: @text;
     --color-base-background: @base;
     --color-base-background-mobile: @base;
     --color-url-font: @accent;
-    --color-url-visited-font: @accent;
-    --color-header-background: @mantle;
-    --color-header-border: @mantle;
-    --color-footer-background: @mantle;
-    --color-footer-border: @mantle;
-    --color-sidebar-border: @base;
+    --color-url-visited-font: @link-visited;
+    --color-header-background: @base;
+    --color-header-border: @surface0;
+    --color-footer-background: @base;
+    --color-footer-border: @surface0;
+    --color-sidebar-border: @surface0;
     --color-sidebar-font: @text;
     --color-sidebar-background: @base;
     --color-backtotop-font: @subtext1;
@@ -58,13 +53,13 @@
     --color-backtotop-background: @surface0;
     --color-btn-background: @accent;
     --color-btn-font: @base;
-    --color-show-btn-background: @accent;
-    --color-show-btn-font: @base;
-    --color-search-border: @surface0;
-    --color-search-shadow: 0 2px 8px @crust;
+    --color-show-btn-background: @surface0;
+    --color-show-btn-font: @text;
+    --color-search-border: @surface1;
+    --color-search-shadow: none;
     --color-search-background: @surface0;
     --color-search-font: @text;
-    --color-search-background-hover: @accent;
+    --color-search-background-hover: @surface0;
     --color-error: @red;
     --color-error-background: @surface0;
     --color-warning: @yellow;
@@ -74,35 +69,37 @@
     --color-categories-item-selected-font: @text;
     --color-categories-item-border-selected: @accent;
     --color-autocomplete-font: @subtext1;
-    --color-autocomplete-border: @surface0;
-    --color-autocomplete-shadow: 0 2px 8px @crust;
+    --color-autocomplete-border: @surface1;
+    --color-autocomplete-shadow: 0 8px 24px fade(@crust, 60%);
     --color-autocomplete-background: @surface0;
     --color-autocomplete-background-hover: @surface1;
     --color-answer-font: @text;
     --color-answer-background: @mantle;
-    --color-result-background: @mantle;
-    --color-result-border: @base;
-    --color-result-url-font: @subtext1;
-    --color-result-vim-selected: @surface0;
+    --color-result-background: @base;
+    --color-result-border: @surface0;
+    --color-result-url-font: @subtext0;
+    --color-result-vim-selected: @mantle;
     --color-result-vim-arrow: @accent;
     --color-result-description-highlight-font: @text;
     --color-result-link-font: @accent;
     --color-result-link-font-highlight: @accent;
-    --color-result-link-visited-font: @accent;
-    --color-result-publishdate-font: @surface2;
-    --color-result-engines-font: @surface2;
+    --color-result-link-visited-font: @link-visited;
+    --color-result-publishdate-font: @subtext0;
+    --color-result-engines-font: @overlay1;
     --color-result-search-url-border: @surface2;
     --color-result-search-url-font: @text;
     --color-result-detail-font: @text;
     --color-result-detail-label-font: @subtext0;
-    --color-result-detail-background: @base;
-    --color-result-detail-hr: @base;
+    --color-result-detail-background: @mantle;
+    --color-result-detail-hr: @surface0;
     --color-result-detail-link: @accent;
-    --color-result-detail-loader-border: rgba(255, 255, 255, 0.2);
+    --color-result-detail-loader-border: fade(@text, 20%);
     --color-result-detail-loader-borderleft: @crust;
     --color-result-image-span-font: @text;
     --color-result-image-span-font-selected: @base;
     --color-result-image-background: @mantle;
+    --color-favicon-background-color: @surface0;
+    --color-favicon-border-color: @surface1;
     --color-settings-tr-hover: @surface0;
     --color-settings-engine-description-font: @text;
     --color-settings-engine-group-background: @surface0;
@@ -110,10 +107,10 @@
     --color-toolkit-badge-background: @surface0;
     --color-toolkit-kbd-font: @text;
     --color-toolkit-kbd-background: @mantle;
-    --color-toolkit-dialog-border: @mantle;
+    --color-toolkit-dialog-border: @surface0;
     --color-toolkit-dialog-background: @mantle;
     --color-toolkit-tabs-label-border: @base;
-    --color-toolkit-tabs-section-border: @base;
+    --color-toolkit-tabs-section-border: @surface0;
     --color-toolkit-select-background: @surface0;
     --color-toolkit-select-border: @surface0;
     --color-toolkit-select-background-hover: @surface1;
@@ -129,10 +126,12 @@
     --color-toolkit-checkbox-input-border: @accent;
     --color-toolkit-engine-tooltip-border: @surface0;
     --color-toolkit-engine-tooltip-background: @surface0;
-    --color-toolkit-loader-border: rgba(255, 255, 255, 0.2);
+    --color-toolkit-loader-border: fade(@text, 20%);
     --color-toolkit-loader-borderleft: @crust;
     --color-doc-code: @rosewater;
     --color-doc-code-background: @mantle;
+
+    scrollbar-color: @surface1 @base;
 
     #search_logo svg :not([fill="none"]) {
       fill: @accent;
@@ -140,20 +139,289 @@
     #search_logo svg :not([stroke="none"]) {
       stroke: @accent;
     }
-
     .index .title {
       filter: @accent-filter;
     }
 
-    & when (@additions = 1) {
-      article.result {
-        background-color: var(--color-result-background);
-        border-radius: 0.75em;
-        padding: 0.75em;
-        margin: 0.5em;
+    #links_on_top a {
+      color: @subtext0;
+      font-size: 0.85rem;
+
+      &:hover {
+        color: @text;
       }
-      article.category-images {
-        padding-bottom: 4em;
+    }
+
+    /* Search box: flat rounded field, ring on focus */
+    .search_box {
+      border: 1px solid @surface0;
+      border-radius: 0.75rem;
+      overflow: hidden;
+      transition: border-color 0.15s;
+
+      &:focus-within {
+        border-color: @surface2;
+      }
+    }
+    #q {
+      border-radius: 0;
+      padding: 0.55rem 1rem;
+      font-size: 1rem;
+    }
+    #clear_search,
+    #send_search {
+      color: @subtext0;
+      border-radius: 0;
+      padding-top: 0.55rem;
+      padding-bottom: 0.55rem;
+    }
+    #clear_search:hover,
+    #send_search:hover {
+      color: @text;
+      background-color: var(--color-search-background);
+    }
+
+    /* Tabs: text only, bold + underline on the active one */
+    button.category_button {
+      color: @subtext0;
+      font-size: 0.9rem;
+      padding: 0.5rem 0 0.65rem;
+      margin-right: 1.5rem;
+
+      svg {
+        display: none;
+      }
+      &:hover {
+        color: @text;
+      }
+      &.selected {
+        color: @text;
+        font-weight: 600;
+      }
+    }
+
+    .search_filters select {
+      color: @subtext0;
+      font-size: 0.82rem;
+    }
+
+    /* Results */
+    .result {
+      position: relative;
+      border-radius: 0.75rem;
+      padding: 0.9rem 1rem;
+      margin: 0 0 1.4rem;
+
+      .url_header {
+        align-items: center;
+        gap: 0.7rem;
+        margin-bottom: 0.45rem;
+      }
+
+      .favicon {
+        flex: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 1.95rem;
+        height: 1.95rem;
+        border-radius: 50%;
+        background: @surface0;
+        border: 1px solid @surface1;
+        box-sizing: border-box;
+
+        img {
+          width: 1rem;
+          height: 1rem;
+          border: none;
+          border-radius: 0.2rem;
+          background: none;
+        }
+      }
+
+      .url_wrapper {
+        flex-direction: column;
+        align-items: flex-start;
+        line-height: 1.35;
+        font-size: 0.83rem;
+
+        .url_o1 {
+          color: @text;
+          font-size: 0.9rem;
+          font-weight: 500;
+
+          &::after {
+            content: none;
+          }
+        }
+
+        .url_o2 {
+          max-width: 100%;
+          text-align: left;
+          text-overflow: ellipsis;
+
+          .url_i2 {
+            float: none;
+          }
+        }
+
+        .url_o2:has(.url_i2:empty) {
+          display: none;
+        }
+      }
+
+      h3 {
+        margin: 0 0 0.4rem;
+        font-size: 1.3rem;
+        line-height: 1.35;
+
+        a {
+          font-size: 1em;
+          font-weight: 500;
+        }
+      }
+
+      .content {
+        color: @subtext1;
+        font-size: 0.97rem;
+        line-height: 1.6;
+        max-width: none;
+
+        .highlight {
+          font-weight: 600;
+        }
+      }
+
+      .published_date {
+        font-size: 0.85rem;
+      }
+
+      a.thumbnail_link {
+        width: 7.5rem;
+        border-radius: 0.75rem;
+        margin-left: 1.25rem;
+      }
+
+/* Same-site results listed under the first one (server-side template) */
+      .result_group {
+        margin-top: 0.9rem;
+        padding-top: 0.6rem;
+        border-top: 1px solid @surface1;
+
+        ul {
+          list-style: none;
+          margin: 0;
+          padding: 0;
+        }
+        li {
+          display: flex;
+          align-items: baseline;
+          justify-content: space-between;
+          gap: 1.5rem;
+          padding: 0.2rem 0;
+        }
+        li a {
+          min-width: 0;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          color: var(--color-result-link-font);
+          font-size: 0.97rem;
+
+          &:visited {
+            color: var(--color-result-link-visited-font);
+          }
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+        time {
+          flex: none;
+          color: @subtext0;
+          font-size: 0.9rem;
+        }
+      }
+      .result_group_more {
+        display: inline-block;
+        margin-top: 0.8rem;
+        color: var(--color-result-link-font);
+        font-size: 0.85rem;
+        font-weight: 600;
+
+        &::after {
+          content: " \203A";
+        }
+      }
+
+      /* Engines and cache link stay out of the way until hovered */
+      .engines {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        margin: 0;
+        font-size: 0.75rem;
+        opacity: 0;
+        transition: opacity 0.15s;
+      }
+      &:hover .engines,
+      &:focus-within .engines {
+        opacity: 1;
+      }
+    }
+
+    .category-videos,
+    .category-news,
+    .category-map,
+    .category-music,
+    .category-social {
+      border-color: @surface0;
+      border-radius: 0.75rem;
+    }
+
+    #answers,
+    #sidebar .infobox {
+      background: @mantle;
+      border: 1px solid @surface0;
+      border-radius: 1rem;
+    }
+
+    .sidebar-collapsible summary {
+      color: @subtext0;
+      font-size: 0.85rem;
+    }
+
+    #pagination button,
+    #pagination input[type="submit"] {
+      background: @surface0;
+      color: @text;
+      border: none;
+      border-radius: 0.6rem;
+    }
+
+    /* Desktop geometry: content block centered like Brave, results and tabs aligned on the search field text */
+    @left: ~"max(7rem, (100vw - 68rem) / 2)";
+
+    @media screen and (min-width: 79.75em) {
+      #search_header {
+        padding-left: ~"calc(@{left})";
+        padding-top: 1rem;
+        padding-bottom: 0;
+        row-gap: 0.6rem;
+      }
+      .search_box {
+        max-width: 37rem;
+      }
+      #categories_container {
+        padding-left: 1rem;
+        margin-bottom: -1px;
+      }
+      .search_filters {
+        margin: 0.5rem 0 0 ~"calc(@{left} + 4.7rem)";
+      }
+      #results {
+        grid-template-columns: 38rem 22rem;
+        column-gap: 4rem;
+        margin: 1.25rem 2rem 0 ~"calc(@{left} + 4rem)";
       }
     }
   }

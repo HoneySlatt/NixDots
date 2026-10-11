@@ -1,4 +1,5 @@
 mod anim;
+mod art;
 mod bar;
 mod calendar;
 mod calendar_pages;

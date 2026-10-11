@@ -11,6 +11,7 @@ use amane::{
 };
 
 use crate::anim::{self, Motion, SPRING_FAST};
+use crate::art;
 use crate::calendar::{self, CONTENT_HEIGHT, CONTENT_WIDTH, Calendar, Tab, card, round_image};
 use crate::m3::{self, Variant};
 use crate::theme::{
@@ -61,7 +62,7 @@ impl Service for Cava {
 // Average color of the cover art, for the spectrum ring
 #[derive(Default)]
 pub struct Cover {
-    url: String,
+    path: Option<String>,
     accent: Option<Color>,
 }
 
@@ -74,17 +75,17 @@ impl Service for Cover {
         loop {
             thread::sleep(Duration::from_secs(1));
 
-            let url = String::from(Media::read().art_url());
-            if url == Cover::read().url {
+            let path = art::path(Media::read().art_url());
+            if path == Cover::read().path {
                 continue;
             }
 
-            let accent = url.strip_prefix("file://").and_then(|path| {
+            let accent = path.as_deref().and_then(|path| {
                 Palette::write().open(path, 8);
                 average(Palette::read().colors())
             });
 
-            *Self::write() = Self { url, accent };
+            *Self::write() = Self { path, accent };
         }
     }
 }
@@ -218,7 +219,7 @@ pub fn media(roles: &Roles) -> Rectangle {
     let value = if player.is_none() || length.is_zero() { 0.0 } else { position.as_secs_f32() / length.as_secs_f32() };
 
     let accent = Cover::read().accent.unwrap_or(roles.primary);
-    let cover = media.art_url().strip_prefix("file://").map(String::from);
+    let cover = art::path(media.art_url());
 
     let visual = Stack::new(children![spectrum(&Cava::read().values, accent), m3::centered(260.0, 260.0, round_image(176.0, cover, "music_note", roles))])
         .width(260.0)

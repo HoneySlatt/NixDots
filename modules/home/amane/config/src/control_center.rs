@@ -9,6 +9,7 @@ use amane::{
 };
 
 use crate::anim::{self, EFFECTS, SPRING_DEFAULT};
+use crate::art;
 use crate::m3::{self, Grow, Variant};
 use crate::notifications;
 use crate::popups::{self, Anchor, Popup};
@@ -259,8 +260,7 @@ fn media(roles: &Roles) -> Rectangle {
     };
     let playing = player.is_some_and(|player| player.playing());
 
-    // only local cover art can be shown
-    let cover_path = media.art_url().strip_prefix("file://").map(String::from);
+    let cover_path = art::path(media.art_url());
     let has_cover = cover_path.as_deref().is_some_and(Image::loaded);
 
     let mut cover_layers: Vec<Box<dyn Widget>> = Vec::new();

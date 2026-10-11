@@ -3,7 +3,7 @@
     enable = true;
     settings.user = {
       name = "HoneySlatt";
-      email = "HoneySlatt@tuta.com";
+      email = "170786304+HoneySlatt@users.noreply.github.com";
     };
   };
 

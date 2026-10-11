@@ -9,6 +9,7 @@ use amane::{
 };
 
 use crate::anim::{self, Motion, SPRING_FAST};
+use crate::art;
 use crate::m3::{self, Variant};
 use crate::popups::{self, Anchor, Popup};
 use crate::theme::{self, Roles, SHAPE_XL, SHAPE_XXL, TYPE_BODY, TYPE_HEADLINE, TYPE_TITLE_L, Theme};
@@ -260,8 +261,7 @@ fn card(roles: &Roles, game: &Game, index: usize, selected: bool) -> Rectangle {
     let key = format!("steam/card/{}", game.name);
     let radius = anim::float(&format!("{key}/radius"), if selected { SHAPE_XXL } else { SHAPE_XL }, SPRING_FAST);
 
-    // only local art can be shown
-    let art = (!game.art.is_empty() && !game.art.starts_with("http")).then(|| game.art.clone());
+    let art = art::path(&game.art);
     let loaded = art.as_deref().is_some_and(Image::loaded);
 
     let mut layers: Vec<Box<dyn Widget>> = Vec::new();
