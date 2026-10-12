@@ -15,6 +15,7 @@
     tutanota-desktop
 
     # AI
+    t3code
     claude-desktop
     chatgpt-desktop
     opencode-desktop

@@ -11,6 +11,5 @@
     playerctl
     hyprpicker
     wlsunset
-    swayosd
   ];
 }

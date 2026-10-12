@@ -1,11 +1,13 @@
 { lib, ... }:
 
 let
+  # On-screen display drawn by the amane shell
   osd = args: {
     action.spawn = [
-      "swayosd-client"
-      "--monitor"
-      "DP-2"
+      "amane"
+      "ipc"
+      "call"
+      "osd"
     ]
     ++ args;
     allow-when-locked = true;
@@ -40,8 +42,8 @@ in
       action.close-window = { };
       repeat = false;
     };
-    "Mod+E".action.spawn = "cosmic-files";
-    "Mod+Shift+E".action.spawn = [
+    "Mod+Shift+E".action.spawn = "cosmic-files";
+    "Mod+E".action.spawn = [
       "rio"
       "-e"
       "yazi"
@@ -162,28 +164,28 @@ in
 
     # ── Media / Volume / Brightness ──────────────────────────────────────
     "XF86AudioRaiseVolume" = osd [
-      "--output-volume"
-      "raise"
+      "volume"
+      "up"
     ];
     "XF86AudioLowerVolume" = osd [
-      "--output-volume"
-      "lower"
+      "volume"
+      "down"
     ];
     "XF86AudioMute" = osd [
-      "--output-volume"
-      "mute-toggle"
+      "volume"
+      "mute"
     ];
     "XF86AudioMicMute" = osd [
-      "--input-volume"
-      "mute-toggle"
+      "microphone"
+      "mute"
     ];
     "XF86MonBrightnessUp" = osd [
-      "--brightness"
-      "raise"
+      "brightness"
+      "up"
     ];
     "XF86MonBrightnessDown" = osd [
-      "--brightness"
-      "lower"
+      "brightness"
+      "down"
     ];
 
     "XF86AudioNext" = media "next";

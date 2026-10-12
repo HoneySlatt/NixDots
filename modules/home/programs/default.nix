@@ -11,5 +11,6 @@
     ./dconf.nix
     ./fastfetch.nix
     ./firefox.nix
+    ./claude-remote-control.nix
   ];
 }

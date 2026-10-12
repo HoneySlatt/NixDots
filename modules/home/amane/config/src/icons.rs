@@ -38,6 +38,8 @@ pub fn glyph(name: &str) -> char {
         "m" => 0x4d,
         "memory" => 0xe322,
         "memory_alt" => 0xf7a3,
+        "mic" => 0xe029,
+        "mic_off" => 0xe02b,
         "monitor" => 0xef5b,
         "music_note" => 0xe3a1,
         "n" => 0x4e,

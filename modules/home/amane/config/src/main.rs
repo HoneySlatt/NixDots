@@ -11,6 +11,7 @@ mod login_screen;
 mod m3;
 mod network_popup;
 mod notifications;
+mod osd;
 mod popups;
 mod power_menu;
 mod small_launcher;
@@ -52,10 +53,12 @@ fn main() {
             String::from(if notifications::dnd() { "on" } else { "off" })
         })
         .ipc("lock-screen", lock::start)
+        .ipc("osd", osd::ipc)
         .window_per_monitor(bar::view)
         .window_per_monitor(popups::click_outside)
         .window_per_monitor(popups::view)
         .window_per_monitor(notifications::toast_window)
+        .window_per_monitor(osd::view)
         .lock(lock::view)
         .run();
 }
