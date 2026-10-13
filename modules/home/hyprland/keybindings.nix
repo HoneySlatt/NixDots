@@ -137,6 +137,7 @@ in
       (bind "SUPER + SHIFT + V" (exec "toggle-nym"))
       (bind "SUPER + CTRL + V" (exec "toggle-vpn-launcher"))
       (bind "SUPER + U" (exec "toggle-nsfw"))
+      (bind "SUPER + CTRL + H" (exec "toggle-hdr"))
       # Screenshot or screencast, a second press stops a screencast (amane, like hyprquickshot)
       (bind "SUPER + S" (exec "amane ipc call screenshot"))
       (bind "SUPER + SHIFT + S" toggleLayout)
