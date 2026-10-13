@@ -1,4 +1,4 @@
-// Local path for an image url: remote images are downloaded once into the cache
+// Local path for an image url: remote and Kopuz images are downloaded once into the cache
 
 use std::collections::hash_map::DefaultHasher;
 use std::collections::{HashMap, HashSet};
@@ -10,7 +10,7 @@ use std::thread;
 
 use amane::Service;
 
-use crate::theme;
+use crate::{kopuz, theme};
 
 // oldest downloads are removed past this count
 const KEEP: usize = 64;
@@ -37,7 +37,7 @@ pub fn path(url: &str) -> Option<String> {
         return Some(String::from(path));
     }
 
-    if !url.starts_with("https://") && !url.starts_with("http://") {
+    if !["https://", "http://", "kopuz:"].iter().any(|scheme| url.starts_with(scheme)) {
         return (!url.is_empty()).then(|| String::from(url));
     }
 
@@ -72,10 +72,13 @@ fn download(url: &str) -> Option<String> {
 
     // written aside first, so a half downloaded file is never shown
     let partial = format!("{file}.part");
-    let fetched = Command::new("curl")
-        .args(["-fsSL", "--proto", "=http,https", "--max-time", "20", "--max-filesize", "10M", "-o", &partial, url])
-        .status()
-        .is_ok_and(|status| status.success());
+    let fetched = match url.strip_prefix("kopuz:") {
+        Some(target) => kopuz::artwork(target).is_some_and(|bytes| fs::write(&partial, bytes).is_ok()),
+        None => Command::new("curl")
+            .args(["-fsSL", "--proto", "=http,https", "--max-time", "20", "--max-filesize", "10M", "-o", &partial, url])
+            .status()
+            .is_ok_and(|status| status.success()),
+    };
 
     if !fetched {
         let _ = fs::remove_file(&partial);

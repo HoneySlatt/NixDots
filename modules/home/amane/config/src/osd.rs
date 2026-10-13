@@ -9,15 +9,14 @@ use amane::{
 };
 
 use crate::m3::{self, Grow};
-use crate::theme::{TYPE_TITLE, Theme};
+use crate::popups;
+use crate::theme::{TYPE_BODY, Theme};
 
-// main monitor
-const OUTPUT: &str = "DP-2";
 const SHOWN: Duration = Duration::from_millis(1500);
 
-const PILL: (f32, f32) = (320.0, 64.0);
-const PADDING: f32 = 8.0;
-const PERCENT_WIDTH: f32 = 44.0;
+const PILL: (f32, f32) = (256.0, 52.0);
+const PADDING: f32 = 6.0;
+const PERCENT_WIDTH: f32 = 40.0;
 // room for the shadow around the pill
 const SHADOW: f32 = 24.0;
 
@@ -90,13 +89,15 @@ fn layer() -> LayerWindow {
 }
 
 pub fn view(monitor: &Monitor) -> LayerWindow {
-    let Some((kind, opened, _)) = Osd::read().shown.filter(|_| monitor.name == OUTPUT) else {
+    // on the focused output, like the toasts
+    let focused = popups::focused_output().is_none_or(|output| output == monitor.name);
+    let Some((kind, opened, _)) = Osd::read().shown.filter(|_| focused) else {
         return layer().visible(false);
     };
 
     let roles = Theme::read().roles;
     let slider_width = PILL.0 - 2.0 * PADDING - PERCENT_WIDTH;
-    let dims = (slider_width, 36.0, 48.0);
+    let dims = (slider_width, 28.0, 40.0);
 
     let (slider, value) = match kind {
         Kind::Volume => {
@@ -128,9 +129,9 @@ pub fn view(monitor: &Monitor) -> LayerWindow {
 
     let percent = Rectangle::new()
         .width(PERCENT_WIDTH)
-        .height(48.0)
+        .height(40.0)
         .align_child(Center, Center)
-        .child(m3::label(format!("{value}%"), TYPE_TITLE, roles.text_on_surface));
+        .child(m3::label(format!("{value}%"), TYPE_BODY, roles.text_on_surface));
 
     let content = Rectangle::new()
         .width(PILL.0)

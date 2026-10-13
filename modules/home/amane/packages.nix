@@ -14,6 +14,8 @@
 
   home.packages = with pkgs; [
     jq
+    # Talks to the running Kopuz for the music launcher
+    grpcurl
     nodejs
     lessc
     netcat-openbsd

@@ -7,6 +7,7 @@
     ../../modules/home/zed
     ../../modules/home/neovim
     ../../modules/home/niri
+    ../../modules/home/hyprland
     ../../modules/home/amane
     ../../modules/home/amane/greeter.nix
   ];

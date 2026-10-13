@@ -101,7 +101,7 @@ fn average(colors: &[Color]) -> Option<Color> {
     Some(Color::rgb(mean(Color::red), mean(Color::green), mean(Color::blue)))
 }
 
-fn format_time(time: Duration) -> String {
+pub fn format_time(time: Duration) -> String {
     let seconds = time.as_secs();
     format!("{}:{:02}", seconds / 60, seconds % 60)
 }
@@ -134,7 +134,7 @@ fn seek(fraction: f32) {
 static WAVE_START: LazyLock<Instant> = LazyLock::new(Instant::now);
 
 // M3 Expressive wavy progress: the wave flattens when not playing
-fn wavy_progress(roles: &Roles, width: f32, value: f32, playing: bool) -> Canvas {
+pub fn wavy_progress(roles: &Roles, width: f32, value: f32, playing: bool) -> Canvas {
     const STROKE: f32 = 4.0;
     const AMPLITUDE: f32 = 3.0;
     const WAVELENGTH: f32 = 32.0;

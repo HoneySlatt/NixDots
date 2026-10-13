@@ -23,8 +23,6 @@ const ENTRIES: usize = 14;
 const VOLUME: usize = 4;
 const BRIGHTNESS: usize = 5;
 
-const LOGOUT: &str = "niri msg action quit";
-
 #[derive(Default)]
 pub struct PowerMenu {
     selected: usize,
@@ -84,7 +82,7 @@ fn trigger(index: usize) {
         8 => Media::next(),
         9 => toggle_and_refresh(NIGHT_LIGHT_TOGGLE),
         10 => run("lock-screen"),
-        11 => run(LOGOUT),
+        11 => run(system::logout_command()),
         12 => run("systemctl reboot"),
         13 => run("systemctl poweroff"),
         _ => {}
@@ -115,7 +113,7 @@ fn on_key(key: Key) {
         Key::Character(letter) => match letter.to_ascii_lowercase() {
             's' => run("systemctl poweroff"),
             'r' => run("systemctl reboot"),
-            'x' | 'e' => run(LOGOUT),
+            'x' | 'e' => run(system::logout_command()),
             'o' => run("lock-screen"),
             'm' => Audio::toggle_mute(),
             'n' => toggle_and_refresh(NIGHT_LIGHT_TOGGLE),

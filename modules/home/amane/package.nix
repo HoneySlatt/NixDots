@@ -11,5 +11,11 @@ inputs.amane.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (
     ./patches/dbus-method-sender.patch
     # Hidden windows give their GPU memory back
     ./patches/release-hidden-windows.patch
+    # Media follows a player with a track, not a stopped one with nothing loaded
+    ./patches/media-active-player.patch
+    # The Wi-Fi network list is only asked for while a window shows it
+    ./patches/network-on-demand.patch
+    # Workspace clicks reach a Hyprland with a Lua config (upstream 4d051ae)
+    ./patches/hyprland-lua-dispatch.patch
   ];
 })

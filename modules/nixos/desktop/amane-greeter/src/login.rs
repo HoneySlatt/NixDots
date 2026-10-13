@@ -40,6 +40,11 @@ static GREETD: Mutex<Option<Greetd>> = Mutex::new(None);
 impl Service for Login {
     fn new() -> Self {
         let user = env::var("AMANE_GREETER_USER").unwrap_or_default();
+        let sessions = sessions();
+
+        // the default session is preselected, the others stay one click away
+        let default = env::var("AMANE_GREETER_DEFAULT_SESSION").unwrap_or_default();
+        let session = sessions.iter().position(|session| session.name == default).unwrap_or(0);
 
         Self {
             user,
@@ -47,8 +52,8 @@ impl Service for Login {
             question: String::new(),
             secret: true,
             message: None,
-            sessions: sessions(),
-            session: 0,
+            sessions,
+            session,
         }
     }
 

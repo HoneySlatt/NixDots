@@ -23,11 +23,17 @@ let
     '') config.home-manager.users.${user}.programs.niri.settings.outputs
   );
 
+  # uwsm-managed entries need a uwsm setup this system does not have
+  sessions = pkgs.runCommand "amane-greeter-sessions" { } ''
+    mkdir -p $out
+    find ${config.services.displayManager.sessionData.desktops}/share/wayland-sessions -name "*.desktop" ! -name "*uwsm*" -exec cp -t $out {} +
+  '';
+
   start = pkgs.writeShellScript "amane-greeter-start" ''
     # HOME holds the copied theme and wallpaper, which the greeter user can only read
     HOME=${data} XDG_CACHE_HOME="''${XDG_RUNTIME_DIR:-/tmp}/cache" \
-      AMANE_GREETER_USER=${user} AMANE_GREETER_OUTPUT=DP-2 \
-      AMANE_GREETER_SESSIONS=${config.services.displayManager.sessionData.desktops}/share/wayland-sessions \
+      AMANE_GREETER_USER=${user} AMANE_GREETER_OUTPUT=DP-2 AMANE_GREETER_DEFAULT_SESSION=Niri \
+      AMANE_GREETER_SESSIONS=${sessions} \
       ${greeter}/bin/amane-greeter
 
     # greetd starts the session once its greeter, this niri, is gone

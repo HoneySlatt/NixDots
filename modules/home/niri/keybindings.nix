@@ -57,8 +57,9 @@ in
     "Mod+Tab".action.toggle-overview = { };
     "Mod+B".action.spawn = "brave-origin";
     "Mod+Shift+B".action.spawn = "firefox";
-    "Mod+M".action.spawn = "kopuz";
-    "Mod+Shift+M".action.spawn = "cider-2";
+    "Mod+M".action.spawn = "toggle-music-launcher";
+    "Mod+Shift+M".action.spawn = "kopuz";
+    "Mod+Ctrl+M".action.spawn = "cider-2";
     "Mod+Shift+W".action.spawn = "toggle-bar-position";
     "Mod+Shift+V".action.spawn = "toggle-nym";
     "Mod+Ctrl+V".action.spawn = "toggle-vpn-launcher";

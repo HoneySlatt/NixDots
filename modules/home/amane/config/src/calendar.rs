@@ -467,7 +467,7 @@ fn month_card(roles: &Roles, now: &Now, height: f32) -> Rectangle {
 
     let cell_width = inner / 7.0;
     let names = Row::new(
-        ["S", "M", "T", "W", "T", "F", "S"]
+        ["M", "T", "W", "T", "F", "S", "S"]
             .into_iter()
             .map(|name| -> Box<dyn Widget> {
                 Box::new(m3::centered(cell_width, 22.0, m3::label(name, TYPE_LABEL, roles.text_on_surface_variant).weight(Weight::Bold)))
@@ -477,7 +477,8 @@ fn month_card(roles: &Roles, now: &Now, height: f32) -> Rectangle {
 
     // days of the previous month, this month, then the next one, in rows of seven
     let previous_days = days_in_month(if month == 1 { year - 1 } else { year }, if month == 1 { 12 } else { month - 1 });
-    let start = weekday(year, month, 1);
+    // weeks start on Monday
+    let start = (weekday(year, month, 1) + 6) % 7;
     let mut days: Vec<(u32, bool)> = (0..start).rev().map(|back| (previous_days - back, false)).collect();
     days.extend((1..=days_in_month(year, month)).map(|day| (day, true)));
     let rows = days.len().div_ceil(7).max(5);

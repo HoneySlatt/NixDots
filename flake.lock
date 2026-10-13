@@ -137,6 +137,23 @@
         "type": "github"
       }
     },
+    "hymission": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1785138890,
+        "narHash": "sha256-1Hn1Op3vKJZZoM4mg0fmCl8zvy8wGp15uINeDDFc/vA=",
+        "owner": "gfhdhytghd",
+        "repo": "hymission",
+        "rev": "9f7fb1b04136b3a45962e1c67abf291a836235a4",
+        "type": "github"
+      },
+      "original": {
+        "owner": "gfhdhytghd",
+        "ref": "v0.5.0-v0.56.0",
+        "repo": "hymission",
+        "type": "github"
+      }
+    },
     "jovian": {
       "inputs": {
         "nix-github-actions": "nix-github-actions",
@@ -377,12 +394,14 @@
         "chatgpt-desktop": "chatgpt-desktop",
         "claude-desktop-nix-flake": "claude-desktop-nix-flake",
         "home-manager": "home-manager",
+        "hymission": "hymission",
         "jovian": "jovian",
         "kopuz": "kopuz",
         "millennium": "millennium",
         "niri": "niri",
         "nixpkgs": "nixpkgs",
         "nixvim": "nixvim",
+        "scrolloverview": "scrolloverview",
         "serein": "serein"
       }
     },
@@ -404,6 +423,22 @@
       "original": {
         "owner": "oxalica",
         "repo": "rust-overlay",
+        "type": "github"
+      }
+    },
+    "scrolloverview": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1789949463,
+        "narHash": "sha256-EdtVRpwYkLtqTrNBA2VbGXpt7DMyMlRm6LCDNfI/1pU=",
+        "owner": "yayuuu",
+        "repo": "hyprland-scroll-overview",
+        "rev": "10eeefa0519e09992b68a1d2949781a876230f5c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "yayuuu",
+        "repo": "hyprland-scroll-overview",
         "type": "github"
       }
     },

@@ -263,6 +263,15 @@ fn distro_icon() -> char {
     }
 }
 
+// The session runs Hyprland rather than niri
+pub fn hyprland() -> bool {
+    std::env::var_os("HYPRLAND_INSTANCE_SIGNATURE").is_some()
+}
+
+pub fn logout_command() -> &'static str {
+    if hyprland() { "hyprctl dispatch 'hl.dsp.exit()'" } else { "niri msg action quit" }
+}
+
 pub const NIGHT_LIGHT_TOGGLE: &str =
     "if pgrep -x wlsunset >/dev/null; then pkill wlsunset; else wlsunset -T 6001 -t 6000 >/dev/null 2>&1 & fi";
 

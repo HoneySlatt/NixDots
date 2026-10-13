@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Switch theme — btop, fastfetch, ghostty, yazi, nvim, gtk, qt, niri, wallpaper,
+# Switch theme — btop, fastfetch, ghostty, yazi, nvim, gtk, qt, niri, hyprland, wallpaper,
 # steam, heroic, obsidian, obs, firefox, userstyles, jellyfin, kopuz, cider,
 # blender, kdeglobals, hyprlock, tuta, opencode, serein, cosmic, rqbit, t3code
 
@@ -107,6 +107,7 @@ mv "$theme_tmp" "$THEME_FILE"
 
 # Desktop-wide changes first, then every app in parallel (each writes its own files).
 switch_niri
+switch_hyprland
 switch_wallpaper
 systemctl --user restart --no-block amane-theme-background.service
 

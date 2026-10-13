@@ -136,7 +136,7 @@ fn header(roles: &Roles, power_actions: bool) -> Row {
 fn session_actions(roles: &Roles) -> Row {
     let actions = [
         ("Lock", "lock", "lock-screen"),
-        ("Logout", "logout", "niri msg action quit"),
+        ("Logout", "logout", system::logout_command()),
         ("Reboot", "restart_alt", "systemctl reboot"),
         ("Shutdown", "power_settings_new", "systemctl poweroff"),
     ];

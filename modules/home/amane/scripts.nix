@@ -8,6 +8,7 @@ let
     "toggle-wallpaper-launcher"
     "toggle-game-launcher"
     "toggle-vpn-launcher"
+    "toggle-music-launcher"
     "toggle-power-launcher"
   ];
 
