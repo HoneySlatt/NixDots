@@ -30,8 +30,23 @@ let
       fi
     '';
   };
+
+  # Each compositor names itself at startup, the login screen preselects it next time
+  remember = pkgs.writeShellApplication {
+    name = "remember-session";
+    text = ''
+      data=/var/lib/amane-greeter
+      [ -w "$data" ] || exit 0
+
+      printf '%s\n' "$1" > "$data/.session"
+      chmod 644 "$data/.session"
+      mv "$data/.session" "$data/session"
+    '';
+  };
 in
 {
+  home.packages = [ remember ];
+
   # awww rewrites its per-output cache whenever a wallpaper is set
   systemd.user.paths.sync-greeter = {
     Unit.Description = "Watch the theme and wallpaper for the login screen";

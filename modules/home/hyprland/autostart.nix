@@ -13,6 +13,8 @@ in
             hl.exec_cmd("systemctl --user start hyprpolkitagent")
             -- shell compiled by `amane compile` (modules/home/amane)
             hl.exec_cmd("amane run")
+            -- preselected on the login screen next time (modules/home/amane/greeter.nix)
+            hl.exec_cmd("remember-session Hyprland")
             hl.exec_cmd("awww-daemon")
             hl.exec_cmd("wallpaper-rotation")
             -- hl.exec_cmd("steam -silent")

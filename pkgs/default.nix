@@ -17,6 +17,14 @@ in
   };
   opencode-desktop = final.callPackage ./opencode-desktop { inherit (prev) opencode-desktop; };
 
+  # Rio picks the variable Geist Mono for regular and italic and fails to load it;
+  # the static files cover every weight
+  geist-font = prev.geist-font.overrideAttrs (old: {
+    postInstall = (old.postInstall or "") + ''
+      rm $out/share/fonts/truetype/GeistMono*\[wght\].ttf
+    '';
+  });
+
   kopuz = inputs.kopuz.packages.${system}.default;
   serein = inputs.serein.packages.${system}.default;
 }

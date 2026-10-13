@@ -32,7 +32,7 @@ let
   start = pkgs.writeShellScript "amane-greeter-start" ''
     # HOME holds the copied theme and wallpaper, which the greeter user can only read
     HOME=${data} XDG_CACHE_HOME="''${XDG_RUNTIME_DIR:-/tmp}/cache" \
-      AMANE_GREETER_USER=${user} AMANE_GREETER_OUTPUT=DP-2 AMANE_GREETER_DEFAULT_SESSION=Niri \
+      AMANE_GREETER_USER=${user} AMANE_GREETER_OUTPUT=DP-2 AMANE_GREETER_DEFAULT_SESSION="$(cat ${data}/session 2>/dev/null || echo Niri)" \
       AMANE_GREETER_SESSIONS=${sessions} \
       ${greeter}/bin/amane-greeter
 

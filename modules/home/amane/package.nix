@@ -17,5 +17,7 @@ inputs.amane.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (
     ./patches/network-on-demand.patch
     # Workspace clicks reach a Hyprland with a Lua config (upstream 4d051ae)
     ./patches/hyprland-lua-dispatch.patch
+    # Hidden windows stay hidden when Hyprland configures them while laying out a monitor
+    ./patches/hidden-layer-configure.patch
   ];
 })
