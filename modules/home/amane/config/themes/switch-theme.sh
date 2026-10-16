@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Switch theme — btop, fastfetch, ghostty, yazi, nvim, gtk, qt, niri, hyprland, wallpaper,
+# Switch theme — btop, fastfetch, ghostty, helix, yazi, nvim, gtk, qt, niri, hyprland, wallpaper,
 # steam, heroic, obsidian, obs, firefox, userstyles, jellyfin, kopuz, cider,
 # blender, kdeglobals, hyprlock, tuta, opencode, serein, cosmic, rqbit, t3code
 
@@ -111,7 +111,7 @@ switch_hyprland
 switch_wallpaper
 systemctl --user restart --no-block amane-theme-background.service
 
-for fn in switch_btop switch_fastfetch switch_ghostty switch_rio gen_yazi_theme nvim_reload \
+for fn in switch_btop switch_fastfetch switch_ghostty switch_rio switch_helix gen_yazi_theme nvim_reload \
           zed_reload switch_gtk switch_qt gen_hyprlock_theme switch_serein switch_cosmic switch_rqbit; do
   "$fn" &
 done

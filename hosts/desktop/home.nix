@@ -5,6 +5,7 @@
     ../../modules/home/base.nix
     ../../modules/home/programs
     ../../modules/home/zed
+    ../../modules/home/helix
     ../../modules/home/neovim
     ../../modules/home/niri
     ../../modules/home/hyprland

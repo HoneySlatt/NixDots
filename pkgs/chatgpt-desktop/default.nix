@@ -1,7 +1,7 @@
-{ chatgptDesktop, nodejs }:
+{ chatgptDesktop, nodejs, makeWrapper }:
 
 chatgptDesktop.overrideAttrs (old: {
-  nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ nodejs ];
+  nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ nodejs makeWrapper ];
 
   # Append files to app.asar by rewriting its header only, so the patchelf'd
   # app.asar.unpacked native modules stay untouched.
@@ -86,5 +86,10 @@ chatgptDesktop.overrideAttrs (old: {
     JS
 
     chmod u-w "$asarPath"
+  '';
+
+  postFixup = (old.postFixup or "") + ''
+    wrapProgram "$out/bin/chatgpt" \
+      --add-flags "--password-store=gnome-libsecret"
   '';
 })

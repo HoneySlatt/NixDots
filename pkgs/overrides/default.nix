@@ -30,4 +30,9 @@ final: prev: {
           'tauri_plugin_window_state::Builder::default().with_state_flags(tauri_plugin_window_state::StateFlags::all() - tauri_plugin_window_state::StateFlags::DECORATIONS)'
     '';
   });
+
+  # Electron and Chromium do not recognise niri or Hyprland and skip the keyring
+  brave-origin = prev.brave-origin.override {
+    commandLineArgs = "--password-store=gnome-libsecret";
+  };
 }

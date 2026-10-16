@@ -48,6 +48,7 @@ claudeDesktop.overrideAttrs (old: {
 
   postFixup = (old.postFixup or "") + ''
     wrapProgram "$out/bin/claude-desktop" \
-      --set FONTCONFIG_FILE ${./geist-mono-fonts.conf}
+      --set FONTCONFIG_FILE ${./geist-mono-fonts.conf} \
+      --add-flags "--password-store=gnome-libsecret"
   '';
 })

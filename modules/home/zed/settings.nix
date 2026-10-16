@@ -3,8 +3,8 @@ let
 in
 {
   programs.zed-editor.userSettings = {
-    vim_mode = true;
-    helix_mode = false;
+    vim_mode = false;
+    helix_mode = true;
     relative_line_numbers = "enabled";
     current_line_highlight = "all";
     vertical_scroll_margin = 8;

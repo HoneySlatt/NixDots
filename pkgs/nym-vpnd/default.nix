@@ -8,11 +8,11 @@
 
 stdenv.mkDerivation rec {
   pname = "nym-vpnd";
-  version = "2026.12.4";
+  version = "2026.13.0";
 
   src = fetchurl {
     url = "https://github.com/nymtech/nym-vpn-client/releases/download/nym-vpn-v${version}/nym-vpn-core-v${version}_linux_x86_64.tar.gz";
-    hash = "sha256-F+x8HUE5Uyiq2mpxYzuhHJoVKWDYNvALpql5L7CqdqQ=";
+    hash = "sha256-sRisxcWx3knAeVWNJ2dPa+p1GhPgDoHmgx0MLZXM1b4=";
   };
 
   nativeBuildInputs = [ autoPatchelfHook ];
