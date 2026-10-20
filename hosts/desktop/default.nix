@@ -6,6 +6,7 @@
     ../../modules/nixos/base
     ../../modules/nixos/desktop/brave.nix
     ../../modules/nixos/services
+    ../../modules/nixos/services/sunshine.nix
     ../../modules/nixos/desktop/amane-greeter
     ../../modules/nixos/desktop/audio.nix
     ../../modules/nixos/desktop/niri.nix

@@ -19,10 +19,6 @@
       url = "github:poeck/claude-desktop-nix-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    chatgpt-desktop = {
-      url = "github:poeck/chatgpt-desktop-app-nix-flake";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     millennium = {
       url = "github:SteamClientHomebrew/Millennium?dir=packages/nix";
       inputs.nixpkgs.follows = "nixpkgs";

@@ -16,8 +16,8 @@
 
     # AI
     t3code
+    chatgpt
     claude-desktop
-    chatgpt-desktop
     opencode-desktop
     # Sandbox of the Codex agent bundled with ChatGPT Desktop
     bubblewrap

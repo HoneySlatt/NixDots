@@ -12,8 +12,8 @@ in
   claude-desktop = final.callPackage ./claude-desktop {
     claudeDesktop = inputs.claude-desktop-nix-flake.packages.${system}.default;
   };
-  chatgpt-desktop = final.callPackage ./chatgpt-desktop {
-    chatgptDesktop = inputs.chatgpt-desktop.packages.${system}.default;
+  chatgpt = final.callPackage ./chatgpt-desktop {
+    chatgptDesktop = prev.chatgpt;
   };
   opencode-desktop = final.callPackage ./opencode-desktop { inherit (prev) opencode-desktop; };
 
