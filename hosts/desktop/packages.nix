@@ -5,7 +5,6 @@
 
   environment.systemPackages = with pkgs; [
     # Browsers
-    ladybird
     brave-origin
 
     # Communication
@@ -15,21 +14,20 @@
     tutanota-desktop
 
     # AI
+    oxi
+    codex
     t3code
     chatgpt
+    opencode
+    claude-code
     claude-desktop
     opencode-desktop
-    # Sandbox of the Codex agent bundled with ChatGPT Desktop
-    bubblewrap
-    claude-code
-    codex
-    opencode
 
     # Media
     kopuz
+    nuvio
     tsukimi
     cider-2
-    nuvio
 
     # Creation and office
     pkgsRocm.blender

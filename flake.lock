@@ -7,16 +7,17 @@
         ]
       },
       "locked": {
-        "lastModified": 1792406229,
-        "narHash": "sha256-dSyzPgiQifwe8Jw6q9Vp5EMyNeUm6sSqwB6++rh0NaI=",
+        "lastModified": 1791437618,
+        "narHash": "sha256-bjJ5K6EEeo8UA97DemyaLLEaLQdNgi0U18in1slP/IM=",
         "owner": "MystiaFin",
         "repo": "amane",
-        "rev": "f6a96b8d0d543f06f98fcfbd8f86d83414f44295",
+        "rev": "7cf5fac4a98a13ca7098766b9118806073f57952",
         "type": "github"
       },
       "original": {
         "owner": "MystiaFin",
         "repo": "amane",
+        "rev": "7cf5fac4a98a13ca7098766b9118806073f57952",
         "type": "github"
       }
     },
@@ -380,7 +381,8 @@
         "nixpkgs": "nixpkgs",
         "nixvim": "nixvim",
         "scrolloverview": "scrolloverview",
-        "serein": "serein"
+        "serein": "serein",
+        "slatty": "slatty"
       }
     },
     "rust-overlay": {
@@ -438,6 +440,26 @@
       "original": {
         "owner": "ViceVerse-cz",
         "repo": "Serein",
+        "type": "github"
+      }
+    },
+    "slatty": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1792577150,
+        "narHash": "sha256-iFdkv351PsEk8HTlV5N/dZd4upQt+DUvvwEE8jjftSg=",
+        "owner": "HoneySlatt",
+        "repo": "Slatty",
+        "rev": "3a6c7f723d45f0250d9ace8cd3aafa66afeb09e9",
+        "type": "github"
+      },
+      "original": {
+        "owner": "HoneySlatt",
+        "repo": "Slatty",
         "type": "github"
       }
     },

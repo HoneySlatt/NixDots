@@ -64,7 +64,8 @@ in
     "Mod+Shift+V".action.spawn = "toggle-nym";
     "Mod+Ctrl+V".action.spawn = "toggle-vpn-launcher";
     "Mod+U".action.spawn = "toggle-nsfw";
-    "Mod+S".action.screenshot = { };
+    "Mod+S".action.screenshot-screen.write-to-disk = false;
+    "Mod+Shift+S".action.screenshot = { };
     "Mod+Shift+P".action.spawn = "hyprpicker";
     "Mod+D".action.spawn = "serein";
     "Mod+Shift+D".action.spawn = "cinny";
@@ -79,10 +80,17 @@ in
       "develop"
       "/home/honey/Projects/SlattyLauncher"
       "-c"
+      "/home/honey/Projects/SlattyLauncher/release/debug/slatty-gui"
+    ]; 
+    "Mod+Ctrl+G".action.spawn = [
+      "nix"
+      "develop"
+      "/home/honey/Projects/SlattyLauncher"
+      "-c"
       "/home/honey/Projects/SlattyLauncher/target/debug/slatty-gui"
     ];
-    "Mod+Ctrl+G".action.spawn = "steam";
-    "Mod+C".action.spawn = "claude-desktop";
+    "Mod+C".action.spawn = "t3code-desktop";
+    "Mod+I".action.spawn = "claude-desktop";
     "Mod+Shift+C".action.spawn = "chatgpt";
     "Mod+Ctrl+C".action.spawn = [ "opencode-desktop" ];
     "Mod+O".action.spawn = "obsidian";

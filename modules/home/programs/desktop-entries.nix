@@ -4,6 +4,11 @@ let
   icons = "${config.home.homeDirectory}/Pictures/Icons";
 
   imageTypes = [ "image/jpeg" "image/png" "image/gif" "image/webp" "image/avif" "image/bmp" "image/tiff" "image/svg+xml" ];
+  fontTypes = [
+    "application/x-font-ttf" "application/x-font-type1" "application/x-font-otf"
+    "application/x-font-pcf" "application/x-font-bdf" "application/vnd.kde.fontspackage"
+    "font/otf" "font/ttf" "font/collection"
+  ];
   mediaTypes = [
     "video/mp4" "video/x-matroska" "video/webm" "video/x-msvideo" "video/quicktime" "video/x-flv"
     "audio/mpeg" "audio/flac" "audio/ogg" "audio/x-wav"
@@ -48,6 +53,245 @@ in
       categories = [ "Network" "WebBrowser" ];
     };
 
+    chatgpt = {
+      name       = "ChatGPT";
+      exec       = "chatgpt %U";
+      icon       = "/home/honey/Pictures/Icons/chatgpt.png";
+      comment    = "AI assistant";
+      mimeType   = [
+        "x-scheme-handler/codex" "x-scheme-handler/http" "x-scheme-handler/https"
+        "text/csv" "text/tab-separated-values" "application/vnd.ms-excel"
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+        "application/vnd.ms-excel.sheet.macroEnabled.12"
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      ];
+      categories = [ "Utility" "Development" ];
+      startupNotify = true;
+    };
+
+    "com.anthropic.Claude" = {
+      name       = "Claude";
+      exec       = "claude-desktop %U";
+      icon       = "/home/honey/Pictures/Icons/claude.png";
+      comment    = "Desktop application for Claude.ai";
+      mimeType   = [ "x-scheme-handler/claude" ];
+      categories = [ "Utility" "Development" ];
+      startupNotify = true;
+      settings = {
+        StartupWMClass = "com.anthropic.Claude";
+        SingleMainWindow = "true";
+      };
+      actions = {
+        NewChat = {
+          name = "New Chat";
+          exec = "claude-desktop \"claude://claude.ai/new?surface=chat&source=desktop_action\"";
+        };
+        NewCode = {
+          name = "New Claude Code Session";
+          exec = "claude-desktop \"claude://code/new?source=desktop_action\"";
+        };
+      };
+    };
+
+    Cinny = {
+      name       = "Cinny";
+      exec       = "cinny";
+      icon       = "/home/honey/Pictures/Icons/matrix.png";
+      comment    = "Matrix client";
+      categories = [ "Network" "InstantMessaging" ];
+      settings.StartupWMClass = "cinny";
+    };
+
+    signal = {
+      name       = "Signal";
+      exec       = "signal-desktop %U";
+      icon       = "${icons}/signal.png";
+      comment    = "Private messaging from your desktop";
+      mimeType   = [ "x-scheme-handler/sgnl" "x-scheme-handler/signalcaptcha" ];
+      categories = [ "Network" "InstantMessaging" "Chat" ];
+      settings.StartupWMClass = "signal";
+    };
+
+    "cider-2" = {
+      name       = "Cider";
+      exec       = "cider-2 %U";
+      icon       = "/home/honey/Pictures/Icons/applemusic.png";
+      comment    = "Apple Music client";
+      mimeType   = [
+        "x-scheme-handler/cider" "x-scheme-handler/itms" "x-scheme-handler/itmss"
+        "x-scheme-handler/music" "x-scheme-handler/itunes"
+      ];
+      categories = [ "Audio" "AudioVideo" "Music" ];
+      settings.StartupWMClass = "Cider";
+      actions = {
+        PlayPause = {
+          name = "Play-Pause";
+          exec = "dbus-send --print-reply --dest=org.mpris.MediaPlayer2.cider /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause";
+        };
+        Next = {
+          name = "Next";
+          exec = "dbus-send --print-reply --dest=org.mpris.MediaPlayer2.cider /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next";
+        };
+        Previous = {
+          name = "Previous";
+          exec = "dbus-send --print-reply --dest=org.mpris.MediaPlayer2.cider /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous";
+        };
+        Stop = {
+          name = "Stop";
+          exec = "dbus-send --print-reply --dest=org.mpris.MediaPlayer2.cider /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Stop";
+        };
+      };
+    };
+
+    oxi = {
+      name       = "Oxi";
+      exec       = "oxi";
+      icon       = "oxi";
+      comment    = "Coding agents and local models in one workspace";
+      categories = [ "Development" "IDE" ];
+    };
+
+    "cz.viceverse.serein" = {
+      name       = "Discord";
+      exec       = "serein";
+      icon       = "/home/honey/Pictures/Icons/discord.png";
+      comment    = "Discord client";
+      categories = [ "Network" "InstantMessaging" ];
+    };
+
+    t3code = {
+      name       = "T3 Code";
+      exec       = "t3code-desktop %U";
+      icon       = "/home/honey/Pictures/Icons/t3code.png";
+      comment    = "Coding agent workspace";
+      categories = [ "Development" "IDE" ];
+      settings.StartupWMClass = "t3code";
+    };
+
+    # KDE applications and graphical tools, also visible outside Plasma
+    kdesystemsettings = {
+      name       = "KDE System Settings";
+      exec       = "systemsettings";
+      icon       = "preferences-system";
+      settings.NotShowIn = "KDE;";
+      noDisplay  = true;
+      categories = [ "Qt" "KDE" "Settings" ];
+    };
+
+    kcm_kded = {
+      name       = "Background Services";
+      exec       = "kcmshell6 kcm_kded";
+      icon       = "preferences-system-session-services";
+      noDisplay  = true;
+      categories = [ "Qt" "KDE" "Settings" ];
+    };
+
+    "org.kde.drkonqi.coredump.gui" = {
+      name       = "Crashed Processes Viewer";
+      exec       = "drkonqi-coredump-gui";
+      icon       = "tools-report-bug";
+      noDisplay  = true;
+      categories = [ "Qt" "KDE" "System" ];
+    };
+
+    "org.kde.kcolorschemeeditor" = {
+      name       = "KColorSchemeEditor";
+      exec       = "kcolorschemeeditor";
+      icon       = "preferences-desktop-color";
+      noDisplay  = true;
+      categories = [ "Qt" "KDE" "Settings" ];
+    };
+
+    "org.kde.kdenlive" = {
+      name       = "Kdenlive";
+      exec       = "kdenlive %F";
+      icon       = "kdenlive";
+      mimeType   = [
+        "application/x-kdenlive" "application/vnd.mlt+xml" "video/mp4" "video/x-matroska"
+        "video/webm" "video/quicktime" "video/x-msvideo" "video/mpeg" "video/3gpp" "video/3gpp2"
+        "audio/mpeg" "audio/ogg" "audio/flac" "audio/wav" "audio/mp4" "audio/x-matroska"
+        "image/gif" "image/jpeg" "image/png" "image/webp"
+      ];
+      categories = [ "Qt" "KDE" "AudioVideo" "AudioVideoEditing" ];
+      settings.StartupWMClass = "kdenlive";
+    };
+
+    "org.kde.keditfiletype" = {
+      name       = "File Type Editor";
+      exec       = "keditfiletype";
+      icon       = "preferences-desktop-filetype-association";
+      noDisplay  = true;
+      categories = [ "Qt" "KDE" "Settings" ];
+    };
+
+    "org.kde.kfontinst" = {
+      name       = "KFontInst";
+      exec       = "kfontinst %U";
+      icon       = "preferences-desktop-font-installer";
+      mimeType   = fontTypes;
+      noDisplay  = true;
+      categories = [ "Qt" "KDE" "Utility" ];
+    };
+
+    "org.kde.kfontview" = {
+      name       = "KFontView";
+      exec       = "kfontview %U";
+      icon       = "kfontview";
+      mimeType   = fontTypes;
+      noDisplay  = true;
+      categories = [ "Qt" "KDE" "Utility" ];
+    };
+
+    "org.kde.kinfocenter" = {
+      name       = "Info Center";
+      exec       = "kinfocenter";
+      icon       = "hwinfo";
+      noDisplay  = true;
+      categories = [ "Qt" "KDE" "System" "Documentation" ];
+    };
+
+    "org.kde.kmenuedit" = {
+      name       = "Menu Editor";
+      exec       = "kmenuedit";
+      icon       = "kmenuedit";
+      noDisplay  = true;
+      categories = [ "Qt" "KDE" "System" ];
+    };
+
+    "org.kde.knetattach" = {
+      name       = "KNetAttach";
+      exec       = "knetattach";
+      icon       = "knetattach";
+      noDisplay  = true;
+      categories = [ "Qt" "KDE" "Network" "RemoteAccess" ];
+    };
+
+    "org.kde.kwalletmanager" = {
+      name       = "KWalletManager";
+      exec       = "kwalletmanager5 %F";
+      icon       = "kwalletmanager";
+      mimeType   = [ "application/x-kwallet" ];
+      noDisplay  = true;
+      categories = [ "Qt" "KDE" "System" "Security" ];
+    };
+
+    "org.kde.plasma-systemmonitor" = {
+      name       = "System Monitor";
+      exec       = "plasma-systemmonitor";
+      icon       = "utilities-system-monitor";
+      noDisplay  = true;
+      categories = [ "Qt" "KDE" "System" ];
+    };
+
+    "org.kde.plasma.emojier" = {
+      name       = "Emoji Selector";
+      exec       = "plasma-emojier";
+      icon       = "preferences-desktop-emoticons";
+      noDisplay  = true;
+      categories = [ "Qt" "KDE" "Utility" ];
+    };
+
     mpv = {
       name       = "MPV";
       exec       = "mpv --player-operation-mode=pseudo-gui -- %U";
@@ -59,9 +303,9 @@ in
     };
 
     "moe.tsuna.tsukimi" = {
-      name       = "Tsukimi";
+      name       = "Jellyfin";
       exec       = "tsukimi";
-      icon       = "org.jellyfin.JellyfinDesktop";
+      icon       = "/home/honey/Pictures/Icons/jellyfin.png";
       comment    = "Jellyfin client";
       categories = [ "AudioVideo" "Video" ];
     };

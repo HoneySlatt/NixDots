@@ -29,7 +29,6 @@
     aurorae
     discover
     krdp
-    kwin-x11
     plasma-browser-integration
     plasma-workspace-wallpapers
     plasma-keyboard

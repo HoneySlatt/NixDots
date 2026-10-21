@@ -14,6 +14,7 @@
     xivlauncher
     protonplus
     moonlight-qt
+    slatty
 
     # Files
     cosmic-files

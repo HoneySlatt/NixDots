@@ -7,6 +7,7 @@ in
 {
   nuvio = final.callPackage ./nuvio { };
   nym-vpnd = final.callPackage ./nym-vpnd { };
+  oxi = final.callPackage ./oxi { };
   rqbit-desktop = final.callPackage ./rqbit-desktop { };
 
   claude-desktop = final.callPackage ./claude-desktop {
@@ -27,4 +28,5 @@ in
 
   kopuz = inputs.kopuz.packages.${system}.default;
   serein = inputs.serein.packages.${system}.default;
+  slatty = inputs.slatty.packages.${system}.default;
 }

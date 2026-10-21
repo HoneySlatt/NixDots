@@ -37,7 +37,8 @@
       flake = false;
     };
     amane = {
-      url = "github:MystiaFin/amane";
+      # Keep the local patches compatible; rebase them before updating Amane.
+      url = "github:MystiaFin/amane/7cf5fac4a98a13ca7098766b9118806073f57952";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     kopuz = {
@@ -46,6 +47,10 @@
     };
     serein = {
       url = "github:ViceVerse-cz/Serein";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    slatty = {
+      url = "github:HoneySlatt/Slatty";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
