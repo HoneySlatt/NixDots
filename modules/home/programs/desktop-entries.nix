@@ -94,13 +94,14 @@ in
       };
     };
 
-    Cinny = {
-      name       = "Cinny";
-      exec       = "cinny";
+    element-desktop = {
+      name       = "Element";
+      exec       = "element-desktop %u";
       icon       = "/home/honey/Pictures/Icons/matrix.png";
       comment    = "Matrix client";
-      categories = [ "Network" "InstantMessaging" ];
-      settings.StartupWMClass = "cinny";
+      mimeType   = [ "x-scheme-handler/element" "x-scheme-handler/io.element.desktop" ];
+      categories = [ "Network" "InstantMessaging" "Chat" ];
+      settings.StartupWMClass = "Element";
     };
 
     signal = {
@@ -535,6 +536,8 @@ in
       // lib.genAttrs webTypes (_: "brave-origin.desktop")
       // {
         "x-scheme-handler/tuta" = "tutanota-desktop.desktop";
+        "x-scheme-handler/element" = "element-desktop.desktop";
+        "x-scheme-handler/io.element.desktop" = "element-desktop.desktop";
         "inode/directory" = "com.system76.CosmicFiles.desktop";
       };
   };

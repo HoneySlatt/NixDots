@@ -450,11 +450,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1792577150,
-        "narHash": "sha256-iFdkv351PsEk8HTlV5N/dZd4upQt+DUvvwEE8jjftSg=",
+        "lastModified": 1792618287,
+        "narHash": "sha256-vDZ7zq3d5b5asrveXa0T337EPUhiAr4l1n/tqRPK8TI=",
         "owner": "HoneySlatt",
         "repo": "Slatty",
-        "rev": "3a6c7f723d45f0250d9ace8cd3aafa66afeb09e9",
+        "rev": "453546f28e83f6391c20e45d3e0a152946995074",
         "type": "github"
       },
       "original": {

@@ -1,0 +1,136 @@
+/* ==UserStyle==
+@name Mistral Amane
+@namespace amane.brave/mistral
+@version 1.0.0
+@description Mistral theme generated from the active Amane palette
+@author honey
+@preprocessor less
+==/UserStyle== */
+
+@import "https://userstyles.catppuccin.com/lib/std/v1.less";
+
+@-moz-document domain("chat.mistral.ai") {
+  // Work and Code share these tokens, including nested dark-mode panels.
+  :root,
+  :root.dark,
+  :root .dark {
+    @flavor: @darkFlavor;
+    #lib.palette();
+
+    --text-default: @text;
+    --text-subtle: @subtext1;
+    --text-muted: @subtext0;
+    --text-hint: @overlay1;
+    --text-placeholder: @overlay1;
+    --text-inverted-default: @base;
+    --text-inverted-subtle: @mantle;
+    --text-inverted-muted: @surface0;
+    --text-inverted-hint: @surface1;
+    --text-destructive: @red;
+    --text-success: @green;
+    --text-warning: @yellow;
+    --text-informative: @blue;
+    --text-green: @green;
+
+    --bg-default: @base;
+    --bg-subtle: @mantle;
+    --bg-muted: @surface0;
+    --bg-inverted: @text;
+    --bg-canvas: @mantle;
+    --bg-surface: @base;
+    --bg-card: @base;
+    --bg-card-subtle: @surface0;
+    --bg-card-inverted: @text;
+    --bg-canvas-card: @surface0;
+    --bg-sidebar: @mantle;
+    --bg-sidebar-subtle: @crust;
+    --bg-sidebar-tabs: @mantle;
+    --bg-input: @base;
+    --bg-input-soft: @surface0;
+    --bg-input-disabled: @surface1;
+    --bg-table-header-hover: @surface0;
+    --bg-table-header-press: @surface1;
+    --bg-floating: @mantle;
+    --bg-floating-subtle: @surface0;
+    --bg-floating-reversed: fade(@text, 50%);
+    --bg-overlay: fade(@crust, 70%);
+
+    --bg-state-primary: @text;
+    --bg-state-primary-hover: @subtext1;
+    --bg-state-primary-press: @subtext0;
+    --bg-state-primary-loading: @surface2;
+    --bg-state-secondary: @surface0;
+    --bg-state-secondary-hover: @surface1;
+    --bg-state-secondary-press: @surface2;
+    --bg-state-soft: @surface0;
+    --bg-state-soft-hover: @surface1;
+    --bg-state-soft-press: @surface2;
+    --bg-state-ghost-hover: fade(@text, 8%);
+    --bg-state-ghost-press: fade(@text, 15%);
+    --bg-state-ghost-hover-inverted: fade(@base, 8%);
+    --bg-state-ghost-press-inverted: fade(@base, 15%);
+    --bg-state-brand: @accent;
+    --bg-state-brand-hover: mix(@accent, @text, 85%);
+    --bg-state-brand-press: mix(@accent, @base, 85%);
+    --bg-state-brand-loading: fade(@accent, 50%);
+    --bg-state-accent: @accent;
+    --bg-state-accent-hover: mix(@accent, @text, 85%);
+    --bg-state-accent-press: mix(@accent, @base, 85%);
+    --bg-state-accent-loading: fade(@accent, 50%);
+    --bg-state-gray: @text;
+    --bg-state-disabled: @surface1;
+
+    --border-default: @surface0;
+    --border-darker: @surface1;
+    --border-strong: @surface2;
+    --border-inverted: @surface2;
+    --border-accent: @accent;
+    --border-accent-inverted: @base;
+    --border-brand: fade(@accent, 30%);
+    --border-highlight: fade(@accent, 40%);
+    --border-highlight-accent: @accent;
+    --border-input-highlight: @accent;
+    --border-body-inset: @surface0;
+    --border-sidebar-inset: @crust;
+
+    --icon-default: @text;
+    --icon-default-subtle: @subtext1;
+    --icon-default-muted: @subtext0;
+    --icon-default-disabled: @overlay0;
+    --icon-inverted-default: @base;
+    --icon-inverted-subtle: @mantle;
+    --icon-inverted-muted: @surface0;
+    --icon-inverted-disabled: @surface1;
+    --icon-destructive: @red;
+    --icon-informative: @blue;
+    --icon-success: @green;
+    --icon-warning: @yellow;
+
+    --bg-badge-default: @surface0;
+    --bg-badge-inverted: @text;
+    --bg-badge-gray: @surface1;
+    --bg-badge-white: @surface1;
+    --bg-basic-gray-subtle: @mantle;
+    --bg-basic-gray-accent: @overlay0;
+    --bg-basic-gray-strong: @overlay1;
+    --bg-basic-gray-contrast: @text;
+    --bg-basic-gray-alpha-2: fade(@text, 2%);
+    --bg-basic-gray-alpha-4: fade(@text, 4%);
+    --bg-basic-gray-alpha-6: fade(@text, 6%);
+    --bg-basic-gray-alpha-8: fade(@text, 8%);
+    --bg-basic-gray-alpha-10: fade(@text, 10%);
+    --bg-basic-gray-alpha-15: fade(@text, 15%);
+    --bg-switch-default: @surface2;
+    --bg-switch-default-hover: @overlay0;
+    --bg-switch-active: @accent;
+    --bg-switch-active-hover: mix(@accent, @text, 85%);
+    --bg-checkbox-default: @surface0;
+    --bg-checkbox-active: @accent;
+    --bg-checkbox-active-hover: mix(@accent, @text, 85%);
+    --dithering-empty-state-default-back: @base;
+    --dithering-empty-state-default-front: @surface0;
+
+    scrollbar-color: @surface2 @base;
+    caret-color: @accent;
+  }
+}

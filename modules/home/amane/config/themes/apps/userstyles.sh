@@ -54,8 +54,8 @@ gen_userstyles() {
 ==/UserStyle== */
 EOF
 
-  local sites=(twitch twitter instagram reddit github codeberg tuta anilist duckduckgo brave-search wikipedia searxng materialious youtube chatgpt mastodon claude cinny)
-  local desktop_sites=(claude chatgpt cinny)
+  local sites=(twitch twitter instagram reddit github codeberg tuta anilist duckduckgo brave-search wikipedia searxng materialious youtube chatgpt mastodon claude cinny grok mistral gog)
+  local desktop_sites=(claude chatgpt)
 
   # One node process per stylesheet: compile them all in parallel, assemble in order below
   local site
@@ -91,17 +91,6 @@ EOF
         [ -f "$desktop_compiled" ] && mkdir -p "$(dirname "$desktop_css")" &&
           cp "$desktop_compiled" "$desktop_css.tmp" && mv "$desktop_css.tmp" "$desktop_css"
       ) || printf 'Could not update %s theme; keeping the previous CSS.\n' "$desktop_app" >&2
-    fi
-    # Cinny Desktop polls this script from amane-userstyles-server
-    if [ "$site" = cinny ]; then
-      (
-        cinny_js="$HOME/.config/amane/themes/cinny.js"
-        [ -f "$desktop_compiled" ] && cinny_css=$(<"$desktop_compiled") &&
-          cinny_tmp=$(mktemp "${cinny_js}.XXXXXX") || exit 1
-        trap 'rm -f "$cinny_tmp"' EXIT
-        printf 'window.amaneCinnyTheme?.(%s);\n' "$(jq -Rs . <<< "$cinny_css")" > "$cinny_tmp" &&
-          chmod 644 "$cinny_tmp" && mv "$cinny_tmp" "$cinny_js"
-      ) || printf 'Could not update cinny theme; keeping the previous CSS.\n' >&2
     fi
   done
 

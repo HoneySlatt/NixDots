@@ -1,0 +1,120 @@
+/* ==UserStyle==
+@name Grok Amane
+@namespace amane.brave/grok
+@version 1.0.0
+@description Grok theme generated from the active Amane palette
+@author honey
+@preprocessor less
+==/UserStyle== */
+
+@import "https://userstyles.catppuccin.com/lib/std/v1.less";
+
+@-moz-document domain("grok.com") {
+  // Grok defines semantic colors on both the root and body in light/dark mode.
+  :root,
+  :root.dark,
+  :root body,
+  :root.dark body {
+    @flavor: @darkFlavor;
+    #lib.palette();
+
+    --surface-base: @base;
+    --surface-inset: @mantle;
+    --surface-l1: @mantle;
+    --surface-l1-hover: @surface0;
+    --surface-l2: @surface0;
+    --surface-l2-active: @surface1;
+    --surface-l3: @surface1;
+    --surface-l4: @surface2;
+    --surface-l4-hover: @overlay0;
+    --surface-elevated: @surface0;
+    --surface-invert: @text;
+    --surface-user-bubble: @surface0;
+    --surface-composer: @mantle;
+    --overlay: fade(@crust, 60%);
+
+    --fg-primary: @text;
+    --fg-secondary: @subtext1;
+    --fg-tertiary: @subtext0;
+    --fg-quaternary: @overlay1;
+    --fg-invert: @base;
+    --fg-danger: @red;
+    --fg-success: @green;
+    --fg-warning: @yellow;
+    --fg-link: @accent;
+    --fg-link-hover: @lavender;
+    --fg-accent: @accent;
+    --fg-accent-hover: @lavender;
+    --fg-diff-add: @green;
+    --fg-diff-del: @red;
+    --accent-blue: @accent;
+
+    --border-l1: @surface0;
+    --border-l2: @surface1;
+    --border-l3: @surface2;
+    --border-invert-l1: @surface2;
+    --border-composer: @surface1;
+    --ring: @accent;
+
+    --button-filled: @text;
+    --button-filled-hover: @subtext1;
+    --button-filled-active: @subtext0;
+    --button-ghost-surface-hover: fade(@text, 4%);
+    --button-ghost-hover: fade(@text, 8%);
+    --button-ghost-active: fade(@text, 12%);
+    --button-secondary-fill: @surface0;
+    --button-secondary-fill-hover: @surface1;
+    --button-secondary-fill-active: @surface2;
+    --button-danger-fill: @red;
+
+    --background-color: @base;
+    --background: @base;
+    --foreground: @surface0;
+    --popover: @surface0;
+    --button-primary: @text;
+    --button-primary-hover: @subtext1;
+    --button-secondary: @surface0;
+    --button-secondary-hover: @surface1;
+    --input: @mantle;
+    --input-hover: @surface0;
+    --input-background: @mantle;
+    --input-border: @surface1;
+    --input-border-focus: @accent;
+    --input-button-background: @surface0;
+    --input-button-background-hover: @surface1;
+    --toggle-border: @surface1;
+    --toggle-selected: @surface2;
+    --card: @mantle;
+    --card-hover: @surface0;
+    --chip: @surface0;
+    --primary-foreground: @base;
+    --muted-foreground: @subtext0;
+    --accent: @surface0;
+    --accent-foreground: @text;
+    --destructive: @red;
+    --destructive-foreground: @base;
+    --sidebar-foreground: @text;
+    --sidebar-accent: @surface0;
+    --sidebar-accent-foreground: @text;
+    --sidebar-border: @surface1;
+    --sidebar-ring: @accent;
+
+    --accent-incognito: @mauve;
+    --fg-incognito: @mauve;
+    --surface-incognito: mix(@mauve, @base, 10%);
+    --surface-incognito-elevated: mix(@mauve, @surface0, 10%);
+    --border-incognito-muted: mix(@mauve, @surface1, 30%);
+    --button-incognito: @mauve;
+    --highlight-incognito: @mauve;
+    --incognito-input-button-background: @surface0;
+    --incognito-input-button-background-hover: @surface1;
+
+    scrollbar-color: @surface2 @base;
+    caret-color: @accent;
+
+    &::selection {
+      background: fade(@accent, 30%);
+      color: @text;
+    }
+  }
+}

@@ -40,7 +40,7 @@ in
       name = "amane-userstyles-server";
       runtimeInputs = [ pkgs.python3 ];
       text = ''
-        # Skip per-request logs (Cinny polls every 2s); errors are still logged
+        # Skip per-request logs; errors are still logged
         exec python3 -c '
         import functools, http.server, sys
         class Handler(http.server.SimpleHTTPRequestHandler):

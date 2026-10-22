@@ -18,5 +18,6 @@
     xivlauncher
     protonplus
     prismlauncher
+    slatty
   ];
 }

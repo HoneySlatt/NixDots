@@ -1,0 +1,186 @@
+/* ==UserStyle==
+@name GOG Amane
+@namespace amane.brave/gog
+@version 1.0.0
+@description GOG theme generated from the active Amane palette
+@author honey
+@preprocessor less
+==/UserStyle== */
+
+@import "https://userstyles.catppuccin.com/lib/std/v1.less";
+
+@-moz-document domain("gog.com") {
+  @flavor: @darkFlavor;
+  #lib.palette();
+
+  // The storefront, design system and menu each define their own theme tokens.
+  :root,
+  [data-theme],
+  :root nav.menu,
+  :root .menu-v3 {
+    --c-background: @base;
+    --c-background-secondary: @mantle;
+    --c-text-primary: @text;
+    --c-text-secondary: @subtext1;
+    --c-text-tertiary: @subtext0;
+    --c-text-quaternary: @overlay1;
+    --c-text-hyperlink: @accent;
+    --c-text-major: @text;
+    --c-ui-primary: @surface0;
+    --c-ui-primary-lighter: @surface1;
+    --c-ui-primary-darker: @mantle;
+    --c-ui-primary--hover-lighten: @surface1;
+    --c-ui-primary--active-lighten: @surface2;
+    --c-ui-secondary: @surface2;
+    --c-ui-tertiary: @surface1;
+    --c-ui-quaternary: @crust;
+    --c-ui-minor: @mantle;
+    --c-ui-minor-secondary: @surface1;
+    --c-ui-semitransparent: fade(@mantle, 90%);
+    --c-ui-hover: fade(@accent, 70%);
+    --c-contrast: @text;
+    --c-contrast-85: fade(@text, 85%);
+    --c-contrast-20: fade(@text, 20%);
+    --c-contrast-15: fade(@text, 15%);
+    --c-contrast-10: fade(@text, 10%);
+    --c-accent: @accent;
+    --c-accent-supportive: @accent;
+    --c-accent-contrast: @base;
+    --c-accent-contrast-lighter: @mantle;
+    --c-accent-secondary: @pink;
+    --c-accent-secondary-lighter: @lavender;
+    --c-danger: @red;
+    --c-error-600: @red;
+    --c-wishlist-content: @text;
+    --c-scrollbar: @surface2;
+    --c-accordion-text: @text;
+    --c-accordion-background: @surface0;
+    --c-menu-category-bg-all: @surface0;
+    --gradient-background: linear-gradient(transparent, @mantle);
+
+    --gradient-button-accent-body: linear-gradient(@accent, @accent);
+    --gradient-button-accent-border: linear-gradient(@accent, @accent);
+    --c-button-accent-content: @base;
+    --c-button-accent-pressed-body: @accent;
+    --c-button-accent-pressed-border: @accent;
+    --gradient-button-secondary-body: linear-gradient(@surface1, @surface0);
+    --gradient-button-secondary-border: linear-gradient(@surface2, @surface1);
+    --c-button-secondary-content: @text;
+    --c-button-secondary-pressed-body: @surface1;
+    --c-button-secondary-pressed-border: @surface2;
+
+    --gdsx-color-background-page: @base;
+    --gdsx-color-background-surface: @mantle;
+    --gdsx-color-background-surface-elevated: @surface0;
+    --gdsx-color-background-selected: @surface1;
+    --gdsx-color-background-disabled: @surface2;
+    --gdsx-color-background-modal: @mantle;
+    --gdsx-color-background-input-field-default: @base;
+    --gdsx-color-background-active: @accent;
+    --gdsx-color-background-active-lighter: mix(@accent, @text, 85%);
+    --gdsx-color-background-active-darker: mix(@accent, @base, 85%);
+    --gdsx-color-brand-300: red(@accent), green(@accent), blue(@accent);
+    --gdsx-color-brand-400: red(@accent), green(@accent), blue(@accent);
+    --gdsx-color-brand-500: red(@accent), green(@accent), blue(@accent);
+    --gdsx-color-brand-600: red(@accent), green(@accent), blue(@accent);
+    --gdsx-color-brand-700: red(@accent), green(@accent), blue(@accent);
+    --gdsx-color-text-button-primary-default: @base;
+    --gdsx-color-text-button-primary-hover: @base;
+    --gdsx-color-text-button-primary-focused: @base;
+    --gdsx-color-text-default: @text;
+    --gdsx-color-text-secondary: @subtext1;
+    --gdsx-color-text-tertiary: @subtext0;
+    --gdsx-color-text-color-brand: @accent;
+    --gdsx-color-text-disabled: @overlay0;
+    --gdsx-color-icon-default: @text;
+    --gdsx-color-stroke-default: @surface2;
+    --gdsx-color-stroke-active: @accent;
+    --gdsx-color-stroke-hover: @overlay0;
+    --gdsx-color-stroke-focused: @accent;
+    --gdsx-color-scrollbar-thumb: @surface2;
+    --gdsx-color-scrollbar-thumb-hover: @overlay0;
+    --gdsx-color-scrollbar-track: @base;
+
+    --menu-v3-panel-bg: @mantle;
+    --menu-v3-panel-header-bg: @crust;
+    --menu-v3-panel-body-bg: @mantle;
+    --menu-v3-panel-border: @surface1;
+    --menu-v3-tile-bg: @surface0;
+    --menu-v3-tile-image-bg: @surface0;
+    --menu-v3-placeholder-bg: fade(@text, 6%);
+    --menu-v3-text: @text;
+    --menu-v3-text-hover: @accent;
+    --menu-v3-text-secondary: @subtext0;
+    --menu-v3-text-value: @subtext1;
+    --menu-v3-text-brand: @accent;
+    --menu-v3-text-danger: @red;
+    --menu-v3-discount-text: @green;
+    --menu-v3-bg-hover: fade(@text, 10%);
+    --menu-v3-stroke-strong: @text;
+    --menu-v3-stroke-heavy: @surface2;
+    --menu-v3-stroke-light: @surface1;
+    --menu-v3-scrollbar-thumb-hover: @overlay0;
+    --menu-v3-btn-mono-bg: @surface0;
+    --menu-v3-btn-mono-bg-hover: @surface1;
+    --menu-v3-btn-mono-text: @text;
+    --menu-v3-btn-mono-border: @surface2;
+    --menu-v3-btn-outline-bg-hover: @surface1;
+    --menu-v3-games-all-label-bg: @surface0;
+    --menu-v3-games-all-label-bg-hover: @surface1;
+    --menu-v3-search-more-bg: @surface0;
+    --menu-v3-search-more-text: @text;
+    --menu-v3-search-more-border: @surface1;
+    --menu-v3-search-more-bg-hover: @surface1;
+    --menu-v3-bar-bg: @mantle;
+    --menu-v3-bar-bg-scrolled: linear-gradient(fade(@mantle, 95%), fade(@mantle, 90%));
+    --menu-v3-bar-text: @text;
+    --menu-v3-bar-counter: @text;
+    --menu-v3-logo-fill: @text;
+    --menu-v3-search-bg: @base;
+    --menu-v3-focus-ring-inner: @accent;
+    --menu-v3-sub-nav-gpp-hover-bg: @surface0;
+
+    scrollbar-color: @surface2 @base;
+  }
+
+  .menu-v3__button--filled,
+  .menu-v3__search-results-empty-btn {
+    background-color: @accent !important;
+    border-color: @accent !important;
+    color: @base !important;
+  }
+
+  .menu-v3__button--filled:hover,
+  .menu-v3__search-results-empty-btn:hover {
+    background-color: mix(@accent, @text, 85%) !important;
+  }
+
+  // The footer still uses literal colors rather than the shared tokens.
+  .footer-v3,
+  .footer-v3-select__control,
+  .footer-v3-select__control option {
+    background-color: @mantle !important;
+    color: @text !important;
+    border-color: @surface2 !important;
+  }
+
+  .footer-v3__card {
+    background-color: @surface0 !important;
+  }
+
+  .footer-v3-links__link,
+  .footer-v3-field {
+    color: @text !important;
+  }
+
+  .footer-v3-secondary,
+  .footer-v3-secondary__link,
+  .footer-v3-secondary__copyright,
+  .footer-v3-socials__item {
+    color: @subtext0 !important;
+  }
+
+  .footer-v3 a:hover {
+    color: @accent !important;
+  }
+}

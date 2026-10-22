@@ -9,7 +9,7 @@
 
     # Communication
     serein
-    cinny-desktop
+    element-desktop
     signal-desktop
     tutanota-desktop
 
@@ -19,6 +19,7 @@
     t3code
     chatgpt
     opencode
+    grok-build
     claude-code
     claude-desktop
     opencode-desktop

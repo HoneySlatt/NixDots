@@ -143,7 +143,7 @@ in
       (bind "SUPER + SHIFT + S" toggleLayout)
       (bind "SUPER + SHIFT + P" (exec "hyprpicker"))
       (bind "SUPER + D" (exec "serein"))
-      (bind "SUPER + SHIFT + D" (exec "cinny"))
+      (bind "SUPER + SHIFT + D" (exec "element-desktop"))
       (bind "CTRL + SHIFT + M" (exec "tutanota-desktop --no-sandbox %U"))
       (bind "SUPER + CTRL + N" (exec "nuvio"))
       (bind "SUPER + SHIFT + G" (exec "nix develop /home/honey/Projects/SlattyLauncher -c /home/honey/Projects/SlattyLauncher/target/debug/slatty-gui"))

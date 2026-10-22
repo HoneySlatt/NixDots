@@ -1,6 +1,17 @@
-{ lib, ... }:
+{ lib, pkgs, ... }:
 
 let
+  # The native T3 Code client (release build), with the libraries its shell
+  # provides; it connects to the t3code-server user service, with the access
+  # token from ~/.config/t3-code-rust/token when that file exists
+  t3rust = pkgs.writeShellScript "t3rust" ''
+    export LD_LIBRARY_PATH=${lib.makeLibraryPath (with pkgs; [ vulkan-loader libGL wayland libxkbcommon libx11 libxcursor libxi libxrandr dbus ])}
+    token="''${XDG_CONFIG_HOME:-$HOME/.config}/t3-code-rust/token"
+    if [ -r "$token" ]; then
+      set -- --token-file "$token"
+    fi
+    exec "$HOME/.t3/projects/t3-code-rust/target/release/t3-code-rust" --server http://127.0.0.1:3773 "$@"
+  '';
   # On-screen display drawn by the amane shell
   osd = args: {
     action.spawn = [
@@ -68,28 +79,21 @@ in
     "Mod+Shift+S".action.screenshot = { };
     "Mod+Shift+P".action.spawn = "hyprpicker";
     "Mod+D".action.spawn = "serein";
-    "Mod+Shift+D".action.spawn = "cinny";
+    "Mod+Shift+D".action.spawn = "element-desktop";
     "Ctrl+Shift+M".action.spawn = [
       "tutanota-desktop"
       "--no-sandbox"
       "%U"
     ];
     "Mod+Ctrl+N".action.spawn = "nuvio";
-    "Mod+Shift+G".action.spawn = [
-      "nix"
-      "develop"
-      "/home/honey/Projects/SlattyLauncher"
-      "-c"
-      "/home/honey/Projects/SlattyLauncher/release/debug/slatty-gui"
-    ]; 
+    "Mod+Shift+G".action.spawn = "slatty-gui";
+    # Slatty's development build, in its project's shell
     "Mod+Ctrl+G".action.spawn = [
-      "nix"
-      "develop"
-      "/home/honey/Projects/SlattyLauncher"
+      "sh"
       "-c"
-      "/home/honey/Projects/SlattyLauncher/target/debug/slatty-gui"
+      "cd ~/Projects/SlattyLauncher && nix develop -c ./target/debug/slatty-gui"
     ];
-    "Mod+C".action.spawn = "t3code-desktop";
+    "Mod+C".action.spawn = "${t3rust}";
     "Mod+I".action.spawn = "claude-desktop";
     "Mod+Shift+C".action.spawn = "chatgpt";
     "Mod+Ctrl+C".action.spawn = [ "opencode-desktop" ];

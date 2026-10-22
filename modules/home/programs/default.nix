@@ -12,5 +12,6 @@
     ./fastfetch.nix
     ./firefox.nix
     ./claude-remote-control.nix
+    ./t3code-server.nix
   ];
 }
