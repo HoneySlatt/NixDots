@@ -53,7 +53,7 @@ clangStdenv.mkDerivation rec {
     repo = "KytyPS5";
     rev = "79837b423dd035b34b2dc476e1d2dce8ae0d18bf";
     fetchSubmodules = true;
-    hash = "sha256-tBB9l8s8Ayt3iK7pjIHP21/S421e7Zw4qrz2B3Ratio=";
+    hash = "sha256-3qsVTgSvoWWRir1X70O8Ypm8yWU7zBuNGRx927tD+4Y=";
   };
 
   nativeBuildInputs = [

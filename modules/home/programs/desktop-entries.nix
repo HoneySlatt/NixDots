@@ -162,6 +162,16 @@ in
       settings.StartupWMClass = "t3code";
     };
 
+    "kimi-code" = {
+      name       = "Kimi Code";
+      exec       = "kimi-code-desktop %U";
+      icon       = "kimi-code";
+      comment    = "AI coding workspace";
+      mimeType   = [ "x-scheme-handler/kimi-code" ];
+      categories = [ "Development" "IDE" ];
+      settings.StartupWMClass = "kimi-code";
+    };
+
     # KDE applications and graphical tools, also visible outside Plasma
     kdesystemsettings = {
       name       = "KDE System Settings";

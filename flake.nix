@@ -68,6 +68,8 @@
       };
     in
     {
+      packages.x86_64-linux.kimi-code = (nixpkgs.legacyPackages.x86_64-linux.extend (import ./pkgs inputs)).kimi-code;
+      packages.x86_64-linux.kimi-code-desktop = (nixpkgs.legacyPackages.x86_64-linux.extend (import ./pkgs inputs)).kimi-code-desktop;
       packages.x86_64-linux.kytyps5 = (nixpkgs.legacyPackages.x86_64-linux.extend (import ./pkgs inputs)).kytyps5;
       packages.x86_64-linux.nym-vpnd = (nixpkgs.legacyPackages.x86_64-linux.extend (import ./pkgs inputs)).nym-vpnd;
 

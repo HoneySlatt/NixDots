@@ -5,6 +5,8 @@ let
   inherit (final.stdenv.hostPlatform) system;
 in
 {
+  kimi-code = final.callPackage ./kimi-code { };
+  kimi-code-desktop = final.callPackage ./kimi-code-desktop { };
   kytyps5 = final.callPackage ./kytyps5 { };
   nuvio = final.callPackage ./nuvio { };
   nym-vpnd = final.callPackage ./nym-vpnd { };

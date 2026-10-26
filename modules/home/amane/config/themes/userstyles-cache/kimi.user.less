@@ -1,0 +1,125 @@
+/* ==UserStyle==
+@name Amane Theme for Kimi
+@namespace amane.userstyles/kimi
+@version 2026.10.26
+@description Match Kimi to the active Amane palette
+@preprocessor less
+==/UserStyle== */
+
+@import "https://userstyles.catppuccin.com/lib/std/v1.less";
+
+@-moz-document domain("kimi.ai") {
+  :root,
+  :root.light,
+  :root.dark {
+    #catppuccin(@darkFlavor);
+  }
+
+  #catppuccin(@flavor) {
+    #lib.palette();
+
+    // Kimi's main backgrounds and labels.
+    --Bg-Primary: @base;
+    --Bg-Primary-hover: @surface0;
+    --Bg-Primary-active: @surface1;
+    --Bg-Primary90: fade(@base, 90%);
+    --Bg-Primary70: fade(@base, 70%);
+    --Bg-Secondary: @mantle;
+    --Bg-Secondary-hover: @surface0;
+    --Bg-Secondary-active: @surface1;
+    --Bg-Secondary90: fade(@mantle, 90%);
+    --Bg-Tertiary: @surface0;
+    --Bg-Tertiary-hover: @surface1;
+    --Bg-Tertiary-active: @surface2;
+    --Bg-Tertiary90: fade(@surface0, 90%);
+    --Bg-GroundPC: @base;
+    --Bg-GroundPC-hover: @mantle;
+    --Bg-GroundPC-active: @surface0;
+    --Bg-Quaternary: @surface1;
+    --BgGp-Primary: @mantle;
+    --BgGp-Primary-hover: @surface0;
+    --BgGp-Primary-active: @surface1;
+    --BgGp-Primary90: fade(@mantle, 90%);
+    --BgGp-Secondary: @base;
+    --BgGp-Secondary-hover: @mantle;
+    --BgGp-Secondary-active: @surface0;
+    --BgGp-Tertiary: @surface0;
+    --BgGp-Tertiary-hover: @surface1;
+    --BgGp-Tertiary-active: @surface2;
+
+    --Labels-Primary: @text;
+    --Labels-Primary-hover: @text;
+    --Labels-Primary-active: @text;
+    --Labels-Secondary: @subtext1;
+    --Labels-Secondary-hover: @text;
+    --Labels-Secondary-active: @text;
+    --Labels-Tertiary: @subtext0;
+    --Labels-Tertiary-hover: @subtext1;
+    --Labels-Tertiary-active: @subtext1;
+    --Labels-Quaternary: @overlay1;
+    --Labels-Quaternary-hover: @overlay2;
+    --Labels-Quaternary-active: @overlay2;
+
+    --Colors-KMBlue: @accent;
+    --Colors-KMBlue-hover: lighten(@accent, 5%);
+    --Colors-KMBlue-active: darken(@accent, 5%);
+    --Colors-Purple: @mauve;
+    --Colors-Red: @red;
+    --Colors-PositiveGreen: @green;
+    --Colors-Green: @green;
+    --Colors-Yellow: @yellow;
+    --Colors-Orange: @peach;
+
+    --Fills-F1: fade(@text, 5%);
+    --Fills-F1-hover: fade(@text, 9%);
+    --Fills-F1-active: fade(@text, 13%);
+    --Fills-F2: fade(@text, 8%);
+    --Fills-F2-hover: fade(@text, 12%);
+    --Fills-F2-active: fade(@text, 16%);
+    --Fills-F3: fade(@text, 15%);
+    --Fills-F4: fade(@text, 25%);
+    --Separators-S1: fade(@text, 12%);
+    --Separators-S1-hover: fade(@text, 16%);
+    --Separators-S1-active: fade(@text, 20%);
+
+    --MaskBg-Light: fade(@crust, 10%);
+    --MaskBg-Base: fade(@crust, 60%);
+    --MaskBg-Dark: fade(@crust, 80%);
+    --MaskBg-Gray: @surface1;
+    --MaskBg-ToastPC: @surface1;
+    --MaskBg-Icon: fade(@crust, 25%);
+    --Others-KMBlue10: fade(@accent, 10%);
+    --Others-KMBlueDisabled: fade(@accent, 40%);
+    --Others-TextSelected: fade(@accent, 20%);
+    --Others-LightBlueBg: fade(@accent, 14%);
+    --Others-BubbleBlue: @accent;
+    --Others-BubbleGray_PC: @surface0;
+    --Others-SubLayerBg: fade(@text, 8%);
+
+    // Keep Kimi's white marks, avatars, and media controls intact.
+    --Always-White: #fff;
+    --Always-WhiteSecondary: fade(#fff, 85%);
+    --Always-WhiteTertiary: fade(#fff, 56%);
+    --Always-WhiteQuaternary: fade(#fff, 42%);
+
+    --Syntax-Keyword: @mauve;
+    --Syntax-String: @green;
+    --Syntax-Literal: @peach;
+    --Syntax-Comment: @overlay1;
+    --Syntax-Metadata: @yellow;
+    --Syntax-Punctuation: @red;
+    --Syntax-Mark: @accent;
+
+    color-scheme: if(lightness(@base) > 50%, light, dark);
+
+    body {
+      color: @text;
+      background-color: @base;
+    }
+
+    .dark[data-v-efb858b9] pre[class*="language-"] {
+      color: @text;
+      background: @mantle;
+    }
+  }
+}

@@ -13,7 +13,7 @@ let
     dontUnpack = true;
 
     installPhase = ''
-      install -Dm644 $src $out/share/$pname.ndp
+      install -Dm644 $src $out/share/plugins/$pname.ndp
     '';
 
     passthru.isNavidromePlugin = true;
@@ -23,7 +23,7 @@ in
   services.navidrome = {
     enable = true;
     openFirewall = true;
-    plugins = [ navidromeLyricsPlugin ];
+    withPlugins = _: [ navidromeLyricsPlugin ];
     settings = {
       Address = "0.0.0.0";
       MusicFolder = "/NAS/Music";

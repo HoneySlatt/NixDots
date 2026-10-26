@@ -21,6 +21,8 @@
     grok-build
     claude-code
     mistral-vibe
+    kimi-code
+    kimi-code-desktop
     claude-desktop
     opencode-desktop
 
