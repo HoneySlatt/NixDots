@@ -14,13 +14,13 @@
     tutanota-desktop
 
     # AI
-    oxi
     codex
     t3code
     chatgpt
     opencode
     grok-build
     claude-code
+    mistral-vibe
     claude-desktop
     opencode-desktop
 
@@ -29,6 +29,9 @@
     nuvio
     tsukimi
     cider-2
+
+    # Gaming
+    kytyps5
 
     # Creation and office
     pkgsRocm.blender

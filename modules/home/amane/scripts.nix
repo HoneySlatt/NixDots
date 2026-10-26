@@ -70,7 +70,6 @@ in
 
     # Session
     (fromFile "toggle-nsfw" { })
-    (fromFile "toggle-hdr" { runtimeInputs = with pkgs; [ hyprland jq libnotify ]; })
     (fromFile "wallpaper-rotation" {
       runtimeInputs = [ pkgs.jq ];
       # C is read by the sourced switch_wallpaper

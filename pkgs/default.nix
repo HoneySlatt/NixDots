@@ -5,9 +5,9 @@ let
   inherit (final.stdenv.hostPlatform) system;
 in
 {
+  kytyps5 = final.callPackage ./kytyps5 { };
   nuvio = final.callPackage ./nuvio { };
   nym-vpnd = final.callPackage ./nym-vpnd { };
-  oxi = final.callPackage ./oxi { };
   rqbit-desktop = final.callPackage ./rqbit-desktop { };
 
   claude-desktop = final.callPackage ./claude-desktop {

@@ -2,7 +2,7 @@
 @name YouTube Catppuccin
 @namespace github.com/catppuccin/userstyles/styles/youtube
 @homepageURL https://github.com/catppuccin/userstyles/tree/main/styles/youtube
-@version 2026.08.16
+@version 2026.10.22
 @updateURL https://github.com/catppuccin/userstyles/raw/main/styles/youtube/catppuccin.user.less
 @supportURL https://github.com/catppuccin/userstyles/issues?q=is%3Aopen+is%3Aissue+label%3Ayoutube
 @description Soothing pastel theme for YouTube
@@ -36,11 +36,16 @@
     @white: if(@flavor = latte, @base, @text);
     @black: if(@flavor = latte, @text, @base);
 
-    color: @text;
-    background: @base;
+    &,
+    body {
+      color: @text !important;
+      background-color: @base !important;
+      color-scheme: if(lightness(@base) > 50%, light, dark);
+    }
 
     #--variables() {
       &,
+      [light],
       [dark],
       [system-icons],
       [darker-dark-theme],
@@ -49,6 +54,83 @@
       &[darker-dark-theme] {
         --efyt-control-bar-background-color: @mantle;
         --dimmer-text: @text;
+
+        // Current YouTube components use hashed aliases for the same colors.
+        // Cover local light/dark scopes as well as the document theme.
+        --t3e41d7b17b187f69: var(--yt-spec-base-background);
+        --t08a7c6c176cbc5c2: var(--yt-spec-menu-background);
+        --t518e925f61bdcb91: var(--yt-spec-raised-background);
+        --tbdeaf5bc17152abc: @mantle;
+        --t7f4f2c6d54836ce0: var(--yt-spec-additive-background);
+        --t7d8b8e5ee291aec0: @surface0;
+        --t1405e70a39276293: var(--yt-spec-inverted-background);
+        --tad8443faed66c111: @subtext1;
+        --t832f22ce6618e99e: @accent;
+        --t45b2a38314924357: @base;
+        --tffc2fd3a644f6275: var(--yt-spec-text-primary);
+        --t6216186c28b3834b: var(--yt-spec-text-primary-inverse);
+        --t4a6da19e16bf221a: var(--yt-spec-text-secondary);
+        --td9c19f4f8cecd56e: @subtext0;
+        --t7e34d5baa4ea6277: var(--yt-spec-text-disabled);
+        --tc4b26042d4cb141f: @overlay0;
+        --t7f9b7e1603e20b94: var(--yt-spec-wordmark-text);
+        --tde41338fc2bd4ba5: @crust;
+        --t4fb0f67b251e1a42: @text;
+        --ta08e036410c14538: @base;
+
+        --t2d807bb79e75606d: var(--yt-spec-call-to-action);
+        --t617db776af0de196: var(--yt-spec-call-to-action-hover);
+        --tb628117fc164ad87: var(--yt-spec-call-to-action-inverse);
+        --tfa3475c508f5dfef: var(--yt-spec-suggested-action);
+        --t9bc0b740242da017: fade(@accent, 30%);
+        --t441a0e44e495381a: var(--yt-spec-suggested-action-inverse);
+        --t20480717de80f555: var(--yt-spec-button-chip-background-hover);
+        --t8cdc9846a76caf1f: var(--yt-spec-mono-filled-hover);
+        --te1b64e6971040396: @surface1;
+        --t416e5931fc464589: var(--yt-spec-mono-tonal-hover);
+        --tb7d74bb3291c951d: @surface1;
+        --tf3fc855af2285f5f: var(--yt-spec-outline);
+        --t0a1249f7c9e82b5e: @surface1;
+        --td8562cdc203bc683: @surface1;
+        --t02c0a2c868c14ce8: @overlay0;
+        --t53dda9125e8d1324: fade(@text, 15%);
+        --t544e31714f63d53c: fade(@text, 15%);
+        --t6931aa1826b373b2: fade(@text, 15%);
+        --ted4236536899e4b3: fade(@text, 15%);
+        --ta057e2d872f2a0d4: fade(@text, 5%);
+        --t2c3e55cb638348df: fade(@text, 10%);
+        --t1aab759cd9ddbe39: fade(@text, 5%);
+        --tf5f050c65aebead5: fade(@text, 10%);
+        --tc87f6a7f05e65fc4: @surface0;
+        --tc04ba3e73561953c: @surface0;
+        --ta9b56aa666d71f06: @surface1;
+        --t7c4965c11f8537c0: fade(@text, 10%);
+        --t432fbdbd7f2f3f71: fade(@text, 10%);
+        --t7f006a3165d45f92: fade(@text, 10%);
+        --tf3fc031aaa66f63b: @surface1;
+        --taf1bdd961423c15f: fade(@text, 5%);
+        --t9d7bdcaefc975d44: fade(@text, 5%);
+        --t93a9a9c8ff5bfbfc: @subtext1;
+        --tb315d8832c2ef6ef: @subtext0;
+        --te9b0b5b330fb2a7b: @overlay2;
+
+        --t5355e7dcd3a33a2f: fade(@base, 95%);
+        --tc54fd20dab7048eb: fade(@base, 60%);
+        --t25a42c37f53e50e0: fade(@base, 75%);
+        --ta889dfda9605a358: fade(@base, 90%);
+        --t5978da8d584b8fe9: fade(@base, 90%);
+        --t0ccd1ace000d5e93: fade(@crust, 80%);
+        --t5208fd177a788cfa: @red;
+        --td545df04e2c659d7: @red;
+        --t53991d599b1488f5: @red;
+        --t854c79338d8ca8a7: @accent;
+        --t3f3bdb4140d3ead7: @yellow;
+        --tecbdf924b63b27fc: @yellow;
+        --t4d7776c28db21122: @green;
+        --t904a88c623ca27ab: @green;
+        --t2c3bbff6c15a3eb2: @green;
+        --t4726c68ef6d7b08f: fade(@green, 20%);
+        --tf0a0d1154827847f: fade(@yellow, 20%);
 
         /* Newest Variables */
         --yt-sys-color-baseline--base-background: @base;

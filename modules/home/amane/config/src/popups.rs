@@ -9,7 +9,7 @@ use amane::{
 use crate::bar::Position;
 use crate::theme::{MARGIN, POPUP_GAP};
 use crate::{
-    calendar, control_center, launcher, music_launcher, network_popup, notifications, power_menu, screenshot, small_launcher,
+    calendar, control_center, launcher, music_launcher, network_popup, notifications, power_menu, small_launcher,
     steam_launcher, system_monitor, theme_launcher, tray_menu, volume_popup, vpn_launcher, wallpaper_launcher,
 };
 
@@ -28,7 +28,6 @@ pub enum Popup {
     SteamLauncher,
     VpnLauncher,
     MusicLauncher,
-    Screenshot,
     TrayMenu,
     Notifications,
 }
@@ -107,8 +106,6 @@ pub fn show(popup: Popup) {
         Popup::SteamLauncher => steam_launcher::reset(),
         Popup::VpnLauncher => vpn_launcher::reset(),
         Popup::MusicLauncher => music_launcher::reset(),
-        // filled in by screenshot::ipc before showing
-        Popup::Screenshot => {}
         // filled in by tray_menu::open before showing
         Popup::TrayMenu => {}
         Popup::Notifications => {}
@@ -229,7 +226,6 @@ pub fn view(monitor: &Monitor) -> LayerWindow {
         Some(Popup::SteamLauncher) => steam_launcher::view(monitor),
         Some(Popup::VpnLauncher) => vpn_launcher::view(monitor),
         Some(Popup::MusicLauncher) => music_launcher::view(monitor),
-        Some(Popup::Screenshot) => screenshot::view(monitor),
         Some(Popup::TrayMenu) => tray_menu::view(monitor),
         Some(Popup::Notifications) => notifications::view(monitor),
         None => LayerWindow::new().width(Full).height(Full).layer(Layer::Overlay).namespace("amane:popup").visible(false),

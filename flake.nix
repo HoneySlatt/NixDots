@@ -27,15 +27,6 @@
       url = "github:nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    # Hyprland overview plugins
-    scrolloverview = {
-      url = "github:yayuuu/hyprland-scroll-overview";
-      flake = false;
-    };
-    hymission = {
-      url = "github:gfhdhytghd/hymission/v0.5.0-v0.56.0";
-      flake = false;
-    };
     amane = {
       # Keep the local patches compatible; rebase them before updating Amane.
       url = "github:MystiaFin/amane/7cf5fac4a98a13ca7098766b9118806073f57952";
@@ -77,6 +68,7 @@
       };
     in
     {
+      packages.x86_64-linux.kytyps5 = (nixpkgs.legacyPackages.x86_64-linux.extend (import ./pkgs inputs)).kytyps5;
       packages.x86_64-linux.nym-vpnd = (nixpkgs.legacyPackages.x86_64-linux.extend (import ./pkgs inputs)).nym-vpnd;
 
       nixosConfigurations = {

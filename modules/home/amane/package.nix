@@ -15,9 +15,5 @@ inputs.amane.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (
     ./patches/media-active-player.patch
     # The Wi-Fi network list is only asked for while a window shows it
     ./patches/network-on-demand.patch
-    # Workspace clicks reach a Hyprland with a Lua config (upstream 4d051ae)
-    ./patches/hyprland-lua-dispatch.patch
-    # Hidden windows stay hidden when Hyprland configures them while laying out a monitor
-    ./patches/hidden-layer-configure.patch
   ];
 })

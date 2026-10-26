@@ -48,7 +48,7 @@ in
     "brave-origin" = {
       name       = "Brave Origin";
       exec       = "brave-origin %U";
-      icon       = "brave-origin";
+      icon       = "/home/honey/Pictures/Icons/brave.png";
       comment    = "Web browser";
       categories = [ "Network" "WebBrowser" ];
     };
@@ -143,14 +143,6 @@ in
           exec = "dbus-send --print-reply --dest=org.mpris.MediaPlayer2.cider /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Stop";
         };
       };
-    };
-
-    oxi = {
-      name       = "Oxi";
-      exec       = "oxi";
-      icon       = "oxi";
-      comment    = "Coding agents and local models in one workspace";
-      categories = [ "Development" "IDE" ];
     };
 
     "cz.viceverse.serein" = {

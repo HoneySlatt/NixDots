@@ -12,6 +12,11 @@ let
     fi
     exec "$HOME/.t3/projects/t3-code-rust/target/release/t3-code-rust" --server http://127.0.0.1:3773 "$@"
   '';
+  screenshotSave = pkgs.writeShellScript "niri-screenshot-save" ''
+    directory="$HOME/Pictures/Screenshots"
+    ${pkgs.coreutils}/bin/mkdir -p "$directory"
+    exec ${pkgs.niri}/bin/niri msg action screenshot --path "$directory/Screenshot from $(${pkgs.coreutils}/bin/date '+%Y-%m-%d %H-%M-%S').png"
+  '';
   # On-screen display drawn by the amane shell
   osd = args: {
     action.spawn = [
@@ -75,8 +80,8 @@ in
     "Mod+Shift+V".action.spawn = "toggle-nym";
     "Mod+Ctrl+V".action.spawn = "toggle-vpn-launcher";
     "Mod+U".action.spawn = "toggle-nsfw";
-    "Mod+S".action.screenshot-screen.write-to-disk = false;
-    "Mod+Shift+S".action.screenshot = { };
+    "Mod+S".action.screenshot = { };
+    "Mod+Shift+S".action.spawn = "${screenshotSave}";
     "Mod+Shift+P".action.spawn = "hyprpicker";
     "Mod+D".action.spawn = "serein";
     "Mod+Shift+D".action.spawn = "element-desktop";

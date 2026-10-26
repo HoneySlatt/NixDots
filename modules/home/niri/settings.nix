@@ -66,6 +66,7 @@
 
     hotkey-overlay.skip-at-startup = true;
 
-    screenshot-path = "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png";
+    # The selector copies by default; Mod+Shift+S supplies an explicit save path.
+    screenshot-path = null;
   };
 }

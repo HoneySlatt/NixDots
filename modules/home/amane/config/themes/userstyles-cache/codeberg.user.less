@@ -2,7 +2,7 @@
 @name Codeberg Catppuccin
 @namespace github.com/catppuccin/userstyles/styles/codeberg
 @homepageURL https://github.com/catppuccin/userstyles/tree/main/styles/codeberg
-@version 2026.04.16
+@version 2026.10.22
 @updateURL https://github.com/catppuccin/userstyles/raw/main/styles/codeberg/catppuccin.user.less
 @supportURL https://github.com/catppuccin/userstyles/issues?q=is%3Aopen+is%3Aissue+label%3Acodeberg
 @description Soothing pastel theme for Codeberg
@@ -15,39 +15,180 @@
 @var select accentColor "Accent" ["rosewater:Rosewater", "flamingo:Flamingo", "pink:Pink", "mauve:Mauve*", "red:Red", "maroon:Maroon", "peach:Peach", "yellow:Yellow", "green:Green", "teal:Teal", "blue:Blue", "sapphire:Sapphire", "sky:Sky", "lavender:Lavender", "subtext0:Gray"]
 ==/UserStyle== */
 
-@import "https://userstyles.catppuccin.com/lib/lib.less";
+@import "https://userstyles.catppuccin.com/lib/std/v1.less";
 
 @-moz-document domain("codeberg.org") {
-  @import (css)
-    url("https://catppuccin.github.io/gitea/theme-catppuccin-@{lightFlavor}-@{accentColor}.css")
-    (prefers-color-scheme: light);
-  @import (css)
-    url("https://catppuccin.github.io/gitea/theme-catppuccin-@{darkFlavor}-@{accentColor}.css")
-    (prefers-color-scheme: dark);
-}
-
-@-moz-document domain("codeberg.org") {
-  [data-theme="codeberg-dark"],
-  [data-theme="codeberg-light"],
-  [data-theme="codeberg-auto"] {
-    @media (prefers-color-scheme: light) {
-      #catppuccin(@lightFlavor);
-    }
-    @media (prefers-color-scheme: dark) {
-      #catppuccin(@darkFlavor);
-    }
+  :root {
+    #catppuccin(@darkFlavor);
   }
 
   #catppuccin(@flavor) {
     #lib.palette();
-    // #lib.defaults(); // Not needed, themed in upstream Gitea port.
+    // Embed the Forgejo colors: CSS imports inside a document rule are ignored.
+    & when (lightness(@base) > 50%) {
+      color-scheme: light;
+      --is-dark-theme: false;
+    }
+    & when (lightness(@base) <= 50%) {
+      color-scheme: dark;
+      --is-dark-theme: true;
+    }
+
+    --color-primary: @accent;
+    --color-primary-contrast: @base;
+    --color-primary-hover: mix(@accent, @text, 85%);
+    --color-primary-active: mix(@accent, @base, 85%);
+    each(range(1, 7), {
+      --color-primary-dark-@{value}: mix(@accent, @text, (100% - @value * 5%));
+      --color-primary-light-@{value}: mix(@accent, @base, (100% - @value * 5%));
+    });
+    each(range(10, 90, 10), {
+      --color-primary-alpha-@{value}: fade(@accent, unit(@value, %));
+      --color-secondary-alpha-@{value}: fade(@surface1, unit(@value, %));
+    });
+    --color-secondary: @surface1;
+    --color-secondary-hover: @surface2;
+    --color-secondary-active: @overlay0;
+    each(range(1, 13), {
+      --color-secondary-dark-@{value}: mix(@surface1, @text, (100% - @value * 5%));
+    });
+    each(range(1, 4), {
+      --color-secondary-light-@{value}: mix(@surface1, @base, (100% - @value * 10%));
+    });
 
     --color-body: @base;
+    --color-box-header: @surface0;
+    --color-box-body: @mantle;
+    --color-box-body-highlight: @surface1;
+    --color-text: @text;
+    --color-text-dark: @text;
+    --color-text-light: @subtext1;
+    --color-text-light-1: @subtext1;
+    --color-text-light-2: @subtext0;
+    --color-text-light-3: @overlay1;
+    --color-text-focus: @text;
+    --color-footer: @mantle;
+    --color-input-text: @text;
+    --color-input-background: @surface0;
+    --color-input-toggle-background: @surface0;
+    --color-input-border: @surface1;
+    --color-input-border-hover: @surface2;
+    --color-placeholder-text: @subtext0;
+    --color-nav-bg: @accent;
     --color-nav-text: @crust;
-    --color-nav-hover-bg: darken(@accent, 5%);
+    --color-nav-hover-bg: mix(@accent, @base, 85%);
+    --color-nav-active: mix(@accent, @base, 75%);
+    --color-navbar: @accent;
+    --color-navbar-transparent: fade(@accent, 0%);
     --color-secondary-nav-bg: @surface0;
-    --color-link: @blue;
+    --color-link: @accent;
+    --color-link-active: @accent;
     --color-footer-text: @text;
+    --color-header-wrapper: @mantle;
+    --color-header-wrapper-transparent: fade(@mantle, 0%);
+    --color-light: fade(@text, 5%);
+    --color-light-border: @surface1;
+    --color-hover: fade(@text, 8%);
+    --color-active: fade(@text, 12%);
+    --color-menu: @mantle;
+    --color-card: @surface0;
+    --color-button: @surface0;
+    --color-secondary-bg: @surface0;
+    --color-timeline: @surface1;
+    --color-shadow: fade(@crust, 20%);
+    --color-tooltip-bg: @surface1;
+    --color-tooltip-text: @text;
+    --color-code-bg: @base;
+    --color-code-sidebar-bg: @mantle;
+    --color-markup-code-block: @mantle;
+    --color-markup-code-inline: @surface0;
+    --color-markup-table-row: fade(@text, 3%);
+    --color-caret: @accent;
+    --color-reaction-bg: @surface0;
+    --color-reaction-active-bg: fade(@accent, 20%);
+    --color-label-text: @base;
+    --color-label-bg: @accent;
+    --color-label-hover-bg: mix(@accent, @text, 85%);
+    --color-label-active-bg: mix(@accent, @base, 85%);
+    --color-accent: @accent;
+    --color-small-accent: fade(@accent, 15%);
+    --color-red: @red;
+    --color-orange: @peach;
+    --color-yellow: @yellow;
+    --color-olive: @green;
+    --color-green: @green;
+    --color-teal: @teal;
+    --color-blue: @blue;
+    --color-violet: @lavender;
+    --color-purple: @mauve;
+    --color-pink: @pink;
+    --color-grey: @overlay1;
+    --color-black: @crust;
+    --color-white: @text;
+    --color-diff-removed-word-bg: fade(@red, 20%);
+    --color-diff-added-word-bg: fade(@green, 20%);
+    --color-diff-removed-row-bg: fade(@red, 10%);
+    --color-diff-added-row-bg: fade(@green, 10%);
+    --color-info-bg: @surface0;
+    --color-info-text: @text;
+    --color-info-border: @surface2;
+    --color-error-bg: mix(@red, @base, 15%);
+    --color-error-text: @text;
+    --color-error-border: @red;
+    --color-success-bg: mix(@green, @base, 15%);
+    --color-success-text: @text;
+    --color-success-border: @green;
+    --color-warning-bg: mix(@yellow, @base, 15%);
+    --color-warning-text: @text;
+    --color-warning-border: @yellow;
+
+    // The landing page has a separate stylesheet with fixed backgrounds.
+    div.full.height,
+    main header,
+    main section#home-section-support {
+      background-color: @base !important;
+      color: @text !important;
+    }
+
+    main header .header-logo svg {
+      color: @base !important;
+    }
+
+    main header .header-social-links a,
+    main section#home-section-about p a {
+      color: @accent !important;
+    }
+
+    main section#home-section-about .home-section-about-box-container,
+    main section#home-section-about .home-section-about-box {
+      background: @mantle !important;
+      color: @text !important;
+    }
+
+    main section#home-section-about .home-section-about-container div {
+      color: @subtext1 !important;
+    }
+
+    main section#home-section-about h3,
+    main section#home-section-about h4 {
+      color: @text !important;
+      text-shadow: none !important;
+    }
+
+    main a.button {
+      background-color: @accent !important;
+      color: @base !important;
+      text-shadow: none !important;
+    }
+
+    .chroma { color: @text; background-color: @base; }
+    .chroma .c, .chroma .c1, .chroma .cm, .chroma .cs, .chroma .ch { color: @subtext0; }
+    .chroma .k, .chroma .kc, .chroma .kd, .chroma .kn, .chroma .kp, .chroma .kr { color: @mauve; }
+    .chroma .s, .chroma .s1, .chroma .s2, .chroma .sb, .chroma .sc, .chroma .sd { color: @green; }
+    .chroma .m, .chroma .mf, .chroma .mh, .chroma .mi, .chroma .mo, .chroma .il { color: @peach; }
+    .chroma .nf, .chroma .nb { color: @blue; }
+    .chroma .nc, .chroma .kt { color: @yellow; }
+    .chroma .o, .chroma .ow { color: @sky; }
 
     .ui.basic.red.buttons .button,
     .ui.basic.red.button {
@@ -73,6 +214,15 @@
     }
 
     #navbar {
+      // Codeberg redeclares these tokens directly on the navbar.
+      --color-nav-bg: @accent;
+      --color-primary: @accent;
+      --color-text: @base;
+      --color-nav-hover-bg: mix(@accent, @base, 85%);
+      --color-nav-active: mix(@accent, @base, 75%);
+      --color-contrast-boost: transparent;
+      text-shadow: none;
+
       a#navbar-logo {
         img {
           #codeberg-logo(@base);
@@ -81,7 +231,7 @@
 
       .menu {
         > a, button, details > summary {
-          color: @base;
+          color: @base !important;
         }
 
         .donation-pretty {

@@ -6,7 +6,6 @@
     awww
     brightnessctl
     imagemagick
-    wf-recorder
     wl-clipboard
     playerctl
     hyprpicker

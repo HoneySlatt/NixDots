@@ -9,7 +9,7 @@ use amane::{
 use crate::anim::{self, Motion};
 use crate::popups::{self, Popup};
 use crate::notifications;
-use crate::system::{self, Blink, Clock, DISTRO_ICON, HOT_PERCENT, Load, NetBar, Vpn};
+use crate::system::{Blink, Clock, DISTRO_ICON, HOT_PERCENT, Load, NetBar, Vpn};
 use crate::tray::Tray;
 use crate::tray_menu;
 use crate::theme::{
@@ -20,22 +20,12 @@ use crate::theme::{
 const NIRI_TOP_MODE: &str = "// Barre en haut : pas de surcharge.";
 const NIRI_COMPACT_MODE: &str = "layout {\n    gaps 0\n    border {\n        off\n    }\n    shadow {\n        off\n    }\n}\nwindow-rule {\n    geometry-corner-radius 0\n    opacity 1.0\n}";
 
-// The same two modes for Hyprland, applied live; the top one matches modules/home/hyprland/settings.nix
-const HYPRLAND_TOP_MODE: &str = "hl.config({ general = { gaps_in = 6, gaps_out = 6, border_size = 2 }, decoration = { rounding = 12, active_opacity = 1.0, inactive_opacity = 0.9, shadow = { enabled = true } } })";
-const HYPRLAND_COMPACT_MODE: &str = "hl.config({ general = { gaps_in = 0, gaps_out = 0, border_size = 0 }, decoration = { rounding = 0, active_opacity = 1.0, inactive_opacity = 1.0, shadow = { enabled = false } } })";
-
 fn position_file() -> String {
     format!("{}/.bar-position", theme::config_dir())
 }
 
 // Top: floating rounded bar; bottom: flush bar with the compositor's gaps and borders turned off
 fn apply_mode(top: bool) {
-    if system::hyprland() {
-        let mode = if top { HYPRLAND_TOP_MODE } else { HYPRLAND_COMPACT_MODE };
-        let _ = std::process::Command::new("hyprctl").args(["eval", mode]).status();
-        return;
-    }
-
     let path = format!("{}/.config/niri/bar-mode.kdl", theme::home());
     let mode = if top { NIRI_TOP_MODE } else { NIRI_COMPACT_MODE };
 

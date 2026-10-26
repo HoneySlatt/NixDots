@@ -14,10 +14,18 @@
   programs.gamemode.enable = true;
 
   environment.systemPackages = with pkgs; [
-    heroic
-    xivlauncher
-    protonplus
-    prismlauncher
+    eden
+    pcsx2
+    rpcs3
     slatty
+    ppsspp
+    shadps4
+    melonds
+    protonplus
+    dolphin-emu
+    xivlauncher
+    xenia-canary
+    prismlauncher
+    shadps4-qtlauncher
   ];
 }

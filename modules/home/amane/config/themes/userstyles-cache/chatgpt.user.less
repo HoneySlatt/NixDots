@@ -2,7 +2,7 @@
 @name ChatGPT Catppuccin
 @namespace github.com/catppuccin/userstyles/styles/chatgpt
 @homepageURL https://github.com/catppuccin/userstyles/tree/main/styles/chatgpt
-@version 2026.08.16
+@version 2026.10.22
 @updateURL https://github.com/catppuccin/userstyles/raw/main/styles/chatgpt/catppuccin.user.less
 @supportURL https://github.com/catppuccin/userstyles/issues?q=is%3Aopen+is%3Aissue+label%3Achatgpt
 @description Soothing pastel theme for ChatGPT
@@ -19,6 +19,7 @@
 
 @-moz-document domain("chatgpt.com") {
   // TODO: Codemirror syntax highlighting.
+  :root,
   .light {
     #catppuccin(@lightFlavor);
   }
@@ -31,11 +32,13 @@
     #lib.palette();
     #lib.defaults();
 
+    &,
     * {
       --text-primary: @text;
       --text-secondary: @subtext1;
       --text-tertiary: @subtext0;
       --text-quaternary: @overlay2;
+      --text-placeholder: @subtext0;
       --bg-primary: @base;
       --bg-secondary: @surface0;
       --bg-tertiary: @surface1;
@@ -73,8 +76,174 @@
       --surface-hover: @surface0; // some button hovers
 
       --icon-tertiary: @overlay2;
+      --icon-primary: @text;
+      --icon-secondary: @subtext1;
 
       --text-status-error: @red;
+
+      // The signed-in Chat/Work web shell shares these tokens with Desktop.
+      --app-color-background-surface: @base;
+      --app-color-background-surface-under: @mantle;
+      --app-color-background-shell: @mantle;
+      --app-color-background-application-menu: @mantle;
+      --app-color-foreground-application-menu: @text;
+      --app-color-border-application-menu-separator: @surface2;
+      --app-color-background-editor-opaque: @surface0;
+      --app-color-background-elevated-primary: @surface0;
+      --app-color-background-elevated-primary-opaque: @surface0;
+      --app-color-background-elevated-secondary: fade(@text, 5%);
+      --app-color-background-elevated-secondary-opaque: @surface1;
+      --app-color-background-elevated-tertiary-opaque: @surface1;
+      --app-color-background-button-primary: @text;
+      --app-color-background-button-primary-hover: fade(@text, 8%);
+      --app-color-background-button-primary-active: fade(@text, 16%);
+      --app-color-background-button-primary-inactive: fade(@text, 24%);
+      --app-color-background-button-secondary: fade(@text, 5%);
+      --app-color-background-button-secondary-hover: fade(@text, 8%);
+      --app-color-background-button-secondary-active: fade(@text, 12%);
+      --app-color-background-button-secondary-inactive: fade(@text, 4%);
+      --app-color-background-button-tertiary: fade(@text, 3%);
+      --app-color-background-button-tertiary-hover: fade(@text, 7%);
+      --app-color-background-button-tertiary-active: fade(@text, 10%);
+      --app-color-background-accent: fade(@accent, 20%);
+      --app-color-background-accent-hover: fade(@accent, 25%);
+      --app-color-background-accent-active: fade(@accent, 30%);
+      --app-color-text-foreground: @text;
+      --app-color-text-foreground-secondary: @subtext1;
+      --app-color-text-foreground-tertiary: @subtext0;
+      --app-color-text-button-primary: @base;
+      --app-color-text-button-secondary: @text;
+      --app-color-text-button-tertiary: @subtext0;
+      --app-color-text-on-accent: @base;
+      --app-color-text-accent: @accent;
+      --app-color-icon-primary: @text;
+      --app-color-icon-secondary: @subtext1;
+      --app-color-icon-tertiary: @subtext0;
+      --app-color-icon-accent: @accent;
+      --app-color-accent-blue: @accent;
+      --app-color-accent-purple: @mauve;
+      --app-color-border: @surface1;
+      --app-color-border-heavy: @surface2;
+      --app-color-border-light: @surface0;
+      --app-color-border-focus: @accent;
+
+      --color-surface: @base;
+      --color-surface-secondary: @mantle;
+      --color-surface-tertiary: @surface0;
+      --color-surface-elevated: @surface0;
+      --color-surface-elevated-secondary: @surface1;
+      --color-surface-card: @surface0;
+      --color-text: @text;
+      --color-text-emphasis: @text;
+      --color-text-prose: @text;
+      --color-text-secondary: @subtext1;
+      --color-text-tertiary: @subtext0;
+      --color-text-inverse: @base;
+      --color-text-info: @accent;
+      --color-text-danger: @red;
+      --color-text-warning: @yellow;
+      --color-text-success: @green;
+      --color-border: @surface1;
+      --color-border-subtle: @surface0;
+      --color-border-strong: @surface2;
+      --color-border-heavy: @surface2;
+      --color-border-light: @surface0;
+      --color-ring: @accent;
+
+      each(primary secondary, {
+        --color-background-@{value}-soft: @surface0;
+        --color-background-@{value}-soft-hover: @surface1;
+        --color-background-@{value}-soft-active: @surface2;
+        --color-background-@{value}-solid: @accent;
+        --color-background-@{value}-solid-hover: darken(@accent, 5%);
+        --color-background-@{value}-solid-active: darken(@accent, 10%);
+        --color-text-@{value}-solid: @base;
+      });
+
+      // The StyleX interface uses these tokens instead of the legacy names.
+      // Keep them on descendants too: dialogs and buttons define local themes.
+      --xxsqvjy: var(--bg-primary);
+      --x1qg12x5: var(--bg-primary);
+      --x38ouj3: var(--bg-secondary-surface);
+      --x17e9krr: var(--bg-elevated-primary);
+      --xgmhk9z: var(--bg-elevated-primary);
+      --xgk3btv: var(--bg-elevated-primary);
+      --x1mzx15b: var(--bg-secondary);
+      --x7fwydj: var(--bg-secondary);
+      --x1h28xhg: var(--bg-secondary);
+      --x108e1ee: var(--bg-secondary);
+      --xue9j02: var(--bg-secondary);
+      --x1w9ml1o: var(--bg-tertiary);
+      --x8cb1zg: var(--bg-tertiary);
+      --xxzwvq0: var(--bg-tertiary);
+      --xqlrt43: var(--bg-tertiary);
+      --x1em6fjx: @surface2;
+      --x3od0vr: @surface2;
+      --x1weeliy: @surface1;
+      --x2vz5pf: @surface0;
+      --xati1uh: fade(@surface0, 50%);
+
+      --x1mbzizw: var(--text-primary);
+      --x1r1m7nu: var(--text-primary);
+      --x1uhdaga: var(--text-primary);
+      --x3g0e8x: var(--text-primary);
+      --xxpck5t: var(--text-primary);
+      --xrh3fnw: var(--text-secondary);
+      --x12qqpe0: var(--text-secondary);
+      --x14e9ocd: var(--text-secondary);
+      --x14fn8yw: var(--text-secondary);
+      --x17pqyd6: var(--text-tertiary);
+      --x1emidtf: var(--text-tertiary);
+      --xo8fzl6: var(--text-tertiary);
+
+      --x69dsh5: @text;
+      --xlyber6: @accent;
+      --x2gtsxu: @accent;
+      --x4sldyk: @accent;
+      --x1e4keym: @accent;
+      --x1scdecw: @accent;
+      --x1e8dgs7: @accent;
+      --xaob84m: @accent;
+      --xztbhyc: @accent;
+      --x1k0b6g3: @accent;
+      --x11y6m9k: @accent;
+      --x1xbpn31: @accent;
+      --xbn88x4: @accent;
+      --xn2d1jy: @accent;
+      --x5kmhtn: @accent;
+      --x18wrjje: @accent;
+      --xif7uko: @accent;
+      --x1hqqq8t: darken(@accent, 10%);
+      --x1fwcpeh: darken(@accent, 5%);
+      --xk9p6k2: darken(@accent, 10%);
+      --x1y9kkat: darken(@accent, 5%);
+      --x5vv2en: darken(@accent, 10%);
+      --x17df2cq: darken(@accent, 5%);
+      --x130vrix: fade(@accent, 15%);
+      --x6m03vb: fade(@accent, 15%);
+      --x1cjgdn4: fade(@accent, 15%);
+      --x1k8gdzs: @base;
+      --x2j7jgu: @base;
+      --xj7rxqu: @base;
+      --x1d84luo: @base;
+      --x1ov5pza: @base;
+      --x11s6zi3: @base;
+      --xjq2c5c: @base;
+
+      --x17gks54: var(--border-default);
+      --x1vdwxib: var(--border-light);
+      --xiq9l3n: var(--border-medium);
+      --xnz65mj: var(--border-default);
+      --xomnu2l: fade(@crust, 60%);
+      --x1wmhpx8: 0 4px 16px fade(@crust, 20%);
+      --x701wd9: @red;
+      --x1o4h194: @red;
+      --x1a4yvy8: fade(@red, 15%);
+      --x126qe68: @yellow;
+      --x103zxkz: @green;
+      --x8axsc6: @green;
+      --xakxzc7: fade(@green, 15%);
+      --x2z0t5e: @blue;
 
       // chat input prompt border
       --shadow-color-1: fade(@mantle, 50%);
@@ -138,7 +307,7 @@
 
       /* Dark Overrides */
       .bg-token-bg-primary {
-        background-color: var(--bg-primary);
+        background-color: var(--color-token-bg-primary, var(--bg-primary)) !important;
       }
       .bg-token-main-surface-primary {
         background-color: var(--main-surface-primary);
@@ -186,9 +355,13 @@
     & [role="main"],
     & #__next,
     & #root,
-    & .bg-token-bg-primary,
     & .bg-token-main-surface-primary {
       background-color: @base !important;
+    }
+
+    & {
+      color: @text;
+      color-scheme: if(lightness(@base) > 50%, light, dark);
     }
   }
 }

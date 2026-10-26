@@ -263,13 +263,8 @@ fn distro_icon() -> char {
     }
 }
 
-// The session runs Hyprland rather than niri
-pub fn hyprland() -> bool {
-    std::env::var_os("HYPRLAND_INSTANCE_SIGNATURE").is_some()
-}
-
 pub fn logout_command() -> &'static str {
-    if hyprland() { "hyprctl dispatch 'hl.dsp.exit()'" } else { "niri msg action quit" }
+    "niri msg action quit"
 }
 
 pub const NIGHT_LIGHT_TOGGLE: &str =

@@ -1,0 +1,212 @@
+/* ==UserStyle==
+@name Steam Amane
+@namespace amane.brave/steam
+@version 1.0.0
+@description Steam store and community theme generated from the active Amane palette
+@author honey
+@preprocessor less
+==/UserStyle== */
+
+@import "https://userstyles.catppuccin.com/lib/std/v1.less";
+
+@-moz-document domain("store.steampowered.com"), domain("steamcommunity.com") {
+  @flavor: @darkFlavor;
+  #lib.palette();
+
+  :root,
+  body {
+    --gpSystemLightestGrey: @text;
+    --gpSystemLighterGrey: @subtext1;
+    --gpSystemLightGrey: @subtext0;
+    --gpSystemGrey: @overlay0;
+    --gpSystemDarkGrey: @surface1;
+    --gpSystemDarkerGrey: @mantle;
+    --gpSystemDarkestGrey: @crust;
+    --gpStoreLightestGrey: @text;
+    --gpStoreLighterGrey: @subtext1;
+    --gpStoreLightGrey: @subtext0;
+    --gpStoreGrey: @surface2;
+    --gpStoreDarkGrey: @surface0;
+    --gpStoreDarkerGrey: @base;
+    --gpStoreDarkestGrey: @crust;
+    --gpColor-Blue: @accent;
+    --gpColor-BlueHi: @accent;
+    --gpColor-ChalkyBlue: @accent;
+    --gpColor-DustyBlue: @blue;
+    --gpColor-LightBlue: @sky;
+    --gpColor-Green: @green;
+    --gpColor-GreenHi: @green;
+    --gpColor-Orange: @peach;
+    --gpColor-Red: @red;
+    --gpColor-RedHi: @red;
+    --gpColor-Yellow: @yellow;
+    --gpGradient-StoreBackground: linear-gradient(@mantle, @base);
+    --gpGradient-LibraryBackground: linear-gradient(@surface0, @base);
+    --gpBackground-LightSofter: fade(@text, 4%);
+    --gpBackground-LightSoft: fade(@text, 8%);
+    --gpBackground-LightMedium: fade(@text, 12%);
+    --gpBackground-LightHard: fade(@text, 16%);
+    --gpBackground-LightHarder: fade(@text, 20%);
+    --gpBackground-DarkSofter: fade(@crust, 20%);
+    --gpBackground-DarkSoft: fade(@crust, 40%);
+    --gpBackground-DarkMedium: fade(@crust, 60%);
+    --gpBackground-DarkHard: fade(@crust, 80%);
+
+    --page-background: @base;
+    --dark-ctn-bg: @mantle;
+    --light-ctn-bg: @surface0;
+    --light-ctn-bg-hover: @surface1;
+    --mid-ctn-bg: @surface1;
+    --price-dark-bg: @mantle;
+    --light-fg: @text;
+    --midlight-fg: @subtext0;
+    --dimlight-fg: fade(@text, 20%);
+    --dimmestlight-fg: fade(@text, 10%);
+    --seasonal-dark: @mantle;
+    --seasonal-light: @surface0;
+    --seasonal-bright: @accent;
+    --seasonal-translucent: fade(@accent, 15%);
+    --seasonal-gradient-1: linear-gradient(@surface0, @mantle);
+    --seasonal-gradient-2: linear-gradient(@surface0, @base);
+    --seasonal-gradient-3: linear-gradient(@mantle, @base);
+    --seasonal-gradient-4: linear-gradient(@surface1, @surface0);
+    --original-price-color: @subtext0;
+    --final-price-color: @text;
+    --color-text-light-title: @text;
+    --color-text-light-subtitle: @subtext1;
+    --color-text-light-body: @text;
+    --color-text-light-description: @subtext0;
+    --color-text-light-note: @overlay1;
+    --color-greyneutral-1: @crust;
+    --color-greyneutral-2: @mantle;
+    --color-greyneutral-3: @base;
+    --color-greyneutral-4: @base;
+    --color-greyneutral-5: @surface0;
+    --color-greyneutral-6: @surface0;
+    --color-greyneutral-7: @surface1;
+    --color-greyneutral-8: @surface2;
+    --color-greyneutral-9: @overlay0;
+    --color-greyneutral-10: @overlay1;
+    --color-greyneutral-11: @subtext0;
+    --color-greyneutral-12: @text;
+
+    background-color: @base !important;
+    color: @text !important;
+    scrollbar-color: @surface2 @base;
+  }
+
+  // Older Steam pages still use literal colors and background gradients.
+  body.v6,
+  body.v7,
+  .home_page_body_ctn,
+  .apphub_background,
+  .apphub_HeaderBottomBG {
+    background-image: none !important;
+  }
+
+  #global_header,
+  #global_header .content,
+  #footer,
+  .responsive_header,
+  .responsive_page_menu,
+  #store_nav_area .store_nav_bg {
+    background: @mantle !important;
+    color: @text !important;
+  }
+
+  #global_header .logo img when (lightness(@base) > 50%) {
+    filter: brightness(0);
+  }
+
+  .store_capsule,
+  .tab_item,
+  .game_area_purchase_game,
+  .game_area_purchase_game_wrapper,
+  .game_area_dlc_row,
+  .search_result_row,
+  .apphub_Card,
+  .community_home_app_shortcuts,
+  .community_home_search_box,
+  .community_home_search_apps,
+  .community_home_search_players,
+  .apphub_HeaderBottom,
+  .apphub_SectionFilter,
+  .apphub_CardContentGuideTitle,
+  .apphub_CardContentType.guide,
+  .apphub_CardContentMain .UserReviewCardContent_Footer .content,
+  .forum_topic,
+  .commentthread_comment_container {
+    background: @surface0 !important;
+    color: @text !important;
+    border-color: @surface1 !important;
+  }
+
+  .store_capsule:hover,
+  .tab_item:hover,
+  .search_result_row:hover,
+  .apphub_Card.interactable:hover,
+  .forum_topic:hover {
+    background: @surface1 !important;
+  }
+
+  #global_header .menuitem,
+  #global_header .submenuitem,
+  #global_action_menu,
+  #global_action_menu .global_action_link,
+  #global_action_menu .pulldown,
+  #footer a,
+  .home_section_title,
+  .home_page_content h2,
+  #discounts_and_events_title,
+  .community_home_title,
+  .community_home_login,
+  .community_home_app_shortcuts_list,
+  .community_home_app_shortcuts .appHubShortcut a,
+  .apphub_sectionTab,
+  .store_capsule .title,
+  .tab_item_name,
+  .apphub_AppName,
+  .apphub_CardContentNewsTitle,
+  .apphub_CardContentDiscussionTitle,
+  .apphub_CardContentGuideTitle,
+  .game_description_snippet,
+  .game_area_description,
+  .game_area_purchase_game h1 {
+    color: @text !important;
+  }
+
+  .apphub_CardContentNewsDesc,
+  .apphub_CardContentGuideDesc,
+  .apphub_CardContentAuthorName,
+  .apphub_CardContentAuthorName a,
+  .apphub_CardContentMoreLink a,
+  .community_home_subtitle,
+  .community_home_app_shortcuts_list_header,
+  .community_home_search_ctn,
+  .tab_item_details,
+  .search_result_row .search_released {
+    color: @subtext0 !important;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: @subtext0 !important;
+    opacity: 1;
+  }
+
+  #global_header .menuitem.active,
+  #global_header .menuitem:hover,
+  .community_home_login a,
+  .game_area_details_specs a {
+    color: @accent !important;
+  }
+
+  input[type="text"],
+  input[type="search"],
+  textarea {
+    background-color: @mantle !important;
+    color: @text !important;
+    border-color: @surface2 !important;
+    caret-color: @accent;
+  }
+}

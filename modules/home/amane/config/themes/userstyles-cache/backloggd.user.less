@@ -1,0 +1,143 @@
+/* ==UserStyle==
+@name Backloggd Amane
+@namespace amane.brave/backloggd
+@version 1.0.0
+@description Backloggd theme generated from the active Amane palette
+@author honey
+@preprocessor less
+==/UserStyle== */
+
+@import "https://userstyles.catppuccin.com/lib/std/v1.less";
+
+@-moz-document domain("backloggd.com") {
+  @flavor: @darkFlavor;
+  #lib.palette();
+
+  :root {
+    --primary-surface: @base;
+    --secondary-surface: @mantle;
+    --field-background-on-secondary: @surface0;
+    --field-border-on-secondary: @surface1;
+    --interact-background-on-secondary: @surface1;
+    --back-primary: @base;
+    --back-secondary: @mantle;
+    --back-highlight: fade(@text, 6%);
+    --back-field: @surface0;
+    --back-field-highlight: @surface1;
+    --back-field-selected: @accent;
+    --back-interact: @surface2;
+    --back-interact-secondary: @accent;
+    --back-dropdown-divider: @surface1;
+    --back-pink-lt: mix(@accent, @text, 85%);
+    --back-pink: @accent;
+    --back-pink-dk: @accent;
+    --back-btn-toggled-text: @base;
+    --back-text: @text;
+    --back-text-review: @text;
+    --back-text-secondary: @subtext0;
+    --back-text-disabled: @overlay0;
+    --back-link: @subtext1;
+    --back-type-completed: @green;
+    --back-type-mastered: @mauve;
+    --back-type-abandoned: @red;
+    --back-type-retired: @blue;
+    --back-type-shelved: @peach;
+    --back-type-played: @accent;
+    --back-played: @accent;
+    --back-playing: @mauve;
+    --back-wishlist: @sky;
+    --back-backlog: @yellow;
+    --back-field-background: @mantle;
+    --back-field-border: @surface1;
+    --back-field-border-hover: @surface2;
+    --back-field-border-focus: @accent;
+    --back-field-placeholder: @subtext0;
+    --back-field-icon: @subtext0;
+    --back-field-icon-secondary: @subtext1;
+    --stats-mauve: @surface2;
+    --stats-mauve-lt: @overlay0;
+    --stats-mauve-dk: @surface0;
+    --theme-base: @surface2;
+    --theme-lt: @overlay0;
+    --theme-dk: @surface1;
+    --theme-400: @surface2;
+    --theme-400-transparent-25: fade(@surface2, 25%);
+    --theme-400-transparent-50: fade(@surface2, 50%);
+    --theme-500: @mantle;
+    --theme-600: @crust;
+
+    --adp-background-color: @mantle;
+    --adp-background-color-hover: @surface0;
+    --adp-background-color-active: @surface1;
+    --adp-color: @text;
+    --adp-color-secondary: @subtext0;
+    --adp-color-disabled: @overlay0;
+    --adp-color-other-month: @overlay0;
+    --adp-accent-color: @accent;
+    --adp-border-color: @surface1;
+    --adp-cell-background-color-selected: @accent;
+    --adp-cell-background-color-selected-hover: mix(@accent, @text, 85%);
+    --adp-day-name-color: @accent;
+
+    scrollbar-color: @surface2 @base;
+  }
+
+  // Bootstrap inputs and headings retain some literal white colors.
+  h1, h2, h3, h4, h5, h6,
+  .navbar .nav-item .nav-link,
+  .navbar .dropdown-menu .nav-link,
+  .navbar-brand,
+  .btn-general,
+  #game-profile #game-body .game-rating,
+  #game-profile #game-body .game-rating p,
+  .dropdown-item {
+    color: @text !important;
+  }
+
+  #landing-welcome-banner #backloggd-total-stats p,
+  .filler-text,
+  #cookie-banner {
+    color: @text !important;
+  }
+
+  #landing-welcome-banner img when (lightness(@base) > 50%) {
+    filter: brightness(0);
+  }
+
+  .btn-main {
+    background-color: @accent !important;
+    color: @base !important;
+  }
+
+  .btn-main:hover {
+    background-color: mix(@accent, @text, 85%) !important;
+  }
+
+  .search-btn {
+    background-color: @surface0 !important;
+    color: @text !important;
+  }
+
+  .form-control,
+  .form-control:focus,
+  .ts-control,
+  .ts-control input {
+    background-color: @mantle !important;
+    color: @text !important;
+    border-color: @surface1 !important;
+    caret-color: @accent;
+  }
+
+  .dropdown-menu,
+  .ts-dropdown,
+  .modal-content {
+    background-color: @mantle !important;
+    color: @text !important;
+    border-color: @surface1 !important;
+  }
+
+  .navbar .nav-item .nav-link:hover,
+  a:hover {
+    color: @accent !important;
+  }
+}

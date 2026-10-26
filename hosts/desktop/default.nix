@@ -10,8 +10,7 @@
     ../../modules/nixos/desktop/amane-greeter
     ../../modules/nixos/desktop/audio.nix
     ../../modules/nixos/desktop/niri.nix
-    ../../modules/nixos/desktop/hyprland.nix
-    ../../modules/nixos/desktop/plasma.nix
+    ../../modules/nixos/desktop/cosmic.nix
     ../../modules/nixos/virtualisation
     ../../modules/nixos/gaming.nix
   ];

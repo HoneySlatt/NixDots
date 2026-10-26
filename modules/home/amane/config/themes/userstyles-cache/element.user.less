@@ -1,0 +1,137 @@
+/* ==UserStyle==
+@name Element Amane
+@namespace amane.brave/element
+@version 1.0.0
+@description Element theme generated from the active Amane palette
+@author honey
+@preprocessor less
+==/UserStyle== */
+
+@import "https://userstyles.catppuccin.com/lib/std/v1.less";
+
+@-moz-document domain("app.element.io") {
+  @flavor: @darkFlavor;
+  #lib.palette();
+
+  :root,
+  [class*="cpd-theme-"] {
+    // Compound components also use the neutral scale directly.
+    --cpd-color-theme-bg: @base;
+    --cpd-color-gray-100: @mantle;
+    --cpd-color-gray-200: @mantle;
+    --cpd-color-gray-300: @surface0;
+    --cpd-color-gray-400: @surface1;
+    --cpd-color-gray-500: @surface2;
+    --cpd-color-gray-600: @overlay0;
+    --cpd-color-gray-700: @overlay1;
+    --cpd-color-gray-800: @subtext0;
+    --cpd-color-gray-900: @subtext1;
+    --cpd-color-gray-1000: @subtext1;
+    --cpd-color-gray-1100: @text;
+    --cpd-color-gray-1200: @text;
+    --cpd-color-gray-1300: @text;
+    --cpd-color-gray-1400: @text;
+    --cpd-color-alpha-gray-100: fade(@text, 4%);
+    --cpd-color-alpha-gray-200: fade(@text, 6%);
+    --cpd-color-alpha-gray-300: fade(@text, 10%);
+    --cpd-color-alpha-gray-400: fade(@text, 13%);
+    --cpd-color-alpha-gray-500: fade(@text, 20%);
+    --cpd-color-alpha-gray-600: fade(@text, 27%);
+    --cpd-color-alpha-gray-700: fade(@text, 39%);
+    --cpd-color-alpha-gray-800: fade(@text, 51%);
+    --cpd-color-alpha-gray-900: fade(@text, 72%);
+    --cpd-color-alpha-gray-1000: fade(@text, 76%);
+    --cpd-color-alpha-gray-1100: fade(@text, 82%);
+    --cpd-color-alpha-gray-1200: fade(@text, 88%);
+    --cpd-color-alpha-gray-1300: fade(@text, 95%);
+    --cpd-color-alpha-gray-1400: fade(@text, 97%);
+
+    --cpd-color-text-primary: @text;
+    --cpd-color-text-secondary: @subtext1;
+    --cpd-color-text-disabled: @overlay0;
+    --cpd-color-text-action-primary: @text;
+    --cpd-color-text-action-accent: @accent;
+    --cpd-color-text-link-external: @blue;
+    --cpd-color-text-on-solid-primary: @base;
+    --cpd-color-text-critical-primary: @red;
+    --cpd-color-text-success-primary: @green;
+    --cpd-color-text-info-primary: @blue;
+    --cpd-color-text-badge-accent: @accent;
+
+    --cpd-color-bg-canvas-default: @base;
+    --cpd-color-bg-canvas-default-level-1: @mantle;
+    --cpd-color-bg-canvas-disabled: @surface0;
+    --cpd-color-bg-subtle-primary: @surface1;
+    --cpd-color-bg-subtle-secondary: @surface0;
+    --cpd-color-bg-subtle-secondary-level-0: @mantle;
+    --cpd-color-bg-action-primary-rest: @text;
+    --cpd-color-bg-action-primary-hovered: @subtext1;
+    --cpd-color-bg-action-primary-pressed: @subtext0;
+    --cpd-color-bg-action-primary-disabled: @surface2;
+    --cpd-color-bg-action-secondary-rest: @base;
+    --cpd-color-bg-action-secondary-hovered: @surface0;
+    --cpd-color-bg-action-secondary-pressed: @surface1;
+    --cpd-color-bg-action-tertiary-rest: @base;
+    --cpd-color-bg-action-tertiary-hovered: @surface0;
+    --cpd-color-bg-action-tertiary-selected: @surface1;
+    --cpd-color-bg-accent-rest: @accent;
+    --cpd-color-bg-accent-hovered: mix(@accent, @text, 85%);
+    --cpd-color-bg-accent-pressed: mix(@accent, @base, 85%);
+    --cpd-color-bg-accent-selected: fade(@accent, 15%);
+    --cpd-color-bg-critical-primary: @red;
+    --cpd-color-bg-critical-hovered: mix(@red, @text, 85%);
+    --cpd-color-bg-critical-subtle: mix(@red, @base, 15%);
+    --cpd-color-bg-critical-subtle-hovered: mix(@red, @base, 25%);
+    --cpd-color-bg-success-subtle: mix(@green, @base, 15%);
+    --cpd-color-bg-info-subtle: mix(@blue, @base, 15%);
+    --cpd-color-bg-badge-accent: mix(@accent, @base, 20%);
+    --cpd-color-bg-badge-primary: @text;
+    --cpd-color-bg-badge-secondary: @surface1;
+    --cpd-color-bg-badge-critical: mix(@red, @base, 20%);
+
+    --cpd-color-border-disabled: @surface1;
+    --cpd-color-border-focused: @accent;
+    --cpd-color-border-interactive-primary: @surface2;
+    --cpd-color-border-interactive-secondary: @surface1;
+    --cpd-color-border-interactive-hovered: @overlay0;
+    --cpd-color-border-accent-subtle: fade(@accent, 40%);
+    --cpd-color-border-accent-primary: @accent;
+    --cpd-color-icon-primary: @text;
+    --cpd-color-icon-secondary: @subtext1;
+    --cpd-color-icon-tertiary: @subtext0;
+    --cpd-color-icon-quaternary: @overlay1;
+    --cpd-color-icon-disabled: @overlay0;
+    --cpd-color-icon-primary-alpha: fade(@text, 97%);
+    --cpd-color-icon-secondary-alpha: fade(@text, 72%);
+    --cpd-color-icon-tertiary-alpha: fade(@text, 51%);
+    --cpd-color-icon-quaternary-alpha: fade(@text, 39%);
+    --cpd-color-icon-accent-tertiary: @accent;
+    --cpd-color-icon-accent-primary: @accent;
+    --cpd-color-icon-critical-primary: @red;
+    --cpd-color-icon-success-primary: @green;
+    --cpd-color-icon-info-primary: @blue;
+    --cpd-color-icon-on-solid-primary: @base;
+
+    scrollbar-color: @surface2 @base;
+    caret-color: @accent;
+  }
+
+  .mx_EventTile {
+    --event-tile-state-highlight-background: mix(@yellow, @base, 15%);
+    --event-tile-bubble-self-background: mix(@accent, @base, 15%);
+    --event-tile-bubble-other-background: @surface0;
+  }
+
+  .mx_AuthPage,
+  .mx_LeftPanel {
+    background-color: @mantle !important;
+  }
+
+  .mx_SpacePanel {
+    background-color: @crust !important;
+  }
+
+  .mx_Dialog {
+    color: @text !important;
+  }
+}

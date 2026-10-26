@@ -1,7 +1,6 @@
 let
-  # Whichever compositor runs the session answers, the other command fails
-  monitorsOn = "niri msg action power-on-monitors || hyprctl dispatch 'hl.dsp.dpms({ action = \"enable\" })'";
-  monitorsOff = "niri msg action power-off-monitors || hyprctl dispatch 'hl.dsp.dpms({ action = \"disable\" })'";
+  monitorsOn = "niri msg action power-on-monitors";
+  monitorsOff = "niri msg action power-off-monitors";
 in
 {
   services.hypridle = {

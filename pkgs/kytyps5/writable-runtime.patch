@@ -1,0 +1,33 @@
+diff --git a/src/launcher/src/mainDialog.cpp b/src/launcher/src/mainDialog.cpp
+--- a/src/launcher/src/mainDialog.cpp
++++ b/src/launcher/src/mainDialog.cpp
+@@ -204,7 +204,7 @@ void MainDialogPrivate::FindInterpreter() {
+ 	}
+ 
+ 	bool found = QFile::exists(m_interpreter);
+-	m_ui->widget->SetRuntimeDirectory(QFileInfo(m_interpreter).absolutePath());
++	m_ui->widget->SetRuntimeDirectory(QDir::currentPath());
+ 
+ 	if (found) {
+ 		m_ui->label_Interpreter->setText(tr("Emulator: ") + m_interpreter);
+@@ -435,7 +435,6 @@ void MainDialog::RunInterpreter(QProcess* process, const Configuration& info) {
+ 	const auto& interpreter = m_p->GetInterpreter();
+ 
+-	QFileInfo f(interpreter);
+-	auto      dir = f.absoluteDir();
++	auto dir = QDir::current();
+ 
+ 	auto args = CreateEmulatorArgs(info);
+ 	if (args.isEmpty()) {
+diff --git a/src/launcher/src/cheatFile.cpp b/src/launcher/src/cheatFile.cpp
+--- a/src/launcher/src/cheatFile.cpp
++++ b/src/launcher/src/cheatFile.cpp
+@@ -48,7 +48,7 @@ QString PlanPath(const QString& title_id) {
+ 	if (!IsSupportedTitleId(title_id)) {
+ 		return {};
+ 	}
+-	return QDir(QCoreApplication::applicationDirPath())
++	return QDir(QDir::currentPath())
+ 	    .filePath(QStringLiteral("_Patches/%1.json").arg(title_id.trimmed().toUpper()));
+ }
+ 
