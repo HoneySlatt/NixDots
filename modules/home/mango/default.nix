@@ -31,6 +31,11 @@
       tag_rule = map (tag: "id:${toString tag},layout_name:dwindle") (lib.range 1 9);
       dwindle_preserve_split = 1;
 
+      # The top-left corner opens the overview, as on niri; not over a fullscreen window
+      enable_hotarea = 1;
+      hotarea_corner = 0;
+      hotarea_size = 1;
+
       cursor_theme = config.home.pointerCursor.name;
       cursor_size = config.home.pointerCursor.size;
 

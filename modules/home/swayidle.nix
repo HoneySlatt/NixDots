@@ -26,6 +26,9 @@ let
         done
       }
 
+      # Fails outside mango, for the next command
+      mmsg get all-monitors > /dev/null
+
       case "''${1:-}" in
         off)
           touch "$flag"
@@ -46,9 +49,9 @@ let
     '';
   };
 
-  # Whichever compositor runs the session answers, the other command fails
-  monitorsOn = "niri msg action power-on-monitors || ${mangoMonitors}/bin/mango-monitors on";
-  monitorsOff = "niri msg action power-off-monitors || ${mangoMonitors}/bin/mango-monitors off";
+  # Whichever compositor runs the session answers, the others fail; dwl is left to wlopm
+  monitorsOn = "niri msg action power-on-monitors || ${mangoMonitors}/bin/mango-monitors on || ${lib.getExe pkgs.wlopm} --on '*'";
+  monitorsOff = "niri msg action power-off-monitors || ${mangoMonitors}/bin/mango-monitors off || ${lib.getExe pkgs.wlopm} --off '*'";
 in
 {
   services.swayidle = {

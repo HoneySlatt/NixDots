@@ -9,6 +9,7 @@
     ../../modules/home/neovim
     ../../modules/home/niri
     ../../modules/home/mango
+    ../../modules/home/dwl
     ../../modules/home/amane
     ../../modules/home/amane/greeter.nix
   ];

@@ -10,6 +10,6 @@
     ./keybindings.nix
     ./windowrules.nix
     ../hyprlock.nix
-    ../hypridle.nix
+    ../swayidle.nix
   ];
 }

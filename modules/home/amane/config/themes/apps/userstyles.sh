@@ -54,7 +54,7 @@ gen_userstyles() {
 ==/UserStyle== */
 EOF
 
-  local sites=(twitch twitter instagram reddit github codeberg tuta anilist duckduckgo brave-search wikipedia searxng materialious youtube chatgpt mastodon claude cinny grok mistral gog element steam nixos-search backloggd kimi zai)
+  local sites=(twitch twitter instagram reddit github codeberg tuta anilist duckduckgo brave-search wikipedia searxng materialious youtube chatgpt mastodon claude cinny grok mistral gog element steam nixos-search backloggd kimi zai stylus)
   local desktop_sites=(claude chatgpt)
 
   # One node process per stylesheet: compile them all in parallel, assemble in order below
