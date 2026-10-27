@@ -1,0 +1,208 @@
+diff --git a/src/compositor.rs b/src/compositor.rs
+index b12297e..16fd73c 100644
+--- a/src/compositor.rs
++++ b/src/compositor.rs
+@@ -1,4 +1,5 @@
+ mod hyprland;
++mod mango;
+ mod niri;
+ mod sway;
+ 
+@@ -10,6 +11,7 @@ enum Compositor {
+     Niri,
+     Hyprland,
+     Sway,
++    Mango,
+ }
+ 
+ // each compositor sets its own variable for the programs it starts
+@@ -26,6 +28,10 @@ fn running() -> Option<Compositor> {
+         return Some(Compositor::Sway);
+     }
+ 
++    if env::var_os("MANGO_INSTANCE_SIGNATURE").is_some() {
++        return Some(Compositor::Mango);
++    }
++
+     None
+ }
+ 
+@@ -42,6 +48,7 @@ pub fn listen(on_change: impl FnMut(Vec<Workspace>)) {
+         Compositor::Niri => niri::listen(on_change),
+         Compositor::Hyprland => hyprland::listen(on_change),
+         Compositor::Sway => sway::listen(on_change),
++        Compositor::Mango => mango::listen(on_change),
+     }
+ }
+ 
+@@ -54,5 +61,6 @@ pub fn focus_workspace(id: i64) {
+         Compositor::Niri => niri::focus_workspace(id),
+         Compositor::Hyprland => hyprland::focus_workspace(id),
+         Compositor::Sway => sway::focus_workspace(id),
++        Compositor::Mango => mango::focus_workspace(id),
+     }
+ }
+diff --git a/src/compositor/mango.rs b/src/compositor/mango.rs
+new file mode 100644
+index 0000000..71173db
+--- /dev/null
++++ b/src/compositor/mango.rs
+@@ -0,0 +1,158 @@
++use std::env;
++use std::io::{BufRead, BufReader, Read, Write};
++use std::os::unix::net::UnixStream;
++
++use serde_json::Value;
++
++use crate::Workspace;
++
++/*
++ * mango's workspaces are the tags of each monitor, numbered from 1 on every one of them,
++ * so an id is the monitor's place in mango's list times this, plus the tag
++ */
++const MONITOR_STEP: i64 = 100;
++
++fn connect() -> Option<UnixStream> {
++    let path = env::var_os("MANGO_INSTANCE_SIGNATURE")?;
++
++    UnixStream::connect(path).ok()
++}
++
++// one command per line; mango answers with one line of json, then closes the connection
++fn request(command: &str) -> Option<String> {
++    let mut stream = connect()?;
++
++    stream.write_all(format!("{command}\n").as_bytes()).ok()?;
++
++    let mut reply = String::new();
++
++    stream.read_to_string(&mut reply).ok()?;
++
++    Some(reply)
++}
++
++pub fn focus_workspace(id: i64) {
++    let Some(monitor) = monitor_at(id / MONITOR_STEP) else {
++        return;
++    };
++
++    let tag = id % MONITOR_STEP;
++
++    let _ = request(&format!("dispatch viewcrossmon,{tag},{monitor}"));
++}
++
++fn monitor_at(place: i64) -> Option<String> {
++    let reply = request("get all-monitors")?;
++
++    let state: Value = serde_json::from_str(&reply).ok()?;
++
++    let monitor = state["monitors"].as_array()?.get(usize::try_from(place).ok()?)?;
++
++    monitor["name"].as_str().map(String::from)
++}
++
++/*
++ * mango sends every monitor with its tags when watching starts,
++ * then again after each layout change and each change of focused monitor
++ */
++pub fn listen(mut on_change: impl FnMut(Vec<Workspace>)) {
++    let Some(mut stream) = connect() else {
++        return;
++    };
++
++    if stream.write_all(b"watch all-monitors\n").is_err() {
++        return;
++    }
++
++    // stops when mango exits
++    for line in BufReader::new(stream).lines() {
++        let Ok(line) = line else {
++            return;
++        };
++
++        if let Some(list) = parse(&line) {
++            on_change(list);
++        }
++    }
++}
++
++fn parse(state: &str) -> Option<Vec<Workspace>> {
++    let state: Value = serde_json::from_str(state).ok()?;
++
++    let mut list = Vec::new();
++
++    for (place, monitor) in state["monitors"].as_array()?.iter().enumerate() {
++        let output = monitor["name"].as_str()?;
++
++        // the monitor that has focus
++        let selected = monitor["active"].as_bool()?;
++
++        for tag in monitor["tags"].as_array()? {
++            let index = tag["index"].as_i64()?;
++
++            // a monitor can show several tags at once
++            let active = tag["is_active"].as_bool()?;
++
++            list.push(Workspace {
++                id: place as i64 * MONITOR_STEP + index,
++                index: index as u32,
++
++                // tags have a number and no name
++                name: None,
++                output: Some(output.to_string()),
++
++                active,
++                focused: active && selected,
++
++                urgent: tag["is_urgent"].as_bool()?,
++
++                windows: tag["client_count"].as_u64()? as u32,
++            });
++        }
++    }
++
++    Some(list)
++}
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++
++    // a line from mmsg watch all-monitors, trimmed to the fields read and to three tags
++    #[test]
++    fn reads_monitors_and_tags() {
++        let state = r#"{"monitors":[
++            {"name":"DP-2","active":true,"tags":[
++                {"index":1,"is_active":false,"is_urgent":false,"layout":"T","client_count":2},
++                {"index":2,"is_active":true,"is_urgent":false,"layout":"T","client_count":1},
++                {"index":3,"is_active":false,"is_urgent":true,"layout":"S","client_count":0}
++            ]},
++            {"name":"DP-3","active":false,"tags":[
++                {"index":1,"is_active":true,"is_urgent":false,"layout":"T","client_count":0},
++                {"index":2,"is_active":false,"is_urgent":false,"layout":"T","client_count":0},
++                {"index":3,"is_active":false,"is_urgent":false,"layout":"T","client_count":0}
++            ]}
++        ]}"#;
++
++        let list = parse(state).expect("failed to parse mango state");
++
++        assert_eq!(list.len(), 6);
++
++        assert_eq!(list[0].id, 1);
++        assert_eq!(list[0].windows, 2);
++        assert!(!list[0].active);
++
++        // the shown tag of the focused monitor
++        assert!(list[1].active);
++        assert!(list[1].focused);
++
++        assert!(list[2].urgent);
++
++        // shown on its monitor, which has no focus
++        assert_eq!(list[3].id, 101);
++        assert_eq!(list[3].index, 1);
++        assert_eq!(list[3].output.as_deref(), Some("DP-3"));
++        assert!(list[3].active);
++        assert!(!list[3].focused);
++    }
++}

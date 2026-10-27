@@ -1,4 +1,4 @@
-// Full-screen game carousel over Steam and Heroic, toggled with Mod+G
+// Full-screen game carousel over Slatty's library, toggled with Mod+G
 
 use std::thread;
 use std::time::Duration;
@@ -25,7 +25,7 @@ struct Game {
     launch: String,
 }
 
-// Installed games, as listed by the steam-games script
+// Installed games, as listed by the slatty-games script
 #[derive(Default, PartialEq)]
 pub struct Games {
     list: Vec<Game>,
@@ -33,7 +33,7 @@ pub struct Games {
 
 impl Games {
     fn read_now() -> Self {
-        let output = amane::output("steam-games | jq -r '.[] | [.name, .art, .launchUrl] | @tsv'");
+        let output = amane::output("slatty-games | jq -r '.[] | [.name, .art, .launch] | @tsv'");
 
         let list = output
             .lines()
@@ -123,14 +123,14 @@ fn set_query(query: String) {
 
 fn launch() {
     let index = current_index();
-    let url = {
+    let command = {
         let query = SteamLauncher::read().query.clone();
         let games = Games::read();
         matching(&games.list, &query).get(index).map(|game| game.launch.clone())
     };
 
-    if let Some(url) = url.filter(|url| !url.is_empty()) {
-        amane::spawn(&format!("xdg-open '{url}'"));
+    if let Some(command) = command.filter(|command| !command.is_empty()) {
+        amane::spawn(&command);
         popups::close();
     }
 }

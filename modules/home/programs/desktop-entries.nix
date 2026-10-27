@@ -394,19 +394,19 @@ in
       categories = [ "System" "Documentation" ];
     };
 
-    "com.system76.CosmicFiles" = {
+    "org.gnome.Nautilus" = {
       name       = "Files";
-      exec       = "cosmic-files %U";
-      icon       = "com.system76.CosmicFiles";
-      comment    = "File manager";
-      mimeType   = [ "inode/directory" ];
-      categories = [ "Utility" "FileManager" ];
+      exec       = "nautilus --new-window %U";
+      icon       = "org.gnome.Nautilus";
+      comment    = "Access and organize files";
+      noDisplay  = true;
+      categories = [ "GNOME" "GTK" "Utility" "Core" "FileManager" ];
     };
 
-    rio = {
-      name       = "Rio";
-      exec       = "rio";
-      icon       = "/home/honey/Pictures/Icons/rio.png";
+    "com.mitchellh.ghostty" = {
+      name       = "Ghostty";
+      exec       = "ghostty +new-window";
+      icon       = "com.mitchellh.ghostty";
       comment    = "A terminal emulator";
       categories = [ "System" "TerminalEmulator" ];
     };
@@ -415,7 +415,7 @@ in
 
     nvim = {
       name       = "Neovim";
-      exec       = "rio -e nvim %F";
+      exec       = "ghostty +new-window -e nvim %F";
       icon       = "nvim";
       comment    = "Hyperextensible Vim-based text editor";
       categories = [ "Utility" "TextEditor" ];
@@ -423,7 +423,7 @@ in
 
     yazi = {
       name       = "Yazi";
-      exec       = "rio -e yazi %F";
+      exec       = "ghostty +new-window -e yazi %F";
       icon       = "${icons}/yazi.png";
       comment    = "Blazing fast terminal file manager";
       noDisplay  = true;
@@ -444,7 +444,7 @@ in
 
     btop = {
       name       = "Btop";
-      exec       = "rio -e btop";
+      exec       = "ghostty +new-window -e btop";
       icon       = "btop";
       comment    = "Resource monitor";
       noDisplay  = true;
@@ -540,7 +540,7 @@ in
         "x-scheme-handler/tuta" = "tutanota-desktop.desktop";
         "x-scheme-handler/element" = "element-desktop.desktop";
         "x-scheme-handler/io.element.desktop" = "element-desktop.desktop";
-        "inode/directory" = "com.system76.CosmicFiles.desktop";
+        "inode/directory" = "org.gnome.Nautilus.desktop";
       };
   };
 }

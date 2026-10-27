@@ -53,14 +53,18 @@ in
 {
   programs.niri.settings.binds = workspaceBinds // {
     # ── App launchers ────────────────────────────────────────────────────
-    "Ctrl+Shift+T".action.spawn = "rio";
+    "Ctrl+Shift+T".action.spawn = [
+      "ghostty"
+      "+new-window"
+    ];
     "Mod+Q" = {
       action.close-window = { };
       repeat = false;
     };
-    "Mod+Shift+E".action.spawn = "cosmic-files";
+    "Mod+Shift+E".action.spawn = "nautilus";
     "Mod+E".action.spawn = [
-      "rio"
+      "ghostty"
+      "+new-window"
       "-e"
       "yazi"
     ];
@@ -101,16 +105,17 @@ in
     "Mod+C".action.spawn = "${t3rust}";
     "Mod+I".action.spawn = "claude-desktop";
     "Mod+Shift+C".action.spawn = "chatgpt";
-    "Mod+Ctrl+C".action.spawn = [ "opencode-desktop" ];
     "Mod+O".action.spawn = "obsidian";
-    "Mod+N".action.spawn = "zeditor";
-    "Mod+Shift+N".action.spawn = [
-      "rio"
+    "Mod+N".action.spawn = [
+      "ghostty"
+      "+new-window"
       "-e"
       "nvim"
     ];
+    "Mod+Shift+N".action.spawn = "zeditor";
     "Ctrl+Alt+Delete".action.spawn = [
-      "rio"
+      "ghostty"
+      "+new-window"
       "-e"
       "btop"
     ];

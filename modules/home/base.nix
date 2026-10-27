@@ -42,6 +42,7 @@
     geist-font
     material-symbols
     nerd-fonts.symbols-only
+    uv
   ];
 
   programs.direnv = {

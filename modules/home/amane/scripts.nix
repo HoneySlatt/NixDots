@@ -25,8 +25,8 @@ in
       exec amane ipc call ${name}
     '';
   }) ipcToggles ++ [
-    # Installed Steam and Heroic games, for the game launcher
-    (fromFile "steam-games" { runtimeInputs = with pkgs; [ jq coreutils ]; })
+    # Installed games of Slatty's library, for the game launcher
+    (fromFile "slatty-games" { runtimeInputs = [ pkgs.jq ]; })
 
     # Theming of apps outside the shell
     (pkgs.writeShellApplication {

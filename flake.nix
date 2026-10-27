@@ -27,6 +27,10 @@
       url = "github:nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    mango = {
+      url = "github:mangowm/mango";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     amane = {
       # Keep the local patches compatible; rebase them before updating Amane.
       url = "github:MystiaFin/amane/7cf5fac4a98a13ca7098766b9118806073f57952";
@@ -72,6 +76,7 @@
       packages.x86_64-linux.kimi-code-desktop = (nixpkgs.legacyPackages.x86_64-linux.extend (import ./pkgs inputs)).kimi-code-desktop;
       packages.x86_64-linux.kytyps5 = (nixpkgs.legacyPackages.x86_64-linux.extend (import ./pkgs inputs)).kytyps5;
       packages.x86_64-linux.nym-vpnd = (nixpkgs.legacyPackages.x86_64-linux.extend (import ./pkgs inputs)).nym-vpnd;
+      packages.x86_64-linux.zcode = (nixpkgs.legacyPackages.x86_64-linux.extend (import ./pkgs inputs)).zcode;
 
       nixosConfigurations = {
         desktop = mkHost "desktop";

@@ -20,6 +20,18 @@ use crate::theme::{
 const NIRI_TOP_MODE: &str = "// Barre en haut : pas de surcharge.";
 const NIRI_COMPACT_MODE: &str = "layout {\n    gaps 0\n    border {\n        off\n    }\n    shadow {\n        off\n    }\n}\nwindow-rule {\n    geometry-corner-radius 0\n    opacity 1.0\n}";
 
+// The same two modes for mango, sourced last by modules/home/mango; both compositors reload on change
+const MANGO_TOP_MODE: &str = "# Barre en haut : pas de surcharge.";
+const MANGO_COMPACT_MODE: &str = "gap_inner_horizontal=0
+gap_inner_vertical=0
+gap_outer_horizontal=0
+gap_outer_vertical=0
+border_px=0
+shadows=0
+border_radius=0
+focused_opacity=1.0
+unfocused_opacity=1.0";
+
 fn position_file() -> String {
     format!("{}/.bar-position", theme::config_dir())
 }
@@ -28,6 +40,11 @@ fn position_file() -> String {
 fn apply_mode(top: bool) {
     let path = format!("{}/.config/niri/bar-mode.kdl", theme::home());
     let mode = if top { NIRI_TOP_MODE } else { NIRI_COMPACT_MODE };
+
+    let _ = fs::write(path, format!("{mode}\n"));
+
+    let path = format!("{}/.config/mango/bar-mode.conf", theme::home());
+    let mode = if top { MANGO_TOP_MODE } else { MANGO_COMPACT_MODE };
 
     let _ = fs::write(path, format!("{mode}\n"));
 }

@@ -18,13 +18,14 @@
     t3code
     chatgpt
     opencode
+    goose-cli
+    kimi-code
     grok-build
     claude-code
-    mistral-vibe
-    kimi-code
-    kimi-code-desktop
+    goose-desktop
     claude-desktop
-    opencode-desktop
+    kimi-code-desktop
+    zcode
 
     # Media
     kopuz
@@ -44,7 +45,7 @@
     obsidian
 
     # Files and network
-    cosmic-files
+    nautilus
     cosmic-viewer
     localsend
     rqbit
@@ -59,6 +60,7 @@
     clippy
     rustfmt
     rust-analyzer
+    python3
     nodejs
     gcc
     gnumake

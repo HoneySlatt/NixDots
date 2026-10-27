@@ -1,0 +1,224 @@
+diff --git a/src/wayland.rs b/src/wayland.rs
+index a11d7cf..9c02418 100644
+--- a/src/wayland.rs
++++ b/src/wayland.rs
+@@ -15,6 +15,8 @@ mod update;
+ mod wake;
+ mod windows;
+ 
++use std::rc::Rc;
++
+ use smithay_client_toolkit::reexports::protocols::wp::{
+     fractional_scale::v1::client::wp_fractional_scale_manager_v1::WpFractionalScaleManagerV1,
+     viewporter::client::wp_viewporter::WpViewporter,
+@@ -57,9 +59,9 @@ struct WaylandState {
+     output: OutputState,
+     seat: SeatState,
+ 
+-    // kept so new windows can be made while the shell runs
+-    compositor: CompositorState,
+-    layer_shell: LayerShell,
++    // kept so new windows can be made while the shell runs, shared with layer windows (update.rs)
++    compositor: Rc<CompositorState>,
++    layer_shell: Rc<LayerShell>,
+     xdg_shell: XdgShell,
+     shm: Shm,
+ 
+@@ -115,9 +117,10 @@ impl WaylandApp {
+         let qh = event_queue.handle();
+ 
+         let compositor =
+-            CompositorState::bind(&globals, &qh).expect("failed to bind wl_compositor");
++            Rc::new(CompositorState::bind(&globals, &qh).expect("failed to bind wl_compositor"));
+ 
+-        let layer_shell = LayerShell::bind(&globals, &qh).expect("failed to bind wlr-layer-shell");
++        let layer_shell =
++            Rc::new(LayerShell::bind(&globals, &qh).expect("failed to bind wlr-layer-shell"));
+ 
+         let xdg_shell = XdgShell::bind(&globals, &qh).expect("failed to bind xdg-shell");
+ 
+diff --git a/src/wayland/scale.rs b/src/wayland/scale.rs
+index 7a5af33..48082ae 100644
+--- a/src/wayland/scale.rs
++++ b/src/wayland/scale.rs
+@@ -33,15 +33,25 @@ impl Drop for Fractional {
+ impl WaylandState {
+     // none when the compositor lacks either protocol, then windows use whole scales
+     pub fn make_fractional(&self, surface: &WlSurface) -> Option<Fractional> {
+-        let (Some(manager), Some(viewporter)) = (&self.fractional_scale, &self.viewporter) else {
+-            return None;
+-        };
++        fractional_for(self.fractional_scale.as_ref(), self.viewporter.as_ref(), surface, &self.qh)
++    }
++}
+ 
+-        let scale = manager.get_fractional_scale(surface, &self.qh, surface.clone());
+-        let viewport = viewporter.get_viewport(surface, &self.qh, ());
++// also used by a hidden layer window that takes a new surface
++pub fn fractional_for(
++    manager: Option<&WpFractionalScaleManagerV1>,
++    viewporter: Option<&WpViewporter>,
++    surface: &WlSurface,
++    qh: &QueueHandle<WaylandState>,
++) -> Option<Fractional> {
++    let (Some(manager), Some(viewporter)) = (manager, viewporter) else {
++        return None;
++    };
+ 
+-        Some(Fractional { scale, viewport })
+-    }
++    let scale = manager.get_fractional_scale(surface, qh, surface.clone());
++    let viewport = viewporter.get_viewport(surface, qh, ());
++
++    Some(Fractional { scale, viewport })
+ }
+ 
+ impl Dispatch<WpFractionalScaleV1, WlSurface> for WaylandState {
+diff --git a/src/wayland/surface.rs b/src/wayland/surface.rs
+index 5cf23d8..6d308aa 100644
+--- a/src/wayland/surface.rs
++++ b/src/wayland/surface.rs
+@@ -19,6 +19,7 @@ use super::{
+     WaylandState,
+     layer::{self, Settings},
+     scale::Fractional,
++    update::Renew,
+ };
+ 
+ // one surface on screen, with everything it needs to draw and take input
+@@ -60,6 +61,9 @@ pub struct OpenWindow {
+     pub compositor: WlCompositor,
+ 
+     pub qh: QueueHandle<WaylandState>,
++
++    // what a layer window needs to take a new surface when it hides (update.rs)
++    pub renew: Renew,
+ }
+ 
+ // what a window is to the compositor: a layer like a bar, one screen of the session lock, or a normal window
+diff --git a/src/wayland/update.rs b/src/wayland/update.rs
+index ab2b70b..38cfd8e 100644
+--- a/src/wayland/update.rs
++++ b/src/wayland/update.rs
+@@ -1,16 +1,35 @@
++use std::rc::Rc;
++
++use smithay_client_toolkit::compositor::CompositorState;
++use smithay_client_toolkit::reexports::protocols::wp::{
++    fractional_scale::v1::client::wp_fractional_scale_manager_v1::WpFractionalScaleManagerV1,
++    viewporter::client::wp_viewporter::WpViewporter,
++};
++use smithay_client_toolkit::shell::{WaylandSurface, wlr_layer::LayerShell};
+ use wayland_client::{
+-    Connection, Dispatch, QueueHandle,
++    Connection, Dispatch, Proxy, QueueHandle,
+     protocol::wl_region::{self, WlRegion},
+ };
+ 
+ use crate::LayerWindow;
++use crate::graphics::Gpu;
+ 
+ use super::{
+     WaylandState,
+     layer::{self, Settings},
++    scale,
+     surface::{Content, OpenWindow, Role},
+ };
+ 
++// what a hidden layer window needs to take a new surface, see renew_surface
++pub struct Renew {
++    pub compositor: Rc<CompositorState>,
++    pub layer_shell: Rc<LayerShell>,
++    pub connection: Connection,
++    pub fractional_scale: Option<WpFractionalScaleManagerV1>,
++    pub viewporter: Option<WpViewporter>,
++}
++
+ impl OpenWindow {
+     // settings changed by input or services reach the compositor before anything is drawn
+     pub fn update_surface(&mut self, content: &Content) {
+@@ -101,6 +120,57 @@ impl OpenWindow {
+         self.frame_requested = false;
+ 
+         self.gpu.release();
++
++        self.renew_surface();
++    }
++
++    /*
++     * wlroots compositors like mango drop the configures still on their way when a layer
++     * surface unmaps, and the toolkit acks each configure it gets, so acking one of those
++     * afterwards is a protocol error that ends the shell; on a new surface they reach the
++     * old one, which is gone, and nobody acks them. it is never committed while hidden,
++     * so showing it again makes its first commit like a window that starts hidden
++     */
++    fn renew_surface(&mut self) {
++        let Role::Layer { settings, .. } = &self.role else {
++            return;
++        };
++
++        let settings = *settings;
++
++        let surface = self.renew.compositor.create_surface(&self.qh);
++
++        let layer_surface = layer::create(
++            &self.renew.layer_shell,
++            surface,
++            self.output.as_ref(),
++            &self.qh,
++            &settings,
++        );
++
++        let wl_surface = layer_surface.wl_surface();
++
++        // the gpu draws straight into the surface, so it gets libwayland's own pointers
++        let display = self.renew.connection.backend().display_ptr().cast();
++        let gpu = Gpu::new(display, wl_surface.id().as_ptr().cast());
++
++        let fractional = scale::fractional_for(
++            self.renew.fractional_scale.as_ref(),
++            self.renew.viewporter.as_ref(),
++            wl_surface,
++            &self.qh,
++        );
++
++        // in the order they have to go: the gpu, then the fractional scale, then the surface
++        self.gpu = gpu;
++        self.fractional = fractional;
++        self.role = Role::Layer {
++            surface: layer_surface,
++            settings,
++        };
++
++        // a new surface takes the pointer everywhere until a region is sent again
++        self.input_region = None;
+     }
+ }
+ 
+diff --git a/src/wayland/windows.rs b/src/wayland/windows.rs
+index a2bd65a..1382d12 100644
+--- a/src/wayland/windows.rs
++++ b/src/wayland/windows.rs
+@@ -13,6 +13,7 @@ use super::{
+     WaylandState,
+     layer::{self, Settings},
+     surface::{Content, OpenWindow, Role, View},
++    update::Renew,
+ };
+ 
+ impl WaylandState {
+@@ -91,6 +92,14 @@ impl WaylandState {
+             compositor: self.compositor.wl_compositor().clone(),
+ 
+             qh: self.qh.clone(),
++
++            renew: Renew {
++                compositor: self.compositor.clone(),
++                layer_shell: self.layer_shell.clone(),
++                connection: self.connection.clone(),
++                fractional_scale: self.fractional_scale.clone(),
++                viewporter: self.viewporter.clone(),
++            },
+         };
+ 
+         self.windows.push(window);

@@ -1,0 +1,128 @@
+/* ==UserStyle==
+@name Amane Theme for Z.AI
+@namespace amane.userstyles/zai
+@version 2026.10.26
+@description Match Z.AI to the active Amane palette
+@preprocessor less
+==/UserStyle== */
+
+@import "https://userstyles.catppuccin.com/lib/std/v1.less";
+
+@-moz-document domain("z.ai") {
+  :root,
+  :root.dark,
+  .dark {
+    #catppuccin(@darkFlavor);
+  }
+
+  #catppuccin(@flavor) {
+    #lib.palette();
+
+    // Z.AI's sidebar and outer frame use Tailwind's grayscale tokens directly.
+    --color-gray-700: @surface2;
+    --color-gray-800: @surface1;
+    --color-gray-850: @surface0;
+    --color-gray-900: @base;
+    --color-zinc-300: @surface2;
+    --color-zinc-600: @overlay1;
+    --color-zinc-800: @surface0;
+    --color-neutral-700: @surface1;
+    --color-neutral-800: @surface0;
+    --color-neutral-900: @base;
+    --color-stone-700: @surface1;
+    --color-stone-800: @surface0;
+    --color-stone-900: @base;
+    --color-stone-950: @crust;
+
+    --color-bg-bg: @base;
+    --color-bg-page: @mantle;
+    --color-bg-hover: fade(@text, 8%);
+    --color-bg-surface: @surface0;
+    --color-bg-overlay: @surface1;
+    --color-bg-subtle: @surface2;
+    --color-bg-warning: fade(@yellow, 18%);
+    --color-bg-error: fade(@red, 18%);
+
+    --color-interactive-bg-primary-default: @text;
+    --color-interactive-bg-primary-page: fade(@text, 88%);
+    --color-interactive-bg-primary-press: @subtext1;
+    --color-interactive-bg-primary-inactive: @text;
+    --color-interactive-bg-primary-selected: @text;
+    --color-interactive-bg-primary-disabled: @surface1;
+    --color-interactive-bg-secondary-default: transparent;
+    --color-interactive-bg-secondary-page: fade(@text, 8%);
+    --color-interactive-bg-secondary-press: fade(@text, 14%);
+    --color-interactive-bg-secondary-inactive: transparent;
+    --color-interactive-bg-secondary-selected: fade(@text, 14%);
+    --color-interactive-bg-tertiary-default: @base;
+    --color-interactive-bg-tertiary-page: @mantle;
+    --color-interactive-bg-tertiary-press: @surface0;
+    --color-interactive-bg-tertiary-inactive: @base;
+    --color-interactive-bg-tertiary-selected: @base;
+
+    --color-border-default: fade(@text, 12%);
+    --color-border-strong: fade(@text, 20%);
+    --color-text-primary: @text;
+    --color-text-secondary: @subtext1;
+    --color-text-tertiary: @subtext0;
+    --color-text-inverted: @base;
+    --color-text-inverted-static: #fff;
+    --color-text-placeholder: @overlay1;
+    --color-text-accent: @accent;
+    --color-icon-primary: @text;
+    --color-icon-secondary: @subtext1;
+    --color-icon-tertiary: @subtext0;
+    --color-icon-blue: @accent;
+    --color-icon-red: @red;
+    --color-icon-orange: @peach;
+    --color-icon-green: @green;
+    --color-icon-purple: @mauve;
+
+    --color-accent-blue-default: @accent;
+    --color-accent-blue-hover: lighten(@accent, 7%);
+    --color-accent-blue-pressed: darken(@accent, 8%);
+    --color-accent-blue-subtle: fade(@accent, 14%);
+    --color-accent-blue-border: fade(@accent, 55%);
+    --color-accent-blue-text: @accent;
+    --color-accent-red-default: @red;
+    --color-accent-red-hover: lighten(@red, 7%);
+    --color-accent-red-pressed: darken(@red, 8%);
+    --color-accent-red-subtle: fade(@red, 14%);
+    --color-accent-red-border: fade(@red, 55%);
+    --color-accent-red-text: @red;
+    --color-accent-orange-default: @peach;
+    --color-accent-orange-hover: lighten(@peach, 7%);
+    --color-accent-orange-pressed: darken(@peach, 8%);
+    --color-accent-orange-subtle: fade(@peach, 14%);
+    --color-accent-orange-border: fade(@peach, 55%);
+    --color-accent-orange-text: @peach;
+    --color-accent-green-default: @green;
+    --color-accent-green-hover: lighten(@green, 7%);
+    --color-accent-green-pressed: darken(@green, 8%);
+    --color-accent-green-subtle: fade(@green, 14%);
+    --color-accent-green-border: fade(@green, 55%);
+    --color-accent-green-text: @green;
+    --color-accent-purple-default: @mauve;
+    --color-accent-purple-hover: lighten(@mauve, 7%);
+    --color-accent-purple-pressed: darken(@mauve, 8%);
+    --color-accent-purple-subtle: fade(@mauve, 14%);
+    --color-accent-purple-border: fade(@mauve, 55%);
+    --color-accent-purple-text: @mauve;
+
+    color-scheme: if(lightness(@base) > 50%, light, dark);
+
+    #sidebar > div:first-child {
+      background-color: @mantle !important;
+      border-right: 1px solid @surface1 !important;
+    }
+
+    [class~="md:border-border-default"] {
+      border-color: @surface1 !important;
+    }
+
+    body {
+      color: @text;
+      background-color: @base;
+    }
+  }
+}

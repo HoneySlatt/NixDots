@@ -9,7 +9,7 @@
         bottom-right = 12.0;
       };
       clip-to-geometry = true;
-      opacity = 0.97;
+      opacity = 0.95;
       draw-border-with-background = false;
     }
     {

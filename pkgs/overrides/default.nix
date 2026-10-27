@@ -20,11 +20,4 @@ final: prev: {
   element-desktop = final.callPackage ../element-desktop {
     element-desktop = prev.element-desktop;
   };
-
-  # Flaky textual UI test that fails intermittently in the sandbox
-  mistral-vibe = prev.mistral-vibe.overrideAttrs (old: {
-    disabledTestPaths = (old.disabledTestPaths or [ ]) ++ [
-      "tests/cli/textual_ui/test_resume_local_session.py::test_successful_resume_replaces_stale_turn_presentation"
-    ];
-  });
 }

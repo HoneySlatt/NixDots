@@ -263,8 +263,13 @@ fn distro_icon() -> char {
     }
 }
 
+// The session runs mango rather than niri
+pub fn mango() -> bool {
+    std::env::var_os("MANGO_INSTANCE_SIGNATURE").is_some()
+}
+
 pub fn logout_command() -> &'static str {
-    "niri msg action quit"
+    if mango() { "mmsg dispatch quit" } else { "niri msg action quit" }
 }
 
 pub const NIGHT_LIGHT_TOGGLE: &str =

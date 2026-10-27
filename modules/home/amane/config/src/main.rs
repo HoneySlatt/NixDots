@@ -16,6 +16,7 @@ mod notifications;
 mod osd;
 mod popups;
 mod power_menu;
+mod screenshot;
 mod small_launcher;
 mod steam_launcher;
 mod system;
@@ -50,6 +51,7 @@ fn main() {
         .ipc("toggle-game-launcher", |_| popups::ipc_toggle(Popup::SteamLauncher))
         .ipc("toggle-vpn-launcher", |_| popups::ipc_toggle(Popup::VpnLauncher))
         .ipc("toggle-music-launcher", |_| popups::ipc_toggle(Popup::MusicLauncher))
+        .ipc("screenshot", screenshot::ipc)
         .ipc("toggle-notifications", |_| popups::ipc_toggle(Popup::Notifications))
         .ipc("toggle-dnd", |_| {
             notifications::toggle_dnd();
