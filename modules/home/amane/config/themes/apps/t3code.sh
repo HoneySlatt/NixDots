@@ -1,10 +1,14 @@
 switch_t3code() {
-  command -v t3 >/dev/null 2>&1 || return 0
+  # T3 Code and Pluto (its fork, home ~/.pluto) share the theme format.
+  command -v t3 >/dev/null 2>&1 || command -v pluto-server >/dev/null 2>&1 || return 0
 
   local theme_dir="${XDG_CACHE_HOME:-$HOME/.cache}/amane"
   local theme_file="$theme_dir/t3code.json"
-  local appearance="dark" theme_tmp
+  local appearance="dark" theme_tmp logo_role=""
   [ "${C[light]}" = "true" ] && appearance="light"
+  # Pluto keeps its violet logo for themes that set C[logo]="brand". It goes in
+  # "colors": the server drops top-level keys it does not know.
+  [ "${C[logo]}" = "brand" ] && logo_role=$'\n    "logo": "brand",'
   mkdir -p "$theme_dir"
   theme_tmp="$(mktemp "${theme_file}.XXXXXX")" || return 1
 
@@ -15,7 +19,7 @@ switch_t3code() {
   "appearance": "$appearance",
   "canvas": "${C[base]}",
   "accent": "${C[accent]}",
-  "colors": {
+  "colors": {${logo_role}
     "canvas": "${C[base]}",
     "chrome": "${C[mantle]}",
     "toolbar": "${C[mantle]}",
@@ -74,5 +78,10 @@ switch_t3code() {
 }
 EOF
   mv "$theme_tmp" "$theme_file"
-  t3 theme set --id amane "$theme_file"
+  if command -v t3 >/dev/null 2>&1; then
+    t3 theme set --id amane "$theme_file"
+  fi
+  if command -v pluto-server >/dev/null 2>&1; then
+    pluto-server theme set --id amane "$theme_file"
+  fi
 }

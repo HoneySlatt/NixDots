@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# Switch theme — btop, fastfetch, ghostty, helix, yazi, nvim, gtk, qt, niri, mango, wallpaper,
-# steam, heroic, obsidian, obs, firefox, userstyles, jellyfin, kopuz, cider,
-# blender, kdeglobals, hyprlock, tuta, opencode, serein, cosmic, rqbit, t3code, slatty, element, kimi-code, zcode
+# Switch theme — btop, fastfetch, ghostty, helix, yazi, nvim, gtk, qt, niri, wallpaper,
+# steam, heroic, obsidian, obs, firefox, userstyles, jellyfin, kopuz,
+# blender, kdeglobals, hyprlock, tuta, opencode, serein, cosmic, rqbit, t3code, pluto, slatty, element, kimi-code, zcode, music
 
 MODE="full"
 THEME_FILE="$HOME/.config/amane/.current-theme"
@@ -73,7 +73,7 @@ if [ "$MODE" = "background" ]; then
   # gen_userstyles appends to the userContent.css written by switch_firefox
   { switch_firefox; gen_userstyles; } &
   for fn in switch_steam switch_heroic switch_obsidian switch_obs switch_jellyfin \
-            switch_kopuz switch_cider switch_blender gen_kdeglobals switch_tuta switch_opencode switch_t3code; do
+            switch_kopuz switch_blender gen_kdeglobals switch_tuta switch_opencode switch_t3code; do
     "$fn" &
   done
   wait
@@ -107,13 +107,12 @@ mv "$theme_tmp" "$THEME_FILE"
 
 # Desktop-wide changes first, then every app in parallel (each writes its own files).
 switch_niri
-switch_mango
 switch_wallpaper
 systemctl --user restart --no-block amane-theme-background.service
 
 for fn in switch_btop switch_fastfetch switch_ghostty switch_helix gen_yazi_theme nvim_reload \
           zed_reload switch_gtk switch_qt gen_hyprlock_theme switch_serein switch_cosmic switch_rqbit switch_slatty switch_element \
-          switch_kimi_code switch_zcode; do
+          switch_kimi_code switch_zcode switch_music; do
   "$fn" &
 done
 wait

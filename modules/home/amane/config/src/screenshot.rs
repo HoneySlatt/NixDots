@@ -1,4 +1,4 @@
-// Screenshots and screencasts of a frozen screen, a port of hyprquickshot (Mod+S on mango)
+// Screenshots and screencasts of a frozen screen, a port of hyprquickshot
 
 use std::fs;
 use std::process::Command;
@@ -14,7 +14,6 @@ use amane::{
 use crate::anim::{self, Motion, SPRING_DEFAULT};
 use crate::m3;
 use crate::popups::{self, Anchor, Popup};
-use crate::system;
 use crate::theme::{self, Palette, Theme};
 
 const DIM_OPACITY: f32 = 0.6;
@@ -115,38 +114,11 @@ pub fn ipc(arguments: &[String]) -> String {
             return;
         }
 
-        let (origin, windows) = if system::mango() { mango_layout(&output) } else { ((0.0, 0.0), Vec::new()) };
-
-        *Screenshot::write() = Screenshot { capture, output, origin, windows, save, ..Screenshot::default() };
+        *Screenshot::write() = Screenshot { capture, output, save, ..Screenshot::default() };
         popups::show(Popup::Screenshot);
     });
 
     String::new()
-}
-
-// The output's position and the windows on its shown tags, from mmsg
-fn mango_layout(output: &str) -> ((f32, f32), Vec<[f32; 4]>) {
-    let monitor = amane::output(&format!("mmsg get monitor {output} | jq -r '[.x, .y] | @tsv'"));
-    let fields: Vec<f32> = monitor.split_whitespace().filter_map(|field| field.parse().ok()).collect();
-    let [x, y] = fields[..] else {
-        return ((0.0, 0.0), Vec::new());
-    };
-
-    let clients = amane::output(&format!(
-        "mmsg get all-clients | jq -r '.clients[] | select(.monitor == \"{output}\" and .is_visible) | [.x, .y, .width, .height] | @tsv'"
-    ));
-    let windows = clients
-        .lines()
-        .filter_map(|line| {
-            let numbers: Vec<f32> = line.split_whitespace().filter_map(|field| field.parse().ok()).collect();
-            let [left, top, width, height] = numbers[..] else {
-                return None;
-            };
-            Some([left - x, top - y, width, height])
-        })
-        .collect();
-
-    ((x, y), windows)
 }
 
 fn cancel() {

@@ -17,6 +17,12 @@ final: prev: {
   brave-origin = prev.brave-origin.override {
     commandLineArgs = "--password-store=gnome-libsecret";
   };
+  # Upstream pins mcp 1.x; the default mcp 2.x breaks MCP OAuth and the HTTP transport
+  mistral-vibe = prev.mistral-vibe.overridePythonAttrs (old: {
+    dependencies = map (
+      p: if (p.pname or "") == "mcp" then final.python3Packages.mcp_1 else p
+    ) old.dependencies;
+  });
   element-desktop = final.callPackage ../element-desktop {
     element-desktop = prev.element-desktop;
   };

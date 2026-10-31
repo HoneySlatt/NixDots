@@ -1,7 +1,7 @@
 diff --git a/src/launcher/src/mainDialog.cpp b/src/launcher/src/mainDialog.cpp
 --- a/src/launcher/src/mainDialog.cpp
 +++ b/src/launcher/src/mainDialog.cpp
-@@ -204,7 +204,7 @@ void MainDialogPrivate::FindInterpreter() {
+@@ -193,7 +193,7 @@ void MainDialogPrivate::FindInterpreter() {
  	}
  
  	bool found = QFile::exists(m_interpreter);
@@ -10,15 +10,14 @@ diff --git a/src/launcher/src/mainDialog.cpp b/src/launcher/src/mainDialog.cpp
  
  	if (found) {
  		m_ui->label_Interpreter->setText(tr("Emulator: ") + m_interpreter);
-@@ -435,7 +435,6 @@ void MainDialog::RunInterpreter(QProcess* process, const Configuration& info) {
- 	const auto& interpreter = m_p->GetInterpreter();
- 
--	QFileInfo f(interpreter);
--	auto      dir = f.absoluteDir();
-+	auto dir = QDir::current();
- 
- 	auto args = CreateEmulatorArgs(info);
- 	if (args.isEmpty()) {
+@@ -434,6 +434,6 @@ void MainDialog::RunInterpreter(QProcess* process, const Configuration& info, bool close_terminal) {
+ 	    CmdCommand(QDir::toNativeSeparators(interpreter), args, close_terminal));
+ #endif
+-	process->setWorkingDirectory(QFileInfo(interpreter).absolutePath());
++	process->setWorkingDirectory(QDir::currentPath());
+ #if defined(_WIN32)
+ 	process->setCreateProcessArgumentsModifier([](QProcess::CreateProcessArguments* args) {
+ 		args->flags |= static_cast<uint32_t>(CREATE_NEW_CONSOLE);
 diff --git a/src/launcher/src/cheatFile.cpp b/src/launcher/src/cheatFile.cpp
 --- a/src/launcher/src/cheatFile.cpp
 +++ b/src/launcher/src/cheatFile.cpp
@@ -30,4 +29,3 @@ diff --git a/src/launcher/src/cheatFile.cpp b/src/launcher/src/cheatFile.cpp
 +	return QDir(QDir::currentPath())
  	    .filePath(QStringLiteral("_Patches/%1.json").arg(title_id.trimmed().toUpper()));
  }
- 

@@ -15,10 +15,5 @@ inputs.amane.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (
     ./patches/media-active-player.patch
     # The Wi-Fi network list is only asked for while a window shows it
     ./patches/network-on-demand.patch
-    # Workspaces on mango: the tags of each monitor, from its IPC socket
-    ./patches/mango-workspaces.patch
-    # A hiding layer window takes a new surface: acking a configure that mango sent before
-    # the unmap is a protocol error on wlroots compositors, which ended the shell
-    ./patches/layer-renew-hidden.patch
   ];
 })

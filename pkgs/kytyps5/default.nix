@@ -46,14 +46,14 @@ let
 in
 clangStdenv.mkDerivation rec {
   pname = "kytyps5";
-  version = "0-unstable-2026-10-22";
+  version = "0-unstable-2026-10-28";
 
   src = fetchFromGitHub {
     owner = "KytyPS5";
     repo = "KytyPS5";
-    rev = "79837b423dd035b34b2dc476e1d2dce8ae0d18bf";
+    rev = "c528324d27bb6e6094d9efaf11fdbb88d27d8891";
     fetchSubmodules = true;
-    hash = "sha256-3qsVTgSvoWWRir1X70O8Ypm8yWU7zBuNGRx927tD+4Y=";
+    hash = "sha256-/jKZ655qCOypqVGeneS5tiSgvAcUKCoDkzLm/+3m/vA=";
   };
 
   nativeBuildInputs = [
@@ -81,11 +81,21 @@ clangStdenv.mkDerivation rec {
 
     # Use the matching upstream FFmpeg build, without a configure-time download.
     unzip -q ${sources.ffmpeg} -d ffmpeg
+
+    # CMake downloads Noto Sans during configure. The hashes match upstream.
+    mkdir -p fetchcontent/noto-sans assets/fonts
+    cp ${sources.notoSansLicense} fetchcontent/noto-sans/LICENSE
+    cp ${sources.notoSansRegular} fetchcontent/noto-sans/NotoSans-Regular.ttf
+    cp ${sources.notoSansBold} fetchcontent/noto-sans/NotoSans-Bold.ttf
+    cp ${sources.notoSansItalic} fetchcontent/noto-sans/NotoSans-Italic.ttf
+    cp ${sources.notoSansBoldItalic} fetchcontent/noto-sans/NotoSans-BoldItalic.ttf
+    cp fetchcontent/noto-sans/NotoSans-*.ttf assets/fonts/
   '';
 
   preConfigure = ''
     cmakeFlagsArray+=("-DFETCHCONTENT_SOURCE_DIR_ZARCHIVE_SOURCE=$PWD/zarchive")
     cmakeFlagsArray+=("-DFFMPEG_PREBUILT_DIR=$PWD/ffmpeg")
+    cmakeFlagsArray+=("-DFETCHCONTENT_BASE_DIR=$PWD/fetchcontent")
   '';
 
   cmakeFlags = [
@@ -114,8 +124,9 @@ clangStdenv.mkDerivation rec {
     cp -r ../assets "$out/libexec/kytyps5/assets"
     install -Dm644 ../src/launcher/icons/kyty.svg \
       "$out/share/icons/hicolor/scalable/apps/kytyps5.svg"
-    mkdir -p "$out/share/licenses/kytyps5"
+    mkdir -p "$out/share/licenses/kytyps5/noto-sans"
     cp -r ../LICENSE ../LICENSES ../ffmpeg/share/ffmpeg "$out/share/licenses/kytyps5/"
+    cp ${sources.notoSansLicense} "$out/share/licenses/kytyps5/noto-sans/LICENSE"
 
     wrapProgram "$out/libexec/kytyps5/kyty_emulator" \
       --prefix LD_LIBRARY_PATH : "${lib.makeLibraryPath runtimeLibraries}"

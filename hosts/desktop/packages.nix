@@ -15,13 +15,13 @@
 
     # AI
     codex
-    t3code
     chatgpt
     opencode
     goose-cli
     kimi-code
     grok-build
     claude-code
+    mistral-vibe
     goose-desktop
     claude-desktop
     kimi-code-desktop
@@ -32,6 +32,7 @@
     nuvio
     tsukimi
     cider-2
+    spotify
 
     # Gaming
     kytyps5

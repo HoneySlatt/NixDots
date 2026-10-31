@@ -1,5 +1,22 @@
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
 
+let
+  packageUpdater = pkgs.writeShellApplication {
+    name = "personal-package-update";
+    runtimeInputs = with pkgs; [ curl nix nix-prefetch-git python3 ];
+    text = ''
+      exec python3 "$HOME/NixOS/pkgs/update.py" "$@"
+    '';
+  };
+  updateCommands = {
+    nuvio = "nuvio";
+    rqbit-desktop = "rqbit-desktop";
+    kimi = "kimi-code";
+    kimi-code-desktop = "kimi-code-desktop";
+    zcode = "zcode";
+    kytyps5 = "kytyps5";
+  };
+in
 {
   # Tools the aliases and initContent below rely on
   home.packages = with pkgs; [ eza bat ripgrep fastfetch ];
@@ -65,7 +82,7 @@
       nym() {
         case "$1" in
           update)
-            bash ~/NixOS/pkgs/nym-vpnd/update.sh
+            ${packageUpdater}/bin/personal-package-update nym-vpnd "''${@:2}"
             ;;
           *)
             echo "Usage: nym update"
@@ -73,7 +90,23 @@
             ;;
         esac
       }
-    '';
+
+      nix() {
+        command nix "$@" || return $?
+        if [[ $# -eq 2 && "$1" == flake && "$2" == update && "$PWD" -ef "$HOME/NixOS" ]]; then
+          ${packageUpdater}/bin/personal-package-update all
+        fi
+      }
+    '' + lib.concatStringsSep "\n" (lib.mapAttrsToList (command: package: ''
+      ${command}() {
+        if [[ "''${1-}" == update ]]; then
+          shift
+          ${packageUpdater}/bin/personal-package-update ${package} "$@"
+        else
+          command ${command} "$@"
+        fi
+      }
+    '') updateCommands);
 
     sessionVariables = {
       BAT_PAGER = "";

@@ -9,7 +9,7 @@ done
 
 # The compositor's own socket goes away with its session; wayland-1 is reused by the next one,
 # so without this a loop left by an old session keeps changing the new session's wallpaper
-session=${NIRI_SOCKET:-$MANGO_INSTANCE_SIGNATURE}
+session=${NIRI_SOCKET:-}
 
 while [ -S "$session" ]; do
   theme=$(tr -d '[:space:]' < "$HOME/.config/amane/.current-theme" 2>/dev/null || true)

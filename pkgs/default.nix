@@ -12,6 +12,9 @@ in
   nym-vpnd = final.callPackage ./nym-vpnd { };
   rqbit-desktop = final.callPackage ./rqbit-desktop { };
   zcode = final.callPackage ./zcode { };
+  pluto-server = final.callPackage "${inputs.pluto-server}/nix/package.nix" {
+    src = inputs.pluto-server;
+  };
 
   claude-desktop = final.callPackage ./claude-desktop {
     claudeDesktop = inputs.claude-desktop-nix-flake.packages.${system}.default;

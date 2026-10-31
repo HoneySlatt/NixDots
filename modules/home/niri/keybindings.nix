@@ -1,16 +1,16 @@
 { lib, pkgs, ... }:
 
 let
-  # The native T3 Code client (release build), with the libraries its shell
-  # provides; it connects to the t3code-server user service, with the access
-  # token from ~/.config/t3-code-rust/token when that file exists
-  t3rust = pkgs.writeShellScript "t3rust" ''
+  # The native Pluto client (release build), with the libraries its shell
+  # provides; it connects to the pluto-server user service, with the access
+  # token from ~/.config/pluto/token when that file exists
+  pluto = pkgs.writeShellScript "pluto" ''
     export LD_LIBRARY_PATH=${lib.makeLibraryPath (with pkgs; [ vulkan-loader libGL wayland libxkbcommon libx11 libxcursor libxi libxrandr dbus ])}
-    token="''${XDG_CONFIG_HOME:-$HOME/.config}/t3-code-rust/token"
+    token="''${XDG_CONFIG_HOME:-$HOME/.config}/pluto/token"
     if [ -r "$token" ]; then
       set -- --token-file "$token"
     fi
-    exec "$HOME/.t3/projects/t3-code-rust/target/release/t3-code-rust" --server http://127.0.0.1:3773 "$@"
+    exec "$HOME/.t3/projects/t3-code-rust/target/release/pluto" --server http://127.0.0.1:3774 "$@"
   '';
   screenshotSave = pkgs.writeShellScript "niri-screenshot-save" ''
     directory="$HOME/Pictures/Screenshots"
@@ -102,7 +102,7 @@ in
       "-c"
       "cd ~/Projects/SlattyLauncher && nix develop -c ./target/debug/slatty-gui"
     ];
-    "Mod+C".action.spawn = "${t3rust}";
+    "Mod+C".action.spawn = "${pluto}";
     "Mod+I".action.spawn = "claude-desktop";
     "Mod+Shift+C".action.spawn = "chatgpt";
     "Mod+O".action.spawn = "obsidian";

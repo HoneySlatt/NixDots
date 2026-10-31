@@ -43,11 +43,11 @@
 
 stdenvNoCC.mkDerivation rec {
   pname = "kimi-code-desktop";
-  version = "1.1.3";
+  version = "1.2.0";
 
   src = fetchurl {
     url = "https://code.kimi.ai/kimi-code/desktop/binaries/${version}/KimiCode-${version}-linux-amd64.deb";
-    hash = "sha256-tHyxPIPmudE6awH4JlEDGXV/CJOEJ/o+VdjPCZJB7Iw=";
+    hash = "sha256-zl3E0QwBt8BtdQ0NLNeWgXHN5EgK3D5BM16HlQVaoBM=";
   };
 
   nativeBuildInputs = [ dpkg nodejs autoPatchelfHook makeWrapper wrapGAppsHook3 ];

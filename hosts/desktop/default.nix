@@ -10,14 +10,20 @@
     ../../modules/nixos/desktop/amane-greeter
     ../../modules/nixos/desktop/audio.nix
     ../../modules/nixos/desktop/niri.nix
-    ../../modules/nixos/desktop/mango.nix
-    ../../modules/nixos/desktop/dwl.nix
     ../../modules/nixos/desktop/plasma.nix
     ../../modules/nixos/virtualisation
     ../../modules/nixos/gaming.nix
   ];
 
   networking.hostName = "NixBTW";
+
+  # Reachable from the phone on the home network (Wi-Fi only): the Pluto
+  # server, and Music Connect (its port, and mDNS for the devices to find
+  # each other)
+  networking.firewall.interfaces.wlo1 = {
+    allowedTCPPorts = [ 3774 47820 ];
+    allowedUDPPorts = [ 5353 ];
+  };
 
   nix.settings = {
     substituters = [ "https://kopuz.cachix.org" ];

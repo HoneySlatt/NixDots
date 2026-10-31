@@ -27,10 +27,6 @@
       url = "github:nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    mango = {
-      url = "github:mangowm/mango";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     amane = {
       # Keep the local patches compatible; rebase them before updating Amane.
       url = "github:MystiaFin/amane/7cf5fac4a98a13ca7098766b9118806073f57952";
@@ -47,6 +43,11 @@
     slatty = {
       url = "github:HoneySlatt/Slatty";
       inputs.nixpkgs.follows = "nixpkgs";
+    };
+    # Pluto server: local fork of T3 Code (see ~/Projects/pluto-server/PLUTO.md)
+    pluto-server = {
+      url = "git+file:///home/honey/Projects/pluto-server?ref=pluto";
+      flake = false;
     };
   };
 

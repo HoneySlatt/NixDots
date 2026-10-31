@@ -2,14 +2,14 @@ use std::fs;
 use std::time::Duration;
 
 use amane::{
-    Audio, Button, Center, Color, Full, Image, Layer, LayerWindow, Link, Margin, Monitor, Padding, Parent, Pointer, Rectangle, Row, Scroll, Service, Size, Stack, Start, Text,
+    Audio, Button, Center, Color, End, Full, Image, Layer, LayerWindow, Link, Margin, Monitor, Padding, Parent, Pointer, Rectangle, Row, Scroll, Service, Size, Stack, Start, Text,
     Vertical, Weight, Widget, Workspace, Workspaces, Zone, children,
 };
 
 use crate::anim::{self, Motion};
 use crate::popups::{self, Popup};
 use crate::notifications;
-use crate::system::{Blink, Clock, DISTRO_ICON, HOT_PERCENT, Load, NetBar, Vpn};
+use crate::system::{self, Blink, Clock, DISTRO_ICON, HOT_PERCENT, Load, NetBar, Vpn};
 use crate::tray::Tray;
 use crate::tray_menu;
 use crate::theme::{
@@ -20,18 +20,6 @@ use crate::theme::{
 const NIRI_TOP_MODE: &str = "// Barre en haut : pas de surcharge.";
 const NIRI_COMPACT_MODE: &str = "layout {\n    gaps 0\n    border {\n        off\n    }\n    shadow {\n        off\n    }\n}\nwindow-rule {\n    geometry-corner-radius 0\n    opacity 1.0\n}";
 
-// The same two modes for mango, sourced last by modules/home/mango; both compositors reload on change
-const MANGO_TOP_MODE: &str = "# Barre en haut : pas de surcharge.";
-const MANGO_COMPACT_MODE: &str = "gap_inner_horizontal=0
-gap_inner_vertical=0
-gap_outer_horizontal=0
-gap_outer_vertical=0
-border_px=0
-shadows=0
-border_radius=0
-focused_opacity=1.0
-unfocused_opacity=1.0";
-
 fn position_file() -> String {
     format!("{}/.bar-position", theme::config_dir())
 }
@@ -40,11 +28,6 @@ fn position_file() -> String {
 fn apply_mode(top: bool) {
     let path = format!("{}/.config/niri/bar-mode.kdl", theme::home());
     let mode = if top { NIRI_TOP_MODE } else { NIRI_COMPACT_MODE };
-
-    let _ = fs::write(path, format!("{mode}\n"));
-
-    let path = format!("{}/.config/mango/bar-mode.conf", theme::home());
-    let mode = if top { MANGO_TOP_MODE } else { MANGO_COMPACT_MODE };
 
     let _ = fs::write(path, format!("{mode}\n"));
 }
@@ -90,13 +73,15 @@ pub fn view(monitor: &Monitor) -> LayerWindow {
 
     let bar = Bar { monitor: &monitor.name, palette };
 
-    let left = Row::new(children![
+    let left: Vec<Box<dyn Widget>> = children![
         bar.distro(),
         bar.workspaces(workspaces.list()),
         bar.cpu(),
         bar.gpu(),
         bar.ram(),
-    ])
+    ];
+
+    let left = Row::new(left)
     .height(Parent)
     .align(Center);
 
