@@ -10,9 +10,8 @@
     ../../modules/nixos/desktop/brave.nix
     ../../modules/nixos/services
     ../../modules/nixos/services/sunshine.nix
-    ../../modules/nixos/desktop/amane-greeter
+    ../../modules/nixos/desktop/noctalia-greeter.nix
     ../../modules/nixos/desktop/audio.nix
-    ../../modules/nixos/desktop/niri.nix
     ../../modules/nixos/desktop/plasma.nix
     ../../modules/nixos/virtualisation
     ../../modules/nixos/gaming.nix

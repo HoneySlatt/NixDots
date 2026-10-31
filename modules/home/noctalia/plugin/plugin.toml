@@ -1,0 +1,64 @@
+id = "local/desktop"
+name = "Desktop integrations"
+version = "1.0.0"
+plugin_api = 43
+description = "Shared palettes, Slatty games, Kopuz library and NymVPN."
+
+[[panel]]
+id = "themes"
+entry = "themes.luau"
+width = 560
+height = 460
+placement = "floating"
+position = "center"
+keyboard_focus = "exclusive"
+
+[[panel]]
+id = "games"
+entry = "games.luau"
+width = 1000
+height = 700
+placement = "floating"
+position = "center"
+keyboard_focus = "exclusive"
+capture_keys = ["Up", "Down", "Left", "Right", "Return"]
+
+[[panel]]
+id = "music"
+entry = "music.luau"
+width = 1000
+height = 760
+placement = "floating"
+position = "center"
+keyboard_focus = "exclusive"
+capture_keys = ["Up", "Down", "Return"]
+
+[[panel]]
+id = "vpn"
+entry = "vpn.luau"
+width = 600
+height = 640
+placement = "floating"
+position = "center"
+keyboard_focus = "exclusive"
+
+[[panel]]
+id = "processes"
+entry = "processes.luau"
+width = 560
+height = 640
+placement = "floating"
+position = "center"
+keyboard_focus = "exclusive"
+
+[[shortcut]]
+id = "vpn-toggle"
+entry = "vpn-tile.luau"
+
+[[widget]]
+id = "vpn-status"
+entry = "vpn-status.luau"
+
+[widget.actions]
+left = "panel-toggle local/desktop:vpn"
+right = "exec toggle-nym"

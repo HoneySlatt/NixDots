@@ -1,26 +1,5 @@
 {
   "nodes": {
-    "amane": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1791437618,
-        "narHash": "sha256-bjJ5K6EEeo8UA97DemyaLLEaLQdNgi0U18in1slP/IM=",
-        "owner": "MystiaFin",
-        "repo": "amane",
-        "rev": "7cf5fac4a98a13ca7098766b9118806073f57952",
-        "type": "github"
-      },
-      "original": {
-        "owner": "MystiaFin",
-        "repo": "amane",
-        "rev": "7cf5fac4a98a13ca7098766b9118806073f57952",
-        "type": "github"
-      }
-    },
     "claude-desktop-nix-flake": {
       "inputs": {
         "nixpkgs": [
@@ -396,6 +375,26 @@
         "type": "github"
       }
     },
+    "noctalia-greeter": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1793151677,
+        "narHash": "sha256-6mS18H+xido3soGyt3VhpT1F/pOF8/cPA8mOklMfQFw=",
+        "owner": "noctalia-dev",
+        "repo": "noctalia-greeter",
+        "rev": "c1aab5cfca23e1a61a51338c8a1b25e85a7108cd",
+        "type": "github"
+      },
+      "original": {
+        "owner": "noctalia-dev",
+        "repo": "noctalia-greeter",
+        "type": "github"
+      }
+    },
     "pluto-server": {
       "flake": false,
       "locked": {
@@ -415,7 +414,6 @@
     },
     "root": {
       "inputs": {
-        "amane": "amane",
         "claude-desktop-nix-flake": "claude-desktop-nix-flake",
         "home-manager": "home-manager",
         "jovian": "jovian",
@@ -425,6 +423,7 @@
         "nixpkgs": "nixpkgs",
         "nixvim": "nixvim",
         "noctalia": "noctalia",
+        "noctalia-greeter": "noctalia-greeter",
         "pluto-server": "pluto-server",
         "serein": "serein",
         "slatty": "slatty",

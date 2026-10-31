@@ -17,6 +17,10 @@
     };
     umbriel.url = "github:noctalia-dev/umbriel/cachix";
     noctalia.url = "github:noctalia-dev/noctalia/cachix";
+    noctalia-greeter = {
+      url = "github:noctalia-dev/noctalia-greeter";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     claude-desktop-nix-flake = {
       url = "github:poeck/claude-desktop-nix-flake";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -27,11 +31,6 @@
     };
     nixvim = {
       url = "github:nix-community/nixvim";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    amane = {
-      # Keep the local patches compatible; rebase them before updating Amane.
-      url = "github:MystiaFin/amane/7cf5fac4a98a13ca7098766b9118806073f57952";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     kopuz = {
