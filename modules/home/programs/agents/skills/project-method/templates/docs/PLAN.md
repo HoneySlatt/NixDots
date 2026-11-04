@@ -32,6 +32,11 @@ next. -->
   measured -->
 - **By hand.** <!-- what the owner checks themselves, if anything -->
 
+## Ideas
+
+<!-- Improvements noticed outside the current work: what, why, the expected gain. The owner decides
+which become milestones. -->
+
 ## Known debt
 
 <!-- Each item: what is missing or wrong, why it was left, where it is tracked. Plainly. -->

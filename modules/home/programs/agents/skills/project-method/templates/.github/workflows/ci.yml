@@ -11,6 +11,9 @@ on:
   push:
     branches: [main]
   pull_request:
+  # Every week too, so that a dormant project still learns of new advisories and of upstream breakage.
+  schedule:
+    - cron: "0 6 * * 1"
 
 permissions:
   contents: read

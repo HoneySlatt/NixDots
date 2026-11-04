@@ -51,7 +51,8 @@ scripts/check.sh    # every check of the definition of done; what CI runs
 - Every document the change affects is updated and reread as a newcomer would.
 - Every decision a newcomer would question is an ADR.
 
-Never report as working what was not verified. Say exactly what was not, and why.
+Never report as working what was not verified. Say exactly what was not, and why. Never weaken a
+check to make it pass (a skipped test, a raised budget, a silenced lint) without the owner's go.
 
 ## Architecture rules
 
@@ -69,13 +70,21 @@ whatever a newcomer could break without knowing. -->
 - No reimplementation of the standard library without a measurement.
 - A new dependency needs a reason, an alternative weighed and a license checked; ask the owner.
 - Every `unsafe` block has a `// SAFETY:` comment.
+- Code reads plainly to someone who has never seen it: names that say what things are, one job per
+  function, the obvious solution over the clever one.
 - Comments say why, not what. No commented-out code.
+- A bug is fixed at its cause, with the test that failed first; look for the same bug elsewhere.
+- Edge cases are thought through and tested: empty, huge, malformed, concurrent, interrupted.
+- The user's data is never lost: versioned formats, atomic writes, a backup before a destructive
+  step.
 - Search for an existing helper before writing one. One way to do a thing.
 - Delete dead code and unused parameters.
 - Report drift from `docs/ARCHITECTURE.md` or an ADR; do not work around it.
 
 ## Documentation
 
+- It is written for a newcomer: plain words, short sentences, the essential first, as short as
+  complete.
 - It describes the code as it is now. Wrong documentation is worse than none.
 - No reference to conversations the reader cannot see. Coined terms go in `docs/glossary.md`.
 - Limits and debt are stated plainly.
@@ -90,7 +99,8 @@ whatever a newcomer could break without knowing. -->
 ## Commits
 
 - One logical change per commit, in English, its subject in the imperative.
-- Never commit code that fails the checks.
+- Never commit code that fails the checks. A check that fails on the main branch is fixed before
+  any new work.
 
 ## When to stop and ask
 
@@ -99,6 +109,9 @@ that turns out wrong, or deleting or rewriting a large part of the code. Give th
 trade-offs in plain terms and a recommendation for the long term, one decision at a time.
 
 ## Reporting
+
+A stage ends with a stage audit, and a release is preceded by a release audit; their findings go to
+`docs/audits/`. Ideas outside the current work go to the *Ideas* of `docs/PLAN.md`.
 
 At the end of each milestone, after a reviewing agent on the strongest model has checked it against
 this file, the ADRs and the quality bar, report: what was done; the choices, why, and the

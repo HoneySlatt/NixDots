@@ -22,6 +22,12 @@ Every project, whatever its kind:
   or `powertop`, needs root: ask the owner to run it, or judge the CPU by its time and wake-ups.
 - Each budget has a benchmark kept in the repository. A benchmark that can run in CI fails when it
   exceeds its budget by more than its noise.
+- Hardware: the ROADMAP names a reference machine for each tier the project aims at. A tier, or a
+  GPU maker, that was never measured is stated as unmeasured, never assumed.
+- Iteration: a full build, the tests and each CI job have budgets too; a CI job stays under
+  20 minutes.
+- A crash leaves a report the user can attach to an issue; nothing leaves the machine without the
+  user's consent.
 - Bad input never crashes: parsers of untrusted data are fuzzed (`cargo fuzz`), `unsafe` is checked
   under Miri where it can be. Both need a nightly toolchain in the project's Nix shell.
 
@@ -38,6 +44,10 @@ Every project, whatever its kind:
 - Memory and video memory budgeted per tier.
 - Power measured at a capped frame rate: a capped game uses no more than it needs.
 - Image quality checked against reference images, compared in CI where the renderer can run there.
+- Accessibility: remappable controls, subtitles, color-blind modes, and camera shake and motion blur
+  that can be turned off.
+- Text ready for translation: no sentence built by joining pieces, plurals by rule, layouts that
+  hold longer text and right-to-left writing.
 - Tools: the engine's own profiler and GPU timers, RenderDoc, Radeon GPU Profiler, MangoHud for
   frame times; PresentMon on Windows.
 
@@ -58,7 +68,20 @@ Every project, whatever its kind:
 - Each animation's frame times recorded as a trace and judged at the 99th percentile.
 - Accessibility: screen readers, full keyboard use, reduced motion and reduced transparency honored,
   contrast checked.
+- The interface's thread never waits on a disk or the network.
+- The look lives in one place: durations, springs, radii, blur and colors, shown by a gallery. The
+  owner approves the look from captures and recordings made off screen.
+- HDR, wide color gamut and variable refresh rates are supported, or stated as not supported.
+- Text ready for translation, as for games.
 - Tools: the framework's frame statistics, `perf`, `heaptrack`, the power readings above.
+
+## Mobile applications
+
+- References: the best apps of their kind on the platform.
+- Cold start, frame times at the display's rate and battery use measured on a mid-range device
+  (Macrobenchmark, Perfetto).
+- No work in the background outside the system's schedulers.
+- TalkBack and the system's font scale honored.
 
 ## Terminal programs (CLIs and TUIs)
 

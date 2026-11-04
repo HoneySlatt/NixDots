@@ -1,6 +1,6 @@
 ---
 name: project-method
-description: The owner's method for every project, large or small, taken from SlimeEngine where it works best. The rules file (AGENTS.md); the project's memory in its repository (PLAN, ROADMAP with its quality bar, ARCHITECTURE, ADRs, glossary, CHANGELOG); small milestones that can be verified, one per session; one check command that CI runs; budgets measured against the top of the field (quality-bars.md); decisions put to the owner one at a time. Use it when the owner starts a project, asks to bring one under the method, plans a stage, or sets a project's budgets.
+description: The owner's method for every project, large or small, taken from SlimeEngine where it works best. The rules file (AGENTS.md); the project's memory in its repository (PLAN, ROADMAP with its quality bar, ARCHITECTURE, ADRs, glossary, CHANGELOG); small milestones that can be verified, one per session; one check command that CI runs; budgets measured against the top of the field (quality-bars.md); decisions put to the owner one at a time. Use it when the owner starts a project, asks to bring one under the method, plans a stage or sets its budgets, and to review, audit, debug, optimise or write documentation.
 ---
 
 # The project method
@@ -10,8 +10,12 @@ its repository, where every session reads them first. SlimeEngine (`~/Projects/S
 reference for the form of ADRs, milestones and `scripts/check.sh`, not for the length of its
 documents.
 
-Beside this file: `quality-bars.md`, the references and default budgets of each kind of project,
-and `templates/`, a repository's files to start from. They are plain files, which any agent reads.
+Beside this file, plain files that any agent reads:
+
+- `quality-bars.md`: the references and default budgets of each kind of project;
+- `craft.md`: the standard for code and documents, and how to check it;
+- `audits.md`: the audits, debugging, edge cases, optimisation and improvements;
+- `templates/`: a repository's files to start from.
 
 ## What a project holds
 
@@ -23,6 +27,7 @@ Each kind of fact has one home. Other documents link to it, because a fact writt
 | `README.md` | What the project is, its real state, how to build and run it, where to read next |
 | `docs/ROADMAP.md` | Direction: stages in order, each with a goal and an exit criterion; the quality bar: references, budgets, how they are measured. The owner decides it. |
 | `docs/PLAN.md` | The current stage only, under about 2,000 words: its milestones, their status, how each is checked, the known debt |
+| `docs/audits/` | One file per audit: its scope, findings, decisions and fixes |
 | `docs/history.md` | The stages that are done, each in a few lines, with its release and its ADRs |
 | `docs/ARCHITECTURE.md` | The parts of the code, their roles, what depends on what, the main flows |
 | `docs/adr/NNNN-title.md` | One decision each: context, decision, alternatives rejected, consequences. Only the status changes afterwards. |
@@ -83,8 +88,13 @@ seen the ROADMAP, its quality bar and the list of ADRs.
 - **Scope**: the current milestone, or what the owner asks; a request that changes the plan is
   written into `docs/PLAN.md`. A milestone that grows is split, with the owner's agreement. Nothing
   is built because the roadmap mentions it.
-- **When a stage ends**, it moves from `docs/PLAN.md` to `docs/history.md` in a few lines, so that
-  the PLAN stays short.
+- **When a stage ends**, a stage audit (`audits.md`) examines the whole project, and the stage moves
+  from `docs/PLAN.md` to `docs/history.md` in a few lines, so that the PLAN stays short. A release
+  audit comes before each release.
+- **Code and documents** follow `craft.md`: readable by anyone who has never seen them, documents
+  as short as complete.
+- **Ideas** that are not the current work go to the *Ideas* of `docs/PLAN.md` or to an issue; the
+  owner picks which become milestones.
 - **Planning a stage**: survey the code and the field first (subagents), then put the stage's
   decisions to the owner one at a time, then record them in an ADR and the milestones in the PLAN.
 - **Done** means: the checks pass; the program was run; new behaviour is tested; the budgets the
@@ -101,6 +111,11 @@ seen the ROADMAP, its quality bar and the list of ADRs.
   available, checks it against `AGENTS.md`, the ADRs and the quality bar.
 - **Report**, in the owner's language: what was done; the choices, why, and the alternatives rejected; what to read
   first; the figures measured; shortcuts and debt; then "Prochaine étape … sur ton feu vert".
+- **A red CI comes first**: a check that fails on the main branch is fixed before any new work.
+- **A session that stops half-way** writes in the milestone, in `docs/PLAN.md`, where it stands,
+  what was tried and what comes next, and keeps its unfinished work on a branch.
+- **At each stage's end**, the dependencies and `flake.lock` are updated, each in its own commit,
+  and CI also runs every week, so that a dormant project still learns of new advisories.
 - **Prefer one milestone per session.** The next one starts in a new session, which reads the
   repository again: a long conversation is compressed again and again, loses detail, and carries a
   large context at every turn. If the owner says to continue, continue.
