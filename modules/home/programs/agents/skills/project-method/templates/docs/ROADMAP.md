@@ -12,6 +12,19 @@
 
 <!-- The few rules every stage keeps: quality before speed, measured performance, accessibility... -->
 
+## Quality bar
+
+<!-- The references this project is weighed against, and its budgets, from the project-method
+skill's quality-bars.md, adapted to this project and validated by the owner. Each budget names how
+it is measured and where it is checked. The figures measured live in docs/measurements.md. -->
+
+References: <!-- the best programs of this kind, and what each is best at. In a public repository,
+describe a game's references by their qualities; never name the games. -->
+
+| Budget | Target | Measured by | Checked in |
+|---|---|---|---|
+| <!-- frame time, start-up, memory at rest, power, latency... --> | <!-- figure and hardware --> | <!-- benchmark or tool --> | <!-- CI, or by hand at each milestone --> |
+
 ## 3. Decisions
 
 ### Fixed

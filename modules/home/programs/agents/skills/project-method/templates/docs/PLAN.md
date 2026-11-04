@@ -28,12 +28,13 @@ next. -->
 - **Delivers.** <!-- what is built, as the ADRs decide -->
 - **Done when.** <!-- the verifiable criterion -->
 - **How to test.** <!-- the commands -->
+- **Measured.** <!-- the budgets of the quality bar this milestone touches, and their figures once
+  measured -->
 - **By hand.** <!-- what the owner checks themselves, if anything -->
 
 ## Known debt
 
 <!-- Each item: what is missing or wrong, why it was left, where it is tracked. Plainly. -->
 
-## Completed stages
-
-<!-- Each finished stage in a few lines, with its release and its ADRs. -->
+Finished stages move to [`history.md`](history.md), in a few lines each, so that this file holds the
+current stage only, under about 2,000 words.

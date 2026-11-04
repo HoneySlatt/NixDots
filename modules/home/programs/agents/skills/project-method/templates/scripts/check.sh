@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Runs every automated check of the definition of done (AGENTS.md). CI runs this script unchanged,
-# inside the project's development shell. A Rust workspace's checks are below; add the project's own
+# inside the project's development shell (flake.nix), which provides every tool used here. A Rust workspace's checks are below; add the project's own
 # (its link checker, its dependency policy, its packaging) and keep this the one command that says
 # whether the work is done.
 set -euo pipefail
@@ -26,10 +26,16 @@ if [ -f deny.toml ]; then
     cargo deny --locked check
 fi
 
-# Links between the Markdown files, offline.
-if command -v lychee >/dev/null; then
-    step "links"
-    git ls-files -z '*.md' | xargs -0 lychee --offline --include-fragments --no-progress
+# The benchmarks that can run here, each failing when it exceeds its budget in docs/ROADMAP.md by
+# more than its noise. Measurements that need the real hardware run by hand, and their figures go to
+# docs/measurements.md.
+if [ -x scripts/bench.sh ]; then
+    step "benchmarks"
+    scripts/bench.sh
 fi
+
+# Links between the Markdown files, offline; the development shell provides lychee.
+step "links"
+git ls-files -z '*.md' | xargs -0 lychee --offline --include-fragments --no-progress
 
 step "all checks passed"
