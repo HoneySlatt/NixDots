@@ -8,6 +8,7 @@
     ./git.nix
     ./btop.nix
     ./opencode.nix
+    ./agents.nix
     ./dconf.nix
     ./fastfetch.nix
     ./firefox.nix
