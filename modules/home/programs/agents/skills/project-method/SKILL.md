@@ -1,6 +1,6 @@
 ---
 name: project-method
-description: The owner's method for every project, large or small, taken from SlimeEngine where it works best. The rules file (AGENTS.md); the project's memory in its repository (PLAN, ROADMAP with its quality bar, ARCHITECTURE, ADRs, glossary, CHANGELOG); small milestones that can be verified, one per session; one check command that CI runs; budgets measured against the top of the field (quality-bars.md); decisions put to the owner one at a time. Use it when the owner starts a project, asks to bring one under the method, plans a stage or sets its budgets, and to review, audit, debug, optimise or write documentation.
+description: The owner's method for every project, large or small, taken from SlimeEngine where it works best. The rules file (AGENTS.md); the project's memory in its repository (PLAN, ROADMAP with its quality bar, ARCHITECTURE, ADRs, glossary, CHANGELOG); small milestones that can be verified, one per session; one check command that CI runs; budgets measured against the top of the field (quality-bars.md); decisions put to the owner one at a time. Use it when the owner starts a project, wants to explore what is possible before building (a project, a feature, a rewrite), asks to bring one under the method, plans a stage or sets its budgets, and to review, audit, debug, optimise or write documentation.
 ---
 
 # The project method
@@ -14,6 +14,7 @@ Beside this file, plain files that any agent reads:
 
 - `quality-bars.md`: the references and default budgets of each kind of project;
 - `craft.md`: the standard for code and documents, and how to check it;
+- `design.md`: deciding before building: a new project, a stage, a large feature, a rewrite;
 - `audits.md`: the audits, debugging, edge cases, optimisation and improvements;
 - `templates/`: a repository's files to start from.
 
@@ -96,8 +97,9 @@ seen the ROADMAP, its quality bar and the list of ADRs.
   as short as complete.
 - **Ideas** that are not the current work go to the *Ideas* of `docs/PLAN.md` or to an issue; the
   owner picks which become milestones.
-- **Planning a stage**: survey the code and the field first (subagents), then put the stage's
-  decisions to the owner one at a time, then record them in an ADR and the milestones in the PLAN.
+- **Planning** a new project, a stage, a large feature or a rewrite follows `design.md`: nothing is
+  built; the field is surveyed, options compared and challenged, decisions put to the owner one at
+  a time, then recorded in ADRs, the ROADMAP and the PLAN.
 - **Done** means: the checks pass; the program was run; new behaviour is tested; the budgets the
   milestone touches are measured and met, their figures kept; the PLAN says so; every document
   affected is updated and reread as a newcomer would; every decision a newcomer would question is an

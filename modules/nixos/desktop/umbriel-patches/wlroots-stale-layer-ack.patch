@@ -1,0 +1,15 @@
+--- a/types/wlr_layer_shell_v1.c
++++ b/types/wlr_layer_shell_v1.c
+@@ -103,9 +103,9 @@
+ 		}
+ 	}
+ 	if (!found) {
+-		wl_resource_post_error(resource,
+-			ZWLR_LAYER_SURFACE_V1_ERROR_INVALID_SURFACE_STATE,
+-			"wrong configure serial: %" PRIu32, serial);
++		// Unmapping drops the pending configures, so a client that hides its
++		// surface while a configure is on its way acks a forgotten serial:
++		// the client cannot avoid this race, so the ack is ignored.
+ 		return;
+ 	}
+ 	// Then remove old configures from the list

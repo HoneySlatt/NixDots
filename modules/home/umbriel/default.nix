@@ -16,6 +16,8 @@
 
   programs.umbriel = {
     enable = true;
+    # Installed, patched, by modules/nixos/desktop/umbriel.nix
+    package = null;
     settings.environment.NIXOS_OZONE_WL = "1";
     settings.general = {
       autostart = [

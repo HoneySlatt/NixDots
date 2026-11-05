@@ -25,8 +25,9 @@ others), in every project. Each tool reads this one file where it looks for its 
 - Choose for the long term what must be chosen now (architecture, formats, dependencies). A rewrite
   is acceptable when the bar needs it, proposed with its cost. The long term never justifies
   building what the current work does not need.
-- The `project-method` skill holds the method; beside it, `quality-bars.md`, `craft.md` and
-  `audits.md` hold the bars, the standard of code and documents, and the audits. Its files are in
+- The `project-method` skill holds the method; beside it, `quality-bars.md`, `craft.md`,
+  `design.md` and `audits.md` hold the bars, the standard of code and documents, deciding before
+  building, and the audits. Its files are in
   `~/NixOS/modules/home/programs/agents/skills/project-method/`.
 
 ## 2. Working with the owner
@@ -52,6 +53,10 @@ others), in every project. Each tool reads this one file where it looks for its 
 - The owner's own lasting projects run under the project method: their rules in `AGENTS.md`, their
   memory in the repository (`docs/PLAN.md`, `docs/ROADMAP.md`, `docs/adr/`).
 - A new project the owner starts is set up under the method from its first session.
+- Before a new project, a stage, a large feature or a rewrite comes a design session that builds
+  nothing: it surveys the field, compares options, has its recommendation challenged, and puts the
+  decisions to the owner (`design.md`). Propose better than what was asked; weigh the owner's
+  counter-proposals honestly, then follow the owner's choice.
 - An existing project of the owner's that lacks it: do the task asked first, then propose the
   method; adopt it on the owner's go. If the owner declines, record it in an `AGENTS.md` that says
   so, so that no session proposes it again.
