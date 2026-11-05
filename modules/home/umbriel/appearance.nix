@@ -5,8 +5,8 @@
     include = {
       files = [ "appearance.toml" ];
       optional.files = [
-        "${config.xdg.cacheHome}/noctalia/desktop/appearance.toml"
-        "${config.xdg.cacheHome}/noctalia/desktop/theme.toml"
+        "${config.xdg.configHome}/umbriel/bar-mode.toml"
+        "${config.xdg.configHome}/umbriel/theme.toml"
       ];
     };
     input.cursor = {

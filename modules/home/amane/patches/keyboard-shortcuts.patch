@@ -1,0 +1,76 @@
+diff --git a/src/input.rs b/src/input.rs
+index c91ba51..a5bf169 100644
+--- a/src/input.rs
++++ b/src/input.rs
+@@ -43,6 +43,11 @@ pub enum Key {
+ 
+     End,
+ 
++    Delete,
++
++    // a key pressed with ctrl held: the character it types without ctrl, lowercase
++    Control(char),
++
+     // a key amane has no name for yet
+     Other,
+ }
+diff --git a/src/input/focus.rs b/src/input/focus.rs
+index 6f8b956..4bb455b 100644
+--- a/src/input/focus.rs
++++ b/src/input/focus.rs
+@@ -30,7 +30,7 @@ pub fn has(id: &'static str) -> bool {
+ // returns whether a text input took the key
+ pub fn send(key: Key) -> bool {
+     // a text input has no use for these, so they go on to the window's on_key
+-    if matches!(key, Key::Up | Key::Down | Key::Tab | Key::Other) {
++    if matches!(key, Key::Up | Key::Down | Key::Tab | Key::Delete | Key::Control(_) | Key::Other) {
+         return false;
+     }
+ 
+diff --git a/src/wayland/keyboard.rs b/src/wayland/keyboard.rs
+index fcbaa5e..cfd14ed 100644
+--- a/src/wayland/keyboard.rs
++++ b/src/wayland/keyboard.rs
+@@ -6,11 +6,16 @@ use wayland_client::{
+     protocol::{wl_keyboard::WlKeyboard, wl_surface::WlSurface},
+ };
+ 
++use std::sync::atomic::{AtomicBool, Ordering};
++
+ use crate::Key;
+ use crate::input::focus;
+ 
+ use super::WaylandState;
+ 
++// whether ctrl is held, kept up to date by the compositor's modifier events
++static CTRL: AtomicBool = AtomicBool::new(false);
++
+ impl KeyboardHandler for WaylandState {
+     // keys only say which keyboard they came from, so the focused window is kept here
+     fn enter(
+@@ -104,15 +109,24 @@ impl KeyboardHandler for WaylandState {
+         _: &QueueHandle<Self>,
+         _: &WlKeyboard,
+         _: u32,
+-        _: Modifiers,
++        modifiers: Modifiers,
+         _: RawModifiers,
+         _: u32,
+     ) {
++        CTRL.store(modifiers.ctrl, Ordering::Relaxed);
+     }
+ }
+ 
+ fn to_key(event: &KeyEvent) -> Key {
++    // ctrl turns a key into a shortcut, named by the character it types without ctrl
++    if CTRL.load(Ordering::Relaxed)
++        && let Some(letter) = event.keysym.key_char().filter(|letter| !letter.is_control())
++    {
++        return Key::Control(letter.to_ascii_lowercase());
++    }
++
+     match event.keysym {
++        Keysym::Delete | Keysym::KP_Delete => Key::Delete,
+         Keysym::Return | Keysym::KP_Enter => Key::Enter,
+         Keysym::Escape => Key::Escape,
+         Keysym::Tab => Key::Tab,

@@ -38,7 +38,7 @@
     union
   ];
 
-  # The shared Qt theme (qt6ct + Kvantum, see modules/home/desktop-theme/packages.nix) leaks into
+  # The shared Qt theme (qt6ct + Kvantum, see modules/home/amane/packages.nix) leaks into
   # Plasma: Kirigami looks for a "kvantum" QML style, which does not exist, so plasmashell
   # cannot load its wallpaper and desktop and the session stays black. Read by startplasma.
   environment.etc."xdg/plasma-workspace/env/qt-style.sh".text = ''
@@ -47,7 +47,7 @@
     export QT_QUICK_CONTROLS_STYLE=org.kde.desktop
   '';
 
-  # Use gnome-keyring (shared with the Umbriel session) as the only secret store:
+  # Use gnome-keyring (shared with the niri session) as the only secret store:
   # keep kwallet out of the login and lock screen PAM stacks, and send the Secret portal to it
   services.gnome.gnome-keyring.enable = true;
   security.pam.services.login.kwallet.enable = lib.mkForce false;

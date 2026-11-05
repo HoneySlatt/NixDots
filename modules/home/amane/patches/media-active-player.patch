@@ -1,0 +1,34 @@
+diff --git a/src/services/media.rs b/src/services/media.rs
+index 4d25373..583f238 100644
+--- a/src/services/media.rs
++++ b/src/services/media.rs
+@@ -62,7 +62,7 @@ impl Media {
+         &self.players
+     }
+ 
+-    // the one playing, or the one shown last, or the first; none when no player is open
++    // the one playing, or the one shown last, or one with a track; none when no player is open
+     pub fn active(&self) -> Option<&MediaPlayer> {
+         self.players.get(self.active?)
+     }
+@@ -111,12 +111,19 @@ impl Media {
+             return Some(playing);
+         }
+ 
++        // a stopped player with nothing loaded, like a closed video, has nothing to show
++        let has_track = |player: &MediaPlayer| !player.title.is_empty();
++
+         if let Some(before) = before
+-            && let Some(kept) = self.players.iter().position(|player| player.name == before)
++            && let Some(kept) = self.players.iter().position(|player| player.name == before && has_track(player))
+         {
+             return Some(kept);
+         }
+ 
++        if let Some(loaded) = self.players.iter().position(has_track) {
++            return Some(loaded);
++        }
++
+         if self.players.is_empty() {
+             return None;
+         }

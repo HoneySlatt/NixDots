@@ -8,8 +8,8 @@
     ../../modules/home/helix
     ../../modules/home/neovim
     ../../modules/home/umbriel
-    ../../modules/home/noctalia
-    ../../modules/home/desktop-theme
+    ../../modules/home/amane
+    ../../modules/home/amane/greeter.nix
   ];
 
   # Shortcut to the NAS drive in the home folder

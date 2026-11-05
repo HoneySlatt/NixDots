@@ -22,8 +22,11 @@ Every project, whatever its kind:
   or `powertop`, needs root: ask the owner to run it, or judge the CPU by its time and wake-ups.
 - Each budget has a benchmark kept in the repository. A benchmark that can run in CI fails when it
   exceeds its budget by more than its noise.
-- Hardware: the ROADMAP names a reference machine for each tier the project aims at. A tier, or a
-  GPU maker, that was never measured is stated as unmeasured, never assumed.
+- Hardware: the ROADMAP names a reference machine for each tier the project aims at, from the
+  lowest it supports, chosen as low as the bar allows (an old integrated GPU, few cores, little
+  memory, a slow disk), to the high tier. On the lowest tier the program stays comfortable: it holds
+  its frame rate, answers at once, and every feature works; only detail is lost. A tier, or a GPU
+  maker, that was never measured is stated as unmeasured, never assumed.
 - Iteration: a full build, the tests and each CI job have budgets too; a CI job stays under
   20 minutes.
 - A crash leaves a report the user can attach to an issue; nothing leaves the machine without the

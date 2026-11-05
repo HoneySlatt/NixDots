@@ -12,6 +12,10 @@ others), in every project. Each tool reads this one file where it looks for its 
   morph), a TUI, a driver or a library against the best tool of its kind.
 - Visual work is designed for 4K at 240 Hz. Everything is designed for the lowest use of CPU, GPU,
   memory, power and start-up time. Nothing runs, polls or draws while there is nothing to do.
+- Aiming at the top never narrows who can run it. Each program runs on the widest range of
+  hardware it can: the best of its field on a high-end machine, smooth and comfortable on a modest
+  or old one, where it loses detail, never fluidity or function. Low resource use serves this reach
+  as much as speed. The lowest machine supported is named and measured, never assumed.
 - An effect earns its place: it fits its frame budget on the high tier, and it lightens on lower
   tiers and when reduced motion or reduced transparency is asked.
 - The bar is measured, not claimed. Each project records its references, its budgets and how they

@@ -9,24 +9,43 @@ let
     fi
     exec "$HOME/.t3/projects/t3-code-rust/target/release/pluto" --server http://127.0.0.1:3774 "$@"
   '';
+  magnolia = pkgs.writeShellScript "magnolia" ''
+    export LD_LIBRARY_PATH=${lib.makeLibraryPath (with pkgs; [ libGL libxkbcommon wayland systemd dbus libx11 libxcursor libxi libxrandr ])}
+    exec "$HOME/Projects/Magnolia/target/release/magnolia" "$@"
+  '';
+  # On-screen display drawn by the amane shell
+  osd = args: {
+    action = "spawn amane ipc call osd ${args}";
+    allow_when_locked = true;
+  };
+  media = command: {
+    action = "spawn playerctl ${command}";
+    allow_when_locked = true;
+  };
 in
 {
+  programs.umbriel.settings.hot_corners.top_left = {
+    enabled = true;
+    delay_ms = 0;
+    action = "overview-toggle";
+  };
+
   programs.umbriel.settings.keybinds = {
     "Ctrl+Shift+T" = "spawn ghostty +new-window";
     "Mod+Shift+E" = "spawn nautilus";
     "Mod+E" = "spawn ghostty +new-window -e yazi";
-    "Mod+Space" = "spawn noctalia msg panel-toggle launcher";
-    "Mod+T" = "spawn noctalia msg panel-toggle local/desktop:themes";
-    "Mod+W" = "spawn noctalia msg panel-toggle wallpaper";
-    "Mod+G" = "spawn noctalia msg panel-toggle local/desktop:games";
-    "Mod+M" = "spawn noctalia msg panel-toggle local/desktop:music";
-    "Mod+P" = "spawn noctalia msg panel-toggle session";
-    "Mod+Shift+W" = "spawn noctalia-desktop bar";
+    "Mod+Space" = "spawn toggle-launcher";
+    "Mod+T" = "spawn toggle-theme-launcher";
+    "Mod+W" = "spawn toggle-wallpaper-launcher";
+    "Mod+G" = "spawn toggle-game-launcher";
+    "Mod+M" = "spawn music-app";
+    "Mod+P" = "spawn toggle-power-launcher";
+    "Mod+Shift+W" = "spawn toggle-bar-position";
     "Mod+Shift+V" = "spawn toggle-nym";
-    "Mod+Ctrl+V" = "spawn noctalia msg panel-toggle local/desktop:vpn";
-    "Mod+U" = "spawn noctalia-desktop nsfw";
-    "Mod+S" = "spawn noctalia msg screenshot-region --copy-to-clipboard --no-save-to-file";
-    "Mod+Shift+S" = "spawn noctalia msg screenshot-region --save-to-file --no-copy-to-clipboard";
+    "Mod+Ctrl+V" = "spawn toggle-vpn-launcher";
+    "Mod+U" = "spawn toggle-nsfw";
+    "Mod+S" = "spawn amane ipc call screenshot";
+    "Mod+Shift+S" = "spawn amane ipc call screenshot save";
     "Mod+Shift+Escape" = { action = "session-quit"; repeat = false; };
     "Mod+B" = "spawn brave-origin";
     "Mod+Shift+B" = "spawn firefox";
@@ -36,7 +55,7 @@ in
     "Mod+D" = "spawn serein";
     "Mod+Shift+D" = "spawn element-desktop";
     "Ctrl+Shift+M" = "spawn tutanota-desktop --no-sandbox %U";
-    "Mod+Ctrl+N" = "spawn nuvio";
+    "Mod+Ctrl+N" = "spawn ${magnolia}";
     "Mod+Shift+G" = "spawn slatty-gui";
     "Mod+Ctrl+G" = "spawn sh -c 'cd ~/Projects/SlattyLauncher && nix develop -c ./target/debug/slatty-gui'";
     "Mod+C" = "spawn ${pluto}";
@@ -48,19 +67,19 @@ in
     "Ctrl+Alt+Delete" = "spawn ghostty +new-window -e btop";
 
     "Mod+Q" = { action = "window-close"; repeat = false; };
-    "Mod+Escape" = { action = "spawn noctalia msg session lock"; repeat = false; };
+    "Mod+Escape" = { action = "spawn lock-screen"; repeat = false; };
     "Mod+Ctrl+Escape" = { action = "shortcuts-inhibit-toggle"; allow_when_inhibited = true; repeat = false; };
 
-    "XF86AudioRaiseVolume" = { action = "spawn noctalia msg volume-up"; allow_when_locked = true; };
-    "XF86AudioLowerVolume" = { action = "spawn noctalia msg volume-down"; allow_when_locked = true; };
-    "XF86AudioMute" = { action = "spawn noctalia msg volume-mute"; allow_when_locked = true; repeat = false; };
-    "XF86AudioMicMute" = { action = "spawn noctalia msg mic-mute"; allow_when_locked = true; repeat = false; };
-    "XF86AudioPause" = { action = "spawn noctalia msg media toggle"; allow_when_locked = true; repeat = false; };
-    "XF86AudioPlay" = { action = "spawn noctalia msg media toggle"; allow_when_locked = true; repeat = false; };
-    "XF86AudioNext" = { action = "spawn noctalia msg media next"; allow_when_locked = true; };
-    "XF86AudioPrev" = { action = "spawn noctalia msg media previous"; allow_when_locked = true; };
-    "XF86MonBrightnessUp" = { action = "spawn noctalia msg brightness-up"; allow_when_locked = true; };
-    "XF86MonBrightnessDown" = { action = "spawn noctalia msg brightness-down"; allow_when_locked = true; };
+    "XF86AudioRaiseVolume" = osd "volume up";
+    "XF86AudioLowerVolume" = osd "volume down";
+    "XF86AudioMute" = osd "volume mute";
+    "XF86AudioMicMute" = osd "microphone mute";
+    "XF86AudioPause" = media "play-pause";
+    "XF86AudioPlay" = media "play-pause";
+    "XF86AudioNext" = media "next";
+    "XF86AudioPrev" = media "previous";
+    "XF86MonBrightnessUp" = osd "brightness up";
+    "XF86MonBrightnessDown" = osd "brightness down";
 
     "Mod+Left" = "window-focus-left";
     "Mod+Down" = "window-focus-down";
@@ -108,6 +127,7 @@ in
     "Mod+WheelUp" = "workspace-previous";
     "Mod+WheelDown" = "workspace-next";
     "Mod+Tab" = { action = "overview-toggle"; repeat = false; };
+    "Mod+Ctrl+S" = { action = "workspace-set-layout toggle"; repeat = false; };
 
     "Mod+1" = "workspace-switch --name 1 --output DP-2";
     "Mod+2" = "workspace-switch --name 2 --output DP-3";

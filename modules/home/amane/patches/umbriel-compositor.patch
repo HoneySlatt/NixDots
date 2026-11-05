@@ -1,0 +1,203 @@
+--- a/src/compositor/umbriel.rs
++++ b/src/compositor/umbriel.rs
+@@ -0,0 +1,156 @@
++use std::collections::hash_map::DefaultHasher;
++use std::env;
++use std::hash::{Hash, Hasher};
++use std::io::{BufRead, BufReader, Write};
++use std::os::unix::net::UnixStream;
++
++use serde_json::{Value, json};
++
++use crate::Workspace;
++
++// umbriel reads one json request per line, then answers on the same connection
++fn send(request: &Value) -> Option<UnixStream> {
++    let path = env::var_os("UMBRIEL_SOCKET")?;
++
++    let mut stream = UnixStream::connect(path).ok()?;
++
++    let line = format!("{request}\n");
++
++    stream.write_all(line.as_bytes()).ok()?;
++
++    Some(stream)
++}
++
++// workspace ids are strings like "DP-2:4", and the number alone repeats between outputs
++fn number(id: &str) -> i64 {
++    let mut hasher = DefaultHasher::new();
++
++    id.hash(&mut hasher);
++
++    (hasher.finish() >> 1) as i64
++}
++
++pub fn focus_workspace(id: i64) {
++    let Some(stream) = send(&json!({ "cmd": "workspaces" })) else {
++        return;
++    };
++
++    let mut reply = String::new();
++
++    if BufReader::new(stream).read_line(&mut reply).is_err() {
++        return;
++    }
++
++    let Ok(reply) = serde_json::from_str::<Value>(&reply) else {
++        return;
++    };
++
++    let Some(workspace) = reply["ok"]
++        .as_array()
++        .and_then(|list| list.iter().find(|workspace| workspace["id"].as_str().map(number) == Some(id)))
++    else {
++        return;
++    };
++
++    // a string, so that a name with only digits is not taken for a position
++    let request = json!({
++        "cmd": "action",
++        "action": "workspace-switch",
++        "workspace": workspace["name"],
++        "output": workspace["output"],
++    });
++
++    let Some(stream) = send(&request) else {
++        return;
++    };
++
++    // waiting for the one-line answer keeps umbriel from seeing a connection that closed mid-request
++    let mut reply = String::new();
++
++    let _ = BufReader::new(stream).read_line(&mut reply);
++}
++
++// events are full snapshots, the current one first; stops when umbriel exits
++pub fn listen(mut on_change: impl FnMut(Vec<Workspace>)) {
++    let Some(stream) = send(&json!({ "cmd": "subscribe", "events": ["workspaces"] })) else {
++        return;
++    };
++
++    for line in BufReader::new(stream).lines() {
++        let Ok(line) = line else {
++            return;
++        };
++
++        if let Some(list) = parse(&line) {
++            on_change(list);
++        }
++    }
++}
++
++fn parse(line: &str) -> Option<Vec<Workspace>> {
++    let value: Value = serde_json::from_str(line).ok()?;
++
++    if value["event"].as_str()? != "workspaces" {
++        return None;
++    }
++
++    let mut list = Vec::new();
++
++    for workspace in value["data"].as_array()? {
++        list.push(Workspace {
++            id: number(workspace["id"].as_str()?),
++            index: workspace["index"].as_u64()? as u32,
++
++            // unnamed workspaces have no name to show
++            name: workspace["named"]
++                .as_bool()?
++                .then(|| workspace["name"].as_str().map(String::from))
++                .flatten(),
++
++            output: workspace["output"].as_str().map(String::from),
++
++            active: workspace["active"].as_bool()?,
++            focused: workspace["focused"].as_bool()?,
++            urgent: workspace["urgent"].as_bool()?,
++
++            windows: workspace["window_count"].as_u64()? as u32,
++        });
++    }
++
++    Some(list)
++}
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++
++    // an event trimmed from the umbriel socket
++    #[test]
++    fn reads_workspaces() {
++        let line = r#"{"event":"workspaces","data":[
++            {"active":true,"focused":true,"id":"DP-2:4","index":1,"name":"1","named":true,
++             "output":"DP-2","urgent":false,"window_count":2},
++            {"active":false,"focused":false,"id":"DP-3:4","index":2,"name":"","named":false,
++             "output":"DP-3","urgent":true,"window_count":0}
++        ]}"#.replace('\n', " ");
++
++        let list = parse(&line).expect("failed to parse the umbriel event");
++
++        assert_eq!(list.len(), 2);
++
++        assert_eq!(list[0].name.as_deref(), Some("1"));
++        assert_eq!(list[0].windows, 2);
++        assert!(list[0].focused);
++
++        assert_eq!(list[1].name, None);
++        assert!(list[1].urgent);
++
++        // the same number on two outputs stays two workspaces
++        assert_ne!(list[0].id, list[1].id);
++    }
++
++    #[test]
++    fn skips_other_lines() {
++        assert!(parse(r#"{"ok":null}"#).is_none());
++    }
++}
+--- a/src/compositor.rs
++++ b/src/compositor.rs
+@@ -1,6 +1,7 @@
+ mod hyprland;
+ mod niri;
+ mod sway;
++mod umbriel;
+ 
+ use std::env;
+ 
+@@ -10,6 +11,7 @@
+     Niri,
+     Hyprland,
+     Sway,
++    Umbriel,
+ }
+ 
+ // each compositor sets its own variable for the programs it starts
+@@ -26,6 +28,10 @@
+         return Some(Compositor::Sway);
+     }
+ 
++    if env::var_os("UMBRIEL_SOCKET").is_some() {
++        return Some(Compositor::Umbriel);
++    }
++
+     None
+ }
+ 
+@@ -42,6 +48,7 @@
+         Compositor::Niri => niri::listen(on_change),
+         Compositor::Hyprland => hyprland::listen(on_change),
+         Compositor::Sway => sway::listen(on_change),
++        Compositor::Umbriel => umbriel::listen(on_change),
+     }
+ }
+ 
+@@ -54,5 +61,6 @@
+         Compositor::Niri => niri::focus_workspace(id),
+         Compositor::Hyprland => hyprland::focus_workspace(id),
+         Compositor::Sway => sway::focus_workspace(id),
++        Compositor::Umbriel => umbriel::focus_workspace(id),
+     }
+ }

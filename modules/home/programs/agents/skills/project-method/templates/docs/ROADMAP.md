@@ -21,6 +21,8 @@ it is measured and where it is checked. The figures measured live in docs/measur
 References: <!-- the best programs of this kind, and what each is best at. In a public repository,
 describe a game's references by their qualities; never name the games. -->
 
+Hardware: <!-- the reference machine of each tier, from the lowest supported to the high tier. -->
+
 | Budget | Target | Measured by | Checked in |
 |---|---|---|---|
 | <!-- frame time, start-up, memory at rest, power, latency... --> | <!-- figure and hardware --> | <!-- benchmark or tool --> | <!-- CI, or by hand at each milestone --> |

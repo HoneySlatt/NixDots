@@ -1,0 +1,18 @@
+diff --git a/src/dbus/method.rs b/src/dbus/method.rs
+index 31c42ab..322354d 100644
+--- a/src/dbus/method.rs
++++ b/src/dbus/method.rs
+@@ -31,6 +31,13 @@ impl Method {
+         &self.arguments
+     }
+ 
++    // the caller's unique name, like :1.42
++    pub fn sender(&self) -> String {
++        let header = self.message.header();
++
++        header.sender().map(|sender| sender.to_string()).unwrap_or_default()
++    }
++
+     // a failed reply means the caller already left, so there is nobody to tell
+     pub fn reply(&self, arguments: &[Argument]) {
+         let header = self.message.header();

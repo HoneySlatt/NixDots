@@ -1,5 +1,5 @@
 switch_music() {
-  local theme_dir="${XDG_CONFIG_HOME:-$HOME/.config}/music"
+  local theme_dir="${XDG_CONFIG_HOME:-$HOME/.config}/opium"
   local theme_file="$theme_dir/theme.toml" theme_tmp
   mkdir -p "$theme_dir" || return 1
   theme_tmp="$(mktemp "${theme_file}.XXXXXX")" || return 1

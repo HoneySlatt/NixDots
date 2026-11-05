@@ -2,7 +2,8 @@
   programs.umbriel.settings.window_rule = [
     {
       match.is_alone = true;
-      default_maximize = true;
+      # A real extent, not a maximize, so that Mod+R cycles from 100%
+      default_scrolling_extent = 1.0;
     }
     { match.app_id = "^xdg-desktop-portal$"; default_floating = true; }
     {
