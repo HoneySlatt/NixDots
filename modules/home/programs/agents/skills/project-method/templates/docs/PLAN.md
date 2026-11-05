@@ -39,7 +39,8 @@ which become milestones. -->
 
 ## Known debt
 
-<!-- Each item: what is missing or wrong, why it was left, where it is tracked. Plainly. -->
+<!-- Each item: what is missing or wrong, why it was left, where it is tracked. Plainly. Once the
+list outgrows a page, it moves to docs/debt.md and this section only links to it. -->
 
 Finished stages move to [`history.md`](history.md), in a few lines each, so that this file holds the
 current stage only, under about 2,000 words.

@@ -26,7 +26,8 @@ Each kind of fact has one home. Other documents link to it, because a fact writt
 | `AGENTS.md` | The rules for agents: what the project is, what to read, scope, commands, definition of done, rules of the code, when to stop and ask, reporting. Under about 1,500 words. Tracked. `CLAUDE.md` holds only `@AGENTS.md` and stays local. |
 | `README.md` | What the project is, its real state, how to build and run it, where to read next |
 | `docs/ROADMAP.md` | Direction: stages in order, each with a goal and an exit criterion; the quality bar: references, budgets, how they are measured. The owner decides it. |
-| `docs/PLAN.md` | The current stage only, under about 2,000 words: its milestones, their status, how each is checked, the known debt |
+| `docs/PLAN.md` | The current stage only, under about 2,000 words: its milestones, their status, how each is checked, the known debt while it fits in a page |
+| `docs/debt.md` | The known debt once it outgrows a page: each item short, with why it stays and where it is tracked; the PLAN links to it |
 | `docs/audits/` | One file per audit: its scope, findings, decisions and fixes |
 | `docs/history.md` | The stages that are done, each in a few lines, with its release and its ADRs |
 | `docs/ARCHITECTURE.md` | The parts of the code, their roles, what depends on what, the main flows |
