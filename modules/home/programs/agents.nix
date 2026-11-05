@@ -1,7 +1,7 @@
 # One set of rules and skills for every AI agent: agents/AGENTS.md holds the owner's rules and
 # agents/skills/ the skills, and each tool reads them where it looks for its own. Change them here,
 # then rebuild.
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
 let
   rules = ./agents/AGENTS.md;
   skills = ./agents/skills;
@@ -28,9 +28,18 @@ in
     ".agents/AGENTS.md".source = rules;
   }
   # Claude Code's skills
-  // skillsIn ".claude/skills"
-  # The skills that Codex, Grok, Kimi and Mistral Vibe share
-  // skillsIn ".agents/skills";
+  // skillsIn ".claude/skills";
+
+  # The skills that Codex, Grok, Kimi and Mistral Vibe share, copied rather than linked: Codex skips a
+  # skill whose files are symbolic links.
+  home.activation.agentSkills = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    run mkdir -p "$HOME/.agents/skills"
+    for skill in ${skills}/*; do
+      target="$HOME/.agents/skills/$(basename "$skill")"
+      run rm -rf "$target"
+      run cp -rL --no-preserve=mode "$skill" "$target"
+    done
+  '';
 
   # OpenCode reads its rules where it looks for its own, which keeps it from falling back on Claude
   # Code's; its skills come through its settings.
