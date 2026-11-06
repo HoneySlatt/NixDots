@@ -17,7 +17,70 @@ let
     rev = "4c378a4b5e0b219783683012bec680325eb40719";
     hash = "sha256-BmMWWGkNtZwEH9utoc3Mj5gGCjlgIicGsTEPxAxG7hw=";
   };
-  openCore = "${osxKvm}/OpenCore/OpenCore.qcow2";
+  # Keep the synthetic MacPro7,1 identity stable across image rebuilds.
+  # Generated once with OpenCore 1.0.8's macserial and a UUID v4. Apple Check
+  # Coverage rejected the serial as invalid on 2026-11-06.
+  smbios = {
+    SystemProductName = "MacPro7,1";
+    SystemSerialNumber = "F5KKRT4UP7QM";
+    MLB = "F5K3212074NK3F71H";
+    SystemUUID = "F2D3223B-94C7-40D7-AE32-4849BA20CB3F";
+  };
+
+  # RestrictEvents (BSD-3-Clause) suppresses MacPro7,1 memory and PCIe notices.
+  restrictEvents = pkgs.fetchurl {
+    url = "https://github.com/acidanthera/RestrictEvents/releases/download/1.1.6/RestrictEvents-1.1.6-RELEASE.zip";
+    hash = "sha256-mBcN+uGV3dKLXZXj8EASWhPKeDvLm9HluMWI4hexTuY=";
+  };
+
+  # Keep WhateverGreen's AppleGraphicsDevicePolicy workaround for the Radeon.
+  bootArgs = "keepsyms=1 agdpmod=pikera";
+  openCore = pkgs.runCommand "OpenCore.qcow2" {
+    nativeBuildInputs = with pkgs; [ qemu-utils mtools util-linux unzip python3 ];
+  } ''
+    qemu-img convert -O raw ${osxKvm}/OpenCore/OpenCore.qcow2 disk.raw
+    esp="disk.raw@@$(( $(partx -g -o START -n 1 disk.raw) * 512 ))"
+    export MTOOLS_SKIP_CHECK=1
+    mcopy -i "$esp" ::EFI/OC/config.plist config.plist
+    substituteInPlace config.plist \
+      --replace-fail '<string>keepsyms=1</string>' '<string>${bootArgs}</string>' \
+      --replace-fail '<string>iMac19,1</string>' '<string>${smbios.SystemProductName}</string>' \
+      --replace-fail '<string>W00000000001</string>' '<string>${smbios.SystemSerialNumber}</string>' \
+      --replace-fail '<string>M0000000000000001</string>' '<string>${smbios.MLB}</string>' \
+      --replace-fail '<string>00000000-0000-0000-0000-000000000000</string>' '<string>${smbios.SystemUUID}</string>'
+
+    # Register the Lilu plugin immediately after its dependency.
+    python3 - <<'PY'
+    from pathlib import Path
+    import plistlib
+
+    path = Path("config.plist")
+    config = plistlib.loads(path.read_bytes())
+    kexts = config["Kernel"]["Add"]
+    assert not any(kext["BundlePath"] == "RestrictEvents.kext" for kext in kexts)
+    lilu_index = next(index for index, kext in enumerate(kexts)
+                      if kext["BundlePath"] == "Lilu.kext" and kext["Enabled"])
+    kexts.insert(lilu_index + 1, {
+        "Arch": "Any",
+        "BundlePath": "RestrictEvents.kext",
+        "Comment": "RestrictEvents.kext",
+        "Enabled": True,
+        "ExecutablePath": "Contents/MacOS/RestrictEvents",
+        "MaxKernel": "",
+        "MinKernel": "12.0.0",
+        "PlistPath": "Contents/Info.plist",
+    })
+    path.write_bytes(plistlib.dumps(config, sort_keys=False))
+    PY
+
+    unzip -q ${restrictEvents} 'RestrictEvents.kext/*'
+    mcopy -s -i "$esp" RestrictEvents.kext ::EFI/OC/Kexts/
+    mcopy -o -i "$esp" config.plist ::EFI/OC/config.plist
+    qemu-img convert -O qcow2 disk.raw $out
+  '';
+  # libvirt refuses read-only SATA disks and the store is read-only, so OpenCore runs from a
+  # copy that is refreshed from the store each time the domains are defined.
+  openCoreCopy = "/var/lib/libvirt/images/macos-OpenCore.qcow2";
   ovmfCode = "${osxKvm}/OVMF_CODE_4M.fd";
   ovmfVars = "${osxKvm}/OVMF_VARS-1920x1080.fd";
 
@@ -36,12 +99,11 @@ let
     </hostdev>'';
 
   # OpenCore sits on SATA unit 0, the macOS disk on 1, the installer image on 2.
-  sataDisk = { unit, file, type, readonly ? false, order ? null }: ''
+  sataDisk = { unit, file, type, order ? null }: ''
     <disk type='file' device='disk'>
       <driver name='qemu' type='${type}' cache='writeback' discard='unmap'/>
       <source file='${file}'/>
       <target dev='sd${lib.substring unit 1 "abc"}' bus='sata'/>
-      ${lib.optionalString readonly "<readonly/>"}
       ${lib.optionalString (order != null) "<boot order='${toString order}'/>"}
       <address type='drive' controller='0' bus='0' target='0' unit='${toString unit}'/>
     </disk>'';
@@ -86,10 +148,10 @@ let
         <suspend-to-disk enabled='no'/>
       </pm>
       <devices>
-        ${sataDisk { unit = 0; file = openCore; type = "qcow2"; readonly = true; order = 1; }}
+        ${sataDisk { unit = 0; file = openCoreCopy; type = "qcow2"; order = 1; }}
         ${sataDisk { unit = 1; file = disk; type = "qcow2"; }}
-        ${sataDisk { unit = 2; file = media; type = "raw"; readonly = true; }}
-        <controller type='usb' model='qemu-xhci' ports='15'/>
+        ${sataDisk { unit = 2; file = media; type = "raw"; }}
+        <controller type='usb' index='0' model='qemu-xhci'/>
         <interface type='network'>
           <mac address='52:54:00:c9:18:27'/>
           <source network='default'/>
@@ -108,6 +170,8 @@ let
         </video>'' else ''
         <input type='keyboard' bus='usb'/>
         <input type='tablet' bus='usb'/>
+        <!-- The macOS installer asks for a mouse when it finds only a tablet -->
+        <input type='mouse' bus='usb'/>
         <graphics type='spice'>
           <listen type='none'/>
           <image compression='off'/>
@@ -121,6 +185,10 @@ let
       <qemu:commandline>
         <qemu:arg value='-device'/>
         <qemu:arg value='isa-applesmc,osk=ourhardworkbythesewordsguardedpleasedontsteal(c)AppleComputerInc'/>
+        <!-- macOS cannot enumerate devices behind hotplug-capable PCIe bridges: without this it
+             sees no USB keyboard or mouse and the installer stops at the keyboard-pairing screen -->
+        <qemu:arg value='-global'/>
+        <qemu:arg value='ICH9-LPC.acpi-pci-hotplug-with-bridge-support=off'/>
         <qemu:arg value='-smbios'/>
         <qemu:arg value='type=2'/>
         <!-- The CPU string OSX-KVM validates for macOS Sequoia and Tahoe -->
@@ -197,12 +265,14 @@ in
     requires = [ "libvirtd.service" ];
     wantedBy = [ "multi-user.target" ];
     restartTriggers = builtins.attrValues domains;
-    path = [ config.virtualisation.libvirtd.package ];
+    path = [ config.virtualisation.libvirtd.package pkgs.coreutils ];
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
     };
-    script = lib.concatMapStringsSep "\n"
+    script = ''
+      install -m 0644 ${openCore} ${openCoreCopy}
+    '' + lib.concatMapStringsSep "\n"
       (xml: "virsh -c qemu:///system define ${xml}") (builtins.attrValues domains);
   };
 }

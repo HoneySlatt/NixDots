@@ -386,6 +386,22 @@ in
       categories = [ "Game" "System" ];
     };
 
+    macos = {
+      name       = "macOS";
+      exec       = "virsh -c qemu:///system start macos-gpu";
+      icon       = "${icons}/apple.png";
+      comment    = "macOS VM with GPU passthrough";
+      categories = [ "Game" "System" ];
+    };
+
+    macos-install = {
+      name       = "macOS (installation)";
+      exec       = "sh -c \"virsh -c qemu:///system start macos; exec virt-manager --connect qemu:///system --show-domain-console macos\"";
+      icon       = "${icons}/apple.png";
+      comment    = "macOS VM in a window, for installing and repairing";
+      categories = [ "System" ];
+    };
+
     nixos-manual = {
       name       = "NixOS";
       exec       = "nixos-help";
