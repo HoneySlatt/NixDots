@@ -1,0 +1,143 @@
+diff --git a/src/wayland/layer.rs b/src/wayland/layer.rs
+index 47d6734..da8be95 100644
+--- a/src/wayland/layer.rs
++++ b/src/wayland/layer.rs
+@@ -67,6 +67,11 @@ impl LayerShellHandler for WaylandState {
+             return;
+         };
+ 
++        // sent before the compositor saw the window hide, see stale_configures
++        if window.stale_configures {
++            return;
++        }
++
+         let (width, height) = configure.new_size;
+ 
+         window.resize(width, height);
+diff --git a/src/wayland/surface.rs b/src/wayland/surface.rs
+index 5cf23d8..a9012d3 100644
+--- a/src/wayland/surface.rs
++++ b/src/wayland/surface.rs
+@@ -8,7 +8,7 @@ use smithay_client_toolkit::{
+ };
+ use wayland_client::{
+     QueueHandle,
+-    protocol::{wl_compositor::WlCompositor, wl_output::WlOutput, wl_surface::WlSurface},
++    protocol::{wl_compositor::WlCompositor, wl_display::WlDisplay, wl_output::WlOutput, wl_surface::WlSurface},
+ };
+ 
+ use crate::graphics::Gpu;
+@@ -38,6 +38,18 @@ pub struct OpenWindow {
+ 
+     pub frame_requested: bool,
+ 
++    /*
++     * hiding makes the compositor forget the configures still on their way, so they
++     * must not size the window: they are ignored until the next show's barrier returns
++     */
++    pub stale_configures: bool,
++
++    // counts the shows, so the barrier of an earlier show cannot end a later wait
++    pub shows: u32,
++
++    // sends the barrier, a sync the compositor answers in order with configures
++    pub display: WlDisplay,
++
+     // when the last frame started drawing, for AMANE_FRAMES
+     pub last_frame: Option<Instant>,
+ 
+diff --git a/src/wayland/update.rs b/src/wayland/update.rs
+index ab2b70b..7f6cf45 100644
+--- a/src/wayland/update.rs
++++ b/src/wayland/update.rs
+@@ -1,6 +1,11 @@
++use smithay_client_toolkit::shell::WaylandSurface;
+ use wayland_client::{
+     Connection, Dispatch, QueueHandle,
+-    protocol::wl_region::{self, WlRegion},
++    protocol::{
++        wl_callback::{self, WlCallback},
++        wl_region::{self, WlRegion},
++        wl_surface::WlSurface,
++    },
+ };
+ 
+ use crate::LayerWindow;
+@@ -49,6 +54,21 @@ impl OpenWindow {
+             return;
+         }
+ 
++        /*
++         * configures sent before the compositor sees this show come back before the
++         * barrier's answer, the ones that size the shown window come after it
++         */
++        if !was_visible {
++            self.shows += 1;
++
++            let barrier = ShowBarrier {
++                surface: layer_surface.wl_surface().clone(),
++                show: self.shows,
++            };
++
++            self.display.sync(&self.qh, barrier);
++        }
++
+         /*
+          * a commit without a buffer also shows a hidden window again,
+          * the compositor answers with a configure and drawing starts there
+@@ -93,6 +113,8 @@ impl OpenWindow {
+ 
+         self.role.commit();
+ 
++        self.stale_configures = true;
++
+         // nothing is drawn until showing the window brings a new configure
+         self.width = 0;
+         self.height = 0;
+@@ -116,3 +138,32 @@ impl Dispatch<WlRegion, ()> for WaylandState {
+     ) {
+     }
+ }
++
++// answered once the compositor has handled everything sent before a show
++pub struct ShowBarrier {
++    surface: WlSurface,
++    show: u32,
++}
++
++impl Dispatch<WlCallback, ShowBarrier> for WaylandState {
++    fn event(
++        state: &mut Self,
++        _: &WlCallback,
++        event: wl_callback::Event,
++        barrier: &ShowBarrier,
++        _: &Connection,
++        _: &QueueHandle<Self>,
++    ) {
++        let wl_callback::Event::Done { .. } = event else {
++            return;
++        };
++
++        let Some(window) = state.window(&barrier.surface) else {
++            return;
++        };
++
++        if window.shows == barrier.show {
++            window.stale_configures = false;
++        }
++    }
++}
+diff --git a/src/wayland/windows.rs b/src/wayland/windows.rs
+index a2bd65a..e15d2d5 100644
+--- a/src/wayland/windows.rs
++++ b/src/wayland/windows.rs
+@@ -76,6 +76,9 @@ impl WaylandState {
+             scale: 1.0,
+ 
+             frame_requested: false,
++            stale_configures: false,
++            shows: 0,
++            display: self.connection.display(),
+             last_frame: None,
+             reads: HashSet::new(),
+ 

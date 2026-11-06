@@ -1,7 +1,7 @@
 { pkgs, ... }:
 
 {
-  imports = [ ./win11-vm.nix ];
+  imports = [ ./win11-vm.nix ./macos-vm.nix ];
 
   virtualisation = {
     libvirtd = {

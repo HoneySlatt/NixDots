@@ -17,5 +17,7 @@ inputs.amane.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (
     ./patches/network-on-demand.patch
     # Workspaces of the Umbriel compositor
     ./patches/umbriel-compositor.patch
+    # Configures sent before a window hid do not size or draw it
+    ./patches/stale-layer-configures.patch
   ];
 })
