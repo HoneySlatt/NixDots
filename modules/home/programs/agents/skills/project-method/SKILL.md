@@ -115,6 +115,9 @@ seen the ROADMAP, its quality bar and the list of ADRs.
 - **Report**, in the owner's language: what was done; the choices, why, and the alternatives rejected; what to read
   first; the figures measured; shortcuts and debt; then "Prochaine étape … sur ton feu vert".
 - **A red CI comes first**: a check that fails on the main branch is fixed before any new work.
+- **Debt is paid** at four moments (`audits.md`, *Debt*): at once when it breaks the bar; by the
+  milestone that touches its code; at each stage's audit, the whole list triaged; before a
+  release, in a milestone of its own when the audit finds much.
 - **A session that stops half-way** writes in the milestone, in `docs/PLAN.md`, where it stands,
   what was tried and what comes next, and keeps its unfinished work on a branch.
 - **At each stage's end**, the dependencies and `flake.lock` are updated, each in its own commit,

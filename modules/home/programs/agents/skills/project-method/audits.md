@@ -28,7 +28,7 @@ Each audit names the dimensions it covers. A stage audit covers them all.
 - **Documentation**: accurate, complete, short, understood by a newcomer (`craft.md`).
 - **Dependencies**: updates, advisories, licenses, ones that can go.
 - **Accessibility**, for anything with an interface.
-- **Debt**: what `docs/PLAN.md` lists as debt, and what can be paid now.
+- **Debt**: the whole list, triaged as [Debt](#debt) says.
 
 ## How
 
@@ -43,7 +43,26 @@ Each audit names the dimensions it covers. A stage audit covers them all.
 5. **Report to the owner**, in plain terms: what was found, what it costs to fix, a recommendation.
    Fixes that change direction are decided one at a time; the others are planned.
 6. **Record** the audit in `docs/audits/YYYY-MM-DD-<scope>.md`: scope, findings, decisions, and
-   what was fixed. Open items go to the debt of `docs/PLAN.md`.
+   what was fixed. Open items go to the known debt, each with the milestone that follows it.
+
+## Debt
+
+Debt is noted when it is made: each shortcut that cannot be avoided, with its reason and the
+milestone that follows it. It is paid at four moments, never on the side of another task.
+
+1. **At once, what breaks the bar**: a budget missed, a wrong or unsafe behaviour, data at risk.
+   The current milestone or the next pays it; it stays debt only by the owner's decision.
+2. **When a milestone touches its code**: the milestone that follows an item pays it, or says in
+   its report why it puts it off and which milestone follows it now. The code is open and its
+   tests run: it costs least then.
+3. **At each stage's audit, the whole list triaged**: what is small, paid; what no longer holds,
+   deleted; each item left given the milestone that follows it; an item that has had no plan for
+   two stages put to the owner, with options.
+4. **Before a release**, a milestone of its own pays the debt that the audit found too large to
+   leave, rather than letting it ride into the release.
+
+No milestone of debt is cut from the current work, and no item stays without a milestone that
+follows it.
 
 ## Debugging
 
