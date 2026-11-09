@@ -11,7 +11,7 @@ import sys
 
 PACKAGES = (
     "nym-vpnd", "nuvio", "rqbit-desktop", "kimi-code",
-    "kimi-code-desktop", "zcode", "kytyps5",
+    "zcode", "kytyps5",
 )
 
 
@@ -64,25 +64,20 @@ def github_release(package):
     raise ValueError(f"No release with a matching Linux asset for {package}")
 
 
-def kimi_latest(package):
-    suffix = "/desktop/latest-linux.yml" if package == "kimi-code-desktop" else "/latest"
+def kimi_latest():
+    suffix = "/latest"
     try:
         manifest = fetch("https://code.kimi.ai/kimi-code" + suffix)
     except subprocess.CalledProcessError:
         manifest = fetch("https://code.kimi.com/kimi-code" + suffix)
-    if package == "kimi-code-desktop":
-        match = re.search(r"^version:\s*([0-9][0-9A-Za-z.+-]*)\s*$", manifest, re.MULTILINE)
-        if not match:
-            raise ValueError("Kimi Desktop manifest has no version")
-        manifest = match[1]
     return version(manifest.strip()), None
 
 
 def latest_pin(package):
     if package in ("nym-vpnd", "nuvio", "rqbit-desktop"):
         return github_release(package)
-    if package.startswith("kimi-code"):
-        return kimi_latest(package)
+    if package == "kimi-code":
+        return kimi_latest()
     if package == "zcode":
         # The site also lists older releases and macOS-only downloads.
         versions = re.findall(

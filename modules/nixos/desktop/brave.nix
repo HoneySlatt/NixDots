@@ -1,8 +1,12 @@
+{ inputs, ... }:
+
 # Brave Origin reads Chromium policies from /etc/brave/policies
 let
   block = 2;
 in
 {
+  imports = [ inputs.brave-browser.nixosModules.default ];
+
   programs.chromium = {
     enable = true;
 

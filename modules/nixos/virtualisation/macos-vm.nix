@@ -17,64 +17,17 @@ let
     rev = "4c378a4b5e0b219783683012bec680325eb40719";
     hash = "sha256-BmMWWGkNtZwEH9utoc3Mj5gGCjlgIicGsTEPxAxG7hw=";
   };
-  # Keep the synthetic MacPro7,1 identity stable across image rebuilds.
-  # Generated once with OpenCore 1.0.8's macserial and a UUID v4. Apple Check
-  # Coverage rejected the serial as invalid on 2026-11-06.
-  smbios = {
-    SystemProductName = "MacPro7,1";
-    SystemSerialNumber = "F5KKRT4UP7QM";
-    MLB = "F5K3212074NK3F71H";
-    SystemUUID = "F2D3223B-94C7-40D7-AE32-4849BA20CB3F";
-  };
-
-  # RestrictEvents (BSD-3-Clause) suppresses MacPro7,1 memory and PCIe notices.
-  restrictEvents = pkgs.fetchurl {
-    url = "https://github.com/acidanthera/RestrictEvents/releases/download/1.1.6/RestrictEvents-1.1.6-RELEASE.zip";
-    hash = "sha256-mBcN+uGV3dKLXZXj8EASWhPKeDvLm9HluMWI4hexTuY=";
-  };
-
-  # Keep WhateverGreen's AppleGraphicsDevicePolicy workaround for the Radeon.
+  # Keep OSX-KVM's original SMBIOS and kexts; only change the Radeon boot-args.
   bootArgs = "keepsyms=1 agdpmod=pikera";
   openCore = pkgs.runCommand "OpenCore.qcow2" {
-    nativeBuildInputs = with pkgs; [ qemu-utils mtools util-linux unzip python3 ];
+    nativeBuildInputs = with pkgs; [ qemu-utils mtools util-linux ];
   } ''
     qemu-img convert -O raw ${osxKvm}/OpenCore/OpenCore.qcow2 disk.raw
     esp="disk.raw@@$(( $(partx -g -o START -n 1 disk.raw) * 512 ))"
     export MTOOLS_SKIP_CHECK=1
     mcopy -i "$esp" ::EFI/OC/config.plist config.plist
     substituteInPlace config.plist \
-      --replace-fail '<string>keepsyms=1</string>' '<string>${bootArgs}</string>' \
-      --replace-fail '<string>iMac19,1</string>' '<string>${smbios.SystemProductName}</string>' \
-      --replace-fail '<string>W00000000001</string>' '<string>${smbios.SystemSerialNumber}</string>' \
-      --replace-fail '<string>M0000000000000001</string>' '<string>${smbios.MLB}</string>' \
-      --replace-fail '<string>00000000-0000-0000-0000-000000000000</string>' '<string>${smbios.SystemUUID}</string>'
-
-    # Register the Lilu plugin immediately after its dependency.
-    python3 - <<'PY'
-    from pathlib import Path
-    import plistlib
-
-    path = Path("config.plist")
-    config = plistlib.loads(path.read_bytes())
-    kexts = config["Kernel"]["Add"]
-    assert not any(kext["BundlePath"] == "RestrictEvents.kext" for kext in kexts)
-    lilu_index = next(index for index, kext in enumerate(kexts)
-                      if kext["BundlePath"] == "Lilu.kext" and kext["Enabled"])
-    kexts.insert(lilu_index + 1, {
-        "Arch": "Any",
-        "BundlePath": "RestrictEvents.kext",
-        "Comment": "RestrictEvents.kext",
-        "Enabled": True,
-        "ExecutablePath": "Contents/MacOS/RestrictEvents",
-        "MaxKernel": "",
-        "MinKernel": "12.0.0",
-        "PlistPath": "Contents/Info.plist",
-    })
-    path.write_bytes(plistlib.dumps(config, sort_keys=False))
-    PY
-
-    unzip -q ${restrictEvents} 'RestrictEvents.kext/*'
-    mcopy -s -i "$esp" RestrictEvents.kext ::EFI/OC/Kexts/
+      --replace-fail '<string>keepsyms=1</string>' '<string>${bootArgs}</string>'
     mcopy -o -i "$esp" config.plist ::EFI/OC/config.plist
     qemu-img convert -O qcow2 disk.raw $out
   '';

@@ -85,65 +85,6 @@ const cleaned = src
   .replace(/@preprocessor\s+\S+;?/g, '')
   .replace(/@var\s+\S+[^\n]*/g, '');
 
-// ChatGPT Desktop's bundled UI derives its colors from --app-color-* tokens.
-function chatgptDesktopCss(p) {
-  const accent = p[p.accentColor];
-  const fg = pct => `color-mix(in srgb, ${p.text} ${pct}%, transparent)`;
-  const vars = {
-    'startup-background': p.mantle,
-    'app-color-background-surface': p.base,
-    'app-color-background-surface-under': p.mantle,
-    'app-color-background-application-menu': p.mantle,
-    'app-color-foreground-application-menu': p.text,
-    'app-color-border-application-menu-separator': p.surface2,
-    'app-color-background-control': p.surface0,
-    'app-color-background-editor-opaque': p.surface0,
-    'app-color-background-elevated-primary': p.surface1,
-    'app-color-background-elevated-primary-opaque': p.surface1,
-    'app-color-background-elevated-secondary': fg(3.2),
-    'app-color-background-elevated-secondary-opaque': p.surface0,
-    'app-color-background-button-primary': p.crust,
-    'app-color-background-button-primary-hover': fg(5.8),
-    'app-color-background-button-primary-active': fg(10),
-    'app-color-background-button-primary-inactive': fg(3.2),
-    'app-color-background-button-secondary': fg(5.2),
-    'app-color-background-button-secondary-hover': fg(7.8),
-    'app-color-background-button-secondary-active': fg(12),
-    'app-color-background-button-secondary-inactive': fg(3.8),
-    'app-color-background-button-tertiary': fg(2.9),
-    'app-color-background-button-tertiary-hover': fg(6.8),
-    'app-color-background-button-tertiary-active': fg(10),
-    'app-color-background-accent': `color-mix(in srgb, ${accent} 30%, ${p.base})`,
-    'app-color-background-accent-hover': `color-mix(in srgb, ${accent} 30%, ${p.base})`,
-    'app-color-background-accent-active': `color-mix(in srgb, ${accent} 30%, ${p.base})`,
-    'app-color-text-foreground': p.text,
-    'app-color-text-foreground-secondary': p.subtext1,
-    'app-color-text-foreground-tertiary': p.subtext0,
-    'app-color-text-accent': accent,
-    'app-color-text-on-accent': p.base,
-    'app-color-text-button-primary': p.crust,
-    'app-color-text-button-secondary': p.overlay0,
-    'app-color-text-button-tertiary': fg(51),
-    'app-color-icon-primary': fg(90.4),
-    'app-color-icon-secondary': fg(71),
-    'app-color-icon-tertiary': fg(51),
-    'app-color-icon-accent': accent,
-    'app-color-accent-blue': accent,
-    'app-color-accent-purple': accent,
-    'app-color-border': fg(8.4),
-    'app-color-border-heavy': fg(15.6),
-    'app-color-border-light': fg(4.2),
-    'app-color-border-focus': accent,
-    'app-color-simple-scrim': fg(10.4),
-    'app-color-decoration-added': p.green,
-    'app-color-decoration-deleted': p.red,
-    'app-color-editor-added': `color-mix(in srgb, ${p.green} 23%, transparent)`,
-    'app-color-editor-deleted': `color-mix(in srgb, ${p.red} 23%, transparent)`,
-  };
-  const body = Object.entries(vars).map(([k, v]) => `  --${k}: ${v} !important;`).join('\n');
-  return `\n:root, [data-theme] {\n${body}\n}\n`;
-}
-
 less.render(cleaned, { compress: false })
   .then(output => {
     let css = output.css.replace(/(--[\w-]+:[^;!]+)(;)/g, '$1 !important$2');
@@ -154,8 +95,6 @@ less.render(cleaned, { compress: false })
       const site = path.basename(lessFile, '.user.less');
       if (site === 'claude') {
         css += `\n* { --claude-accent-clay: ${palette[palette.accentColor]} !important; }\n`;
-      } else if (site === 'chatgpt') {
-        css += chatgptDesktopCss(palette);
       }
     }
     process.stdout.write(css);

@@ -9,7 +9,8 @@
   systemd.user.services.pluto-server = {
     Unit.Description = "Pluto server";
 
-    Service = {
+    # It runs AI agents: no display or sound of the owner's (agents/isolation.nix).
+    Service = import ./agents/isolation.nix { inherit pkgs; name = "pluto-server"; } // {
       WorkingDirectory = "%h";
       ExecStart = "${pkgs.pluto-server}/bin/pluto-server serve --base-dir %h/.pluto --host 0.0.0.0 --port 3774";
       Restart = "always";

@@ -43,11 +43,11 @@
 
 stdenvNoCC.mkDerivation rec {
   pname = "zcode";
-  version = "3.16.3";
+  version = "3.17.2";
 
   src = fetchurl {
     url = "https://cdn-zcode.z.ai/zcode/electron/releases/${version}/linux-x64/ZCode-${version}-linux-x64.deb";
-    hash = "sha256-EoEysZWXf9CoyKbClc9C/hWSItelxe/v2LXwDviKuLY=";
+    hash = "sha256-hux7KnlcRq5W5zE1BDAKM3wzxoJnwo+WoDcmpPWv9XU=";
   };
 
   nativeBuildInputs = [ dpkg nodejs autoPatchelfHook makeWrapper wrapGAppsHook3 ];

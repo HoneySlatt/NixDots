@@ -53,23 +53,6 @@ in
       categories = [ "Network" "WebBrowser" ];
     };
 
-    chatgpt = {
-      name       = "ChatGPT";
-      exec       = "chatgpt %U";
-      icon       = "/home/honey/Pictures/Icons/chatgpt.png";
-      comment    = "AI assistant";
-      mimeType   = [
-        "x-scheme-handler/codex" "x-scheme-handler/http" "x-scheme-handler/https"
-        "text/csv" "text/tab-separated-values" "application/vnd.ms-excel"
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-        "application/vnd.openxmlformats-officedocument.presentationml.presentation"
-        "application/vnd.ms-excel.sheet.macroEnabled.12"
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-      ];
-      categories = [ "Utility" "Development" ];
-      startupNotify = true;
-    };
-
     "com.anthropic.Claude" = {
       name       = "Claude";
       exec       = "claude-desktop %U";
@@ -160,16 +143,6 @@ in
       comment    = "Coding agent workspace";
       categories = [ "Development" "IDE" ];
       settings.StartupWMClass = "t3code";
-    };
-
-    "kimi-code" = {
-      name       = "Kimi Code";
-      exec       = "kimi-code-desktop %U";
-      icon       = "kimi-code";
-      comment    = "AI coding workspace";
-      mimeType   = [ "x-scheme-handler/kimi-code" ];
-      categories = [ "Development" "IDE" ];
-      settings.StartupWMClass = "kimi-code";
     };
 
     # KDE applications and graphical tools, also visible outside Plasma

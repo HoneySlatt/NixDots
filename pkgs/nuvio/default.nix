@@ -5,11 +5,11 @@
 
 let
   pname = "nuvio";
-  version = "0.1.33-alpha";
+  version = "0.1.35-alpha";
 
   src = fetchurl {
     url = "https://github.com/NuvioMedia/NuvioDesktop/releases/download/${version}/Nuvio-Linux-x86_64-${version}.AppImage";
-    hash = "sha256-Nfu41NEGCu0Wn2ID26PWVe1VT9JeOEqut8Tk4PdftOA=";
+    hash = "sha256-p3gXOzWougR1gJ/kn+lgs23bOkHKYEwKKopdF6LLDxI=";
   };
 
   appimageContents = appimageTools.extract { inherit pname version src; };

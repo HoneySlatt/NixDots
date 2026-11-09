@@ -18,7 +18,7 @@
       }
 
       image {
-        monitor = DP-2
+        monitor = DP-3
         path = ${config.home.homeDirectory}/Pictures/Others/Honey.png
         size = 100
         border_color = rgb($hl_accent)
@@ -28,7 +28,7 @@
       }
 
       input-field {
-        monitor = DP-2
+        monitor = DP-3
         size = 300, 60
         outline_thickness = 4
         dots_size = 0.2

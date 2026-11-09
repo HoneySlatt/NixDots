@@ -15,11 +15,11 @@
 
 stdenvNoCC.mkDerivation rec {
   pname = "kimi-code";
-  version = "2.4.0";
+  version = "2.5.2";
 
   src = fetchurl {
     url = "https://code.kimi.ai/kimi-code/binaries/${version}/kimi-code-linux-x64.zst";
-    hash = "sha256-Z+tYDz7F2i26gXZtnZWjndrqWY5fA4LeKAfIQcOfmOs=";
+    hash = "sha256-bLV5NA7BLurTRNZh+fwZ38JridPpkZjaInmV+W+8QIc=";
   };
 
   nativeBuildInputs = [ patchelf makeWrapper zstd ];

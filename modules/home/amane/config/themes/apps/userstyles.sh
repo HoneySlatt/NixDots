@@ -55,7 +55,7 @@ gen_userstyles() {
 EOF
 
   local sites=(twitch twitter instagram reddit github codeberg tuta anilist duckduckgo brave-search wikipedia searxng materialious youtube chatgpt mastodon claude cinny grok mistral gog element steam nixos-search backloggd kimi zai stylus)
-  local desktop_sites=(claude chatgpt)
+  local desktop_sites=(claude)
 
   # One node process per stylesheet: compile them all in parallel, assemble in order below
   local site
@@ -82,7 +82,6 @@ EOF
     local desktop_app=""
     case "$site" in
       claude) desktop_app=claude-desktop ;;
-      chatgpt) desktop_app=chatgpt-desktop ;;
     esac
     local desktop_compiled="$compiled_dir/$site.desktop.css"
     if [ -n "$desktop_app" ]; then

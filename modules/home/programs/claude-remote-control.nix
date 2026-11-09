@@ -13,7 +13,8 @@ in
     (name: dir: lib.nameValuePair "claude-remote-control-${name}" {
       Unit.Description = "Claude Code Remote Control server (${name})";
 
-      Service = {
+      # It runs AI agents: no display or sound of the owner's (agents/isolation.nix).
+      Service = import ./agents/isolation.nix { inherit pkgs; name = "claude-remote-control-${name}"; } // {
         WorkingDirectory = "%h/${dir}";
         ExecStart = "${pkgs.claude-code}/bin/claude remote-control --name ${name}";
         Restart = "always";

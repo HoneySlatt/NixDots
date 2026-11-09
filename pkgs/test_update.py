@@ -36,11 +36,11 @@ class UpdateTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 updater.latest_pin("rqbit-desktop")
 
-    def test_kimi_desktop_manifest_and_official_fallback(self):
+    def test_kimi_cli_manifest_and_official_fallback(self):
         with patch.object(updater, "fetch", side_effect=[
-            subprocess.CalledProcessError(22, "curl"), "version: 1.2.3\nfiles:\n",
+            subprocess.CalledProcessError(22, "curl"), "1.2.3\n",
         ]) as fetch:
-            self.assertEqual(updater.latest_pin("kimi-code-desktop"), ("1.2.3", None))
+            self.assertEqual(updater.latest_pin("kimi-code"), ("1.2.3", None))
             self.assertIn("code.kimi.com", fetch.call_args.args[0])
 
     def test_zcode_uses_highest_linux_version(self):

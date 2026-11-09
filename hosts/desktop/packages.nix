@@ -1,34 +1,33 @@
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
 
 {
-  nixpkgs.overlays = [ (import ../../pkgs/overrides) ];
+  nixpkgs.overlays = lib.mkAfter [ (import ../../pkgs/overrides) ];
 
   environment.systemPackages = with pkgs; [
     # Browsers
+    ladybird
     brave-origin
 
     # Communication
-    serein
+    discord
     element-desktop
     signal-desktop
     tutanota-desktop
 
     # AI
     codex
-    chatgpt
     opencode
     goose-cli
     kimi-code
+    deepseek-harness
     grok-build
     claude-code
     mistral-vibe
     goose-desktop
     claude-desktop
-    kimi-code-desktop
     zcode
 
     # Media
-    kopuz
     nuvio
     tsukimi
     cider-2

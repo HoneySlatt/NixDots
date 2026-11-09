@@ -46,14 +46,14 @@ let
 in
 clangStdenv.mkDerivation rec {
   pname = "kytyps5";
-  version = "0-unstable-2026-10-28";
+  version = "0-unstable-2026-11-07";
 
   src = fetchFromGitHub {
     owner = "KytyPS5";
     repo = "KytyPS5";
-    rev = "c528324d27bb6e6094d9efaf11fdbb88d27d8891";
+    rev = "589bd14a9b8934a85e951d1aaa8112a05d62354c";
     fetchSubmodules = true;
-    hash = "sha256-/jKZ655qCOypqVGeneS5tiSgvAcUKCoDkzLm/+3m/vA=";
+    hash = "sha256-VVCZMnzZynNRk2RL8LUVBfp+md1W7xEqVgotbhC77Us=";
   };
 
   nativeBuildInputs = [

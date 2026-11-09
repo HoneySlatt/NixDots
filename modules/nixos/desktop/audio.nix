@@ -1,9 +1,12 @@
+{ config, ... }:
+
 {
   security.rtkit.enable = true;
+  # Use pw-jack per application instead of setting LD_LIBRARY_PATH globally.
+  environment.systemPackages = [ config.services.pipewire.package.jack ];
   services.pipewire = {
     enable = true;
     pulse.enable = true;
-    jack.enable = true;
     alsa.enable = true;
     alsa.support32Bit = true;
     # Let the graph follow the source's rate instead of resampling everything to

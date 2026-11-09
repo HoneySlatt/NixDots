@@ -108,9 +108,9 @@ others), in every project. Each tool reads this one file where it looks for its 
 
 ## 5. Agents' efficiency
 
-- Delegate broad searches to subagents, on a lighter model where the tool allows it; keep their
-  conclusions, not the files they read. Do targeted lookups yourself.
-- The review that closes a milestone uses the strongest model available, with fresh eyes.
+- Work handed to another model or a subagent, the closing review included, follows the `delegate`
+  skill: its roles, its table of models, the brief, the checks, the ledger. Keep a delegate's
+  conclusions, not the files it read. Do targeted lookups yourself.
 - Read what the task needs, not whole trees.
 - Write what agents read at every session briefly: short sentences, one fact per line. A project's
   `AGENTS.md` stays under about 1,500 words; its `docs/PLAN.md` holds the current stage only.
@@ -123,12 +123,49 @@ others), in every project. Each tool reads this one file where it looks for its 
   (`~/NixOS/modules/home/umbriel`); the desktop shell is Amane (`~/NixOS/modules/home/amane`).
 - Check a change to `~/NixOS` with `nixos-rebuild build --flake ~/NixOS#desktop`, which needs no
   root; the owner switches to it.
-- The owner checks Windows in a virtual machine. There is no Mac.
+- The owner checks Windows, and macOS on an Intel Mac with an AMD GPU, in virtual machines that only
+  the owner starts. Never start, stop or define one: `macos-gpu` takes the GPU and stops the desktop.
+  Checks there go into a list for the owner.
 - Never inject input into the owner's session. Never take screenshots of the desktop.
-- Run windowed tests in a headless compositor where the project provides one. Close a window you
-  opened through its own program or its process, never through a compositor action that could reach
-  the focused window.
 - Programs run on test data and test profiles, never on the owner's real data, unless asked.
+
+### Running programs
+
+- The services that run agents have no display and no sound (`agents/isolation.nix`).
+- Run a program with a window through `agent-headless -- <command>`, or a project's own headless
+  script. It gets its own compositor (`--sway` for a layer-shell client), runtime folder and session
+  bus, throwaway XDG folders, no network unless `--net`; all of it stops at the end.
+- Reach the desktop only through `owner-desktop -- <command>`, where the project allows it, for what
+  needs the real compositor or GPU. Check first that no game runs.
+- Close a window you opened through its own program or its process, never through a compositor
+  action that could reach the focused window. Never run `umbriel` without a subcommand: it starts a
+  compositor.
+- A headless run set up by hand needs its own `XDG_RUNTIME_DIR`: without `WAYLAND_DISPLAY`, GTK and
+  libwayland fall back on `wayland-0`. nixpkgs' `sway` is a wrapper that survives `kill`: stop the
+  compositor's whole process group.
+- With a virtual pointer, rest the pointer half a second before a click: buttons shown on hover
+  ignore an instant one.
+- Never run a program to read its version (`steam --version` opened a dialog): read its store path
+  or `nix eval`.
+- `pgrep -f` and `pkill -f` match your own command line: use `pgrep -x`. Stop only what you started,
+  by its pid, never the owner's own instance of an app.
+- Never change the owner's live state to see whether something answers (do-not-disturb, theme,
+  wallpaper).
+- A running app rewrites its settings file: never edit one while its app runs. Back it up first, and
+  replace a key rather than add a second.
+- Ask before a test that plays sound or takes a sound card for itself (ALSA `hw:`).
+
+### Disk, builds and edits
+
+- `/home` and `/tmp` share one disk. When full, it shows as a linker "Bus error" or a check failing
+  for no reason. Run `df -h /home` before long builds; under about 20 GB free, `cargo clean` the
+  project's `target/` and say how much it freed.
+- A worktree of another commit builds in its own `CARGO_TARGET_DIR`, or cargo mixes the two trees'
+  artifacts.
+- Never `nix develop path:.`: it copies the whole folder, `target/` included, into the store each
+  time. Plain `nix develop` copies what git tracks: `git add` a new file for Nix to see it.
+- Edit code with the editing tool. With perl, never `|` as the delimiter of a pattern that holds
+  `\|`: it becomes an alternation and silently edits elsewhere. Check `git diff` after.
 
 ### Privileges
 
@@ -153,14 +190,19 @@ The owner's history is public: it carries no AI attribution and no personal data
   `~/NixOS/modules/home/programs/git.nix`. Never write the personal e-mail address anywhere in a
   repository.
 - Never commit personal data: home paths, NAS paths, the machine's hostname, account ids, tokens,
-  screenshots of the desktop.
+  screenshots of the desktop. A private repository's content never goes into a public one.
+- Some terms must never appear in a public repository. They are in `~/.config/agents/public-terms`,
+  a local file that no repository holds: never quote them. A global hook refuses them in commits;
+  before sending the text of an issue, a pull request or a release, run `public-check` on it.
 - `CLAUDE.md` and each tool's own folder (`.claude/`, `.codex/`, `.grok/`, `.vibe/`, …) stay local,
   listed in `.git/info/exclude`. A project's own `AGENTS.md` is tracked.
 - In the owner's own repositories, commit, push and open issues whenever the work needs it, without
   asking: one logical change per commit, once the project's checks pass. After a push, follow its CI
   to the end: report the work done only when CI is green, or say that it still runs.
-- Never discard changes you did not make: no `reset --hard`, `checkout --`, `clean` or `stash drop`
+- Never discard changes you did not make: no `reset --hard`, `checkout --`, `clean` or `stash`
   over another session's work. Work beside another session goes in its own worktree.
+- Add files by their paths, never `git add -A`. Push a branch, never `--all` or `--mirror`: tools
+  keep local refs that hold home paths. Never amend a pushed commit: add another.
 - Never commit in `~/NixOS`: prepare the change, the owner commits it.
 - Ask before acting on anyone else's repository: an issue, a pull request, a comment.
 - A force-push or a rewrite of history needs the owner's explicit confirmation, a backup first

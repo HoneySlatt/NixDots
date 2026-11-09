@@ -60,7 +60,6 @@ in
     "Mod+Ctrl+G" = "spawn sh -c 'cd ~/Projects/SlattyLauncher && nix develop -c ./target/debug/slatty-gui'";
     "Mod+C" = "spawn ${pluto}";
     "Mod+I" = "spawn claude-desktop";
-    "Mod+Shift+C" = "spawn chatgpt";
     "Mod+O" = "spawn obsidian";
     "Mod+N" = "spawn ghostty +new-window -e nvim";
     "Mod+Shift+N" = "spawn zeditor";
@@ -129,27 +128,27 @@ in
     "Mod+Tab" = { action = "overview-toggle"; repeat = false; };
     "Mod+Ctrl+S" = { action = "workspace-set-layout toggle"; repeat = false; };
 
-    "Mod+1" = "workspace-switch --name 1 --output DP-2";
-    "Mod+2" = "workspace-switch --name 2 --output DP-3";
-    "Mod+3" = "workspace-switch --name 3 --output DP-2";
-    "Mod+4" = "workspace-switch --name 4 --output DP-3";
-    "Mod+5" = "workspace-switch --name 5 --output DP-2";
-    "Mod+6" = "workspace-switch --name 6 --output DP-3";
-    "Mod+7" = "workspace-switch --name 7 --output DP-2";
-    "Mod+8" = "workspace-switch --name 8 --output DP-3";
-    "Mod+9" = "workspace-switch --name 9 --output DP-2";
-    "Mod+Shift+1" = "window-move-to-workspace --name 1 --output DP-2";
-    "Mod+Shift+2" = "window-move-to-workspace --name 2 --output DP-3";
-    "Mod+Shift+3" = "window-move-to-workspace --name 3 --output DP-2";
-    "Mod+Shift+4" = "window-move-to-workspace --name 4 --output DP-3";
-    "Mod+Shift+5" = "window-move-to-workspace --name 5 --output DP-2";
-    "Mod+Shift+6" = "window-move-to-workspace --name 6 --output DP-3";
-    "Mod+Shift+7" = "window-move-to-workspace --name 7 --output DP-2";
-    "Mod+Shift+8" = "window-move-to-workspace --name 8 --output DP-3";
-    "Mod+Shift+9" = "window-move-to-workspace --name 9 --output DP-2";
+    "Mod+1" = "workspace-switch --name 1 --output DP-3";
+    "Mod+2" = "workspace-switch --name 2 --output DP-2";
+    "Mod+3" = "workspace-switch --name 3 --output DP-3";
+    "Mod+4" = "workspace-switch --name 4 --output DP-2";
+    "Mod+5" = "workspace-switch --name 5 --output DP-3";
+    "Mod+6" = "workspace-switch --name 6 --output DP-2";
+    "Mod+7" = "workspace-switch --name 7 --output DP-3";
+    "Mod+8" = "workspace-switch --name 8 --output DP-2";
+    "Mod+9" = "workspace-switch --name 9 --output DP-3";
+    "Mod+Shift+1" = "window-move-to-workspace --name 1 --output DP-3";
+    "Mod+Shift+2" = "window-move-to-workspace --name 2 --output DP-2";
+    "Mod+Shift+3" = "window-move-to-workspace --name 3 --output DP-3";
+    "Mod+Shift+4" = "window-move-to-workspace --name 4 --output DP-2";
+    "Mod+Shift+5" = "window-move-to-workspace --name 5 --output DP-3";
+    "Mod+Shift+6" = "window-move-to-workspace --name 6 --output DP-2";
+    "Mod+Shift+7" = "window-move-to-workspace --name 7 --output DP-3";
+    "Mod+Shift+8" = "window-move-to-workspace --name 8 --output DP-2";
+    "Mod+Shift+9" = "window-move-to-workspace --name 9 --output DP-3";
 
-    "Mod+0" = "workspace-switch --name 10 --output DP-3";
-    "Mod+Shift+0" = "window-move-to-workspace --name 10 --output DP-3";
+    "Mod+0" = "workspace-switch --name 10 --output DP-2";
+    "Mod+Shift+0" = "window-move-to-workspace --name 10 --output DP-2";
 
     "Mod+Shift+Space" = { action = "window-move-to-scratchpad"; repeat = false; };
     "Mod+Ctrl+Space" = { action = "window-restore-from-scratchpad"; repeat = false; };

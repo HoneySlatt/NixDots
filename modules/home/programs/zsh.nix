@@ -12,7 +12,6 @@ let
     nuvio = "nuvio";
     rqbit-desktop = "rqbit-desktop";
     kimi = "kimi-code";
-    kimi-code-desktop = "kimi-code-desktop";
     zcode = "zcode";
     kytyps5 = "kytyps5";
   };

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Switch theme — btop, fastfetch, ghostty, helix, yazi, nvim, gtk, qt, niri, umbriel, wallpaper,
 # steam, heroic, obsidian, obs, firefox, userstyles, jellyfin, kopuz,
-# blender, kdeglobals, hyprlock, tuta, opencode, serein, cosmic, rqbit, t3code, pluto, slatty, element, kimi-code, zcode, music
+# blender, kdeglobals, hyprlock, tuta, opencode, serein, cosmic, rqbit, t3code, pluto, slatty, element, zcode, music
 
 MODE="full"
 THEME_FILE="$HOME/.config/amane/.current-theme"
@@ -113,7 +113,7 @@ systemctl --user restart --no-block amane-theme-background.service
 
 for fn in switch_btop switch_fastfetch switch_ghostty switch_helix gen_yazi_theme nvim_reload \
           zed_reload switch_gtk switch_qt gen_hyprlock_theme switch_serein switch_cosmic switch_rqbit switch_slatty switch_element \
-          switch_kimi_code switch_zcode switch_music; do
+          switch_zcode switch_music; do
   "$fn" &
 done
 wait

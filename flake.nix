@@ -3,6 +3,10 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    brave-browser = {
+      url = "git+https://codeberg.org/buckley310/brave-browser-nix.git?ref=main";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -20,10 +24,6 @@
       url = "github:poeck/claude-desktop-nix-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    millennium = {
-      url = "github:SteamClientHomebrew/Millennium?dir=packages/nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     nixvim = {
       url = "github:nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -31,14 +31,6 @@
     amane = {
       # Keep the local patches compatible; rebase them before updating Amane.
       url = "github:MystiaFin/amane/7cf5fac4a98a13ca7098766b9118806073f57952";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    kopuz = {
-      url = "github:Kopuz-org/kopuz";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    serein = {
-      url = "github:ViceVerse-cz/Serein";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     slatty = {
@@ -75,7 +67,6 @@
     in
     {
       packages.x86_64-linux.kimi-code = (nixpkgs.legacyPackages.x86_64-linux.extend (import ./pkgs inputs)).kimi-code;
-      packages.x86_64-linux.kimi-code-desktop = (nixpkgs.legacyPackages.x86_64-linux.extend (import ./pkgs inputs)).kimi-code-desktop;
       packages.x86_64-linux.kytyps5 = (nixpkgs.legacyPackages.x86_64-linux.extend (import ./pkgs inputs)).kytyps5;
       packages.x86_64-linux.nym-vpnd = (nixpkgs.legacyPackages.x86_64-linux.extend (import ./pkgs inputs)).nym-vpnd;
       packages.x86_64-linux.zcode = (nixpkgs.legacyPackages.x86_64-linux.extend (import ./pkgs inputs)).zcode;

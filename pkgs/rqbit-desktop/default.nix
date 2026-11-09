@@ -15,11 +15,11 @@
 
 stdenv.mkDerivation rec {
   pname = "rqbit-desktop";
-  version = "9.0.1";
+  version = "9.1.0";
 
   src = fetchurl {
     url = "https://github.com/ikatson/rqbit/releases/download/v${version}/rqbit-desktop_${version}_amd64.deb";
-    hash = "sha256-MU3VUwYBO9e0WVak+7t2EG1fyRdnwZyf+G1+dC0PUmk=";
+    hash = "sha256-fxWNCPH0h5z1FhhuhZdFuzEmmP56XwxUXaUbIisghr4=";
   };
 
   nativeBuildInputs = [ dpkg pkg-config autoPatchelfHook wrapGAppsHook3 ];
