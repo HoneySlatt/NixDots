@@ -55,7 +55,7 @@ echo >>"$base.cmd"
 
 if $exclusive; then
     # The owner's runtime folder, not the agents' service's own, so that every agent shares the lock.
-    lock="${OWNER_RUNTIME_DIR:-${XDG_RUNTIME_DIR:-/tmp}}/agents-exclusive-run.lock"
+    lock="${OWNER_RUNTIME_DIR:-/run/user/$(id -u)}/agents-exclusive-run.lock"
     exec 9>"$lock"
     flock 9
 fi

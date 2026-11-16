@@ -42,5 +42,7 @@ git ls-files -z '*.md' | xargs -0 lychee --offline --include-fragments --no-prog
 step "ADRs' index and changelog fragments"
 python3 -I scripts/adr-index.py
 python3 -I scripts/changelog.py
+# The tests of the scripts that check the documents.
+python3 -I -B -m unittest discover --start-directory scripts --pattern "test_*.py"
 
 step "all checks passed"
