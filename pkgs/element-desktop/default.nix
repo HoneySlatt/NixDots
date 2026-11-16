@@ -1,8 +1,7 @@
 { element-desktop, nodejs }:
 
 (element-desktop.override {
-  # Electron skips the keyring on niri and Hyprland. The wrapper only adds the
-  # Wayland flags when NIXOS_OZONE_WL is set, which Hyprland does not export.
+  # Explicit keyring and Wayland flags for desktop launches.
   commandLineArgs = "--password-store=gnome-libsecret --ozone-platform-hint=auto --enable-features=WaylandWindowDecorations --enable-wayland-ime=true";
 }).overrideAttrs (old: {
   nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ nodejs ];

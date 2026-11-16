@@ -1,6 +1,6 @@
 ---
 name: reader
-description: "The reader role of the delegate skill, on trial: search, read, run, measure, reproduce, triage CI. Use only where the skill's table names it."
+description: "The reader role of the delegate skill: search, read, run, measure, reproduce, triage CI. Use only where the skill's table names it."
 model: claude-sonnet-5-5
 effort: high
 disallowedTools: Agent, SendMessage, ListAgents, CronCreate, CronDelete, ScheduleWakeup, RemoteTrigger, WebFetch, WebSearch, mcp__t3-code

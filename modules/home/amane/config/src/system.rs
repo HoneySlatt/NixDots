@@ -264,7 +264,7 @@ fn distro_icon() -> char {
 }
 
 pub fn logout_command() -> &'static str {
-    "umbriel msg session-quit skip-confirmation"
+    "niri msg action quit --skip-confirmation"
 }
 
 pub const NIGHT_LIGHT_TOGGLE: &str =

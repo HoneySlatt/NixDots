@@ -13,7 +13,7 @@ final: prev: {
     '';
   });
 
-  # Electron and Chromium do not recognise niri or Hyprland and skip the keyring.
+  # Use the shared GNOME keyring for Chromium-based applications.
   brave-origin = prev.brave-origin.override {
     commandLineArgs = "--password-store=gnome-libsecret";
   };

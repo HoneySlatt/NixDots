@@ -1,6 +1,6 @@
 ---
 name: author-bounded
-description: "The author-bounded role of the delegate skill, on trial: code under tests the lead wrote. Use only where the skill's table names it."
+description: "The author-bounded role of the delegate skill: code under tests the lead wrote. Use only where the skill's table names it."
 model: claude-sonnet-5-5
 effort: high
 disallowedTools: Agent, SendMessage, ListAgents, CronCreate, CronDelete, ScheduleWakeup, RemoteTrigger, WebFetch, WebSearch, mcp__t3-code

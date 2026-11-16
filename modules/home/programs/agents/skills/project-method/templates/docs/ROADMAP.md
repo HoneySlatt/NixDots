@@ -27,6 +27,16 @@ Hardware: <!-- the reference machine of each tier, from the lowest supported to 
 |---|---|---|---|
 | <!-- frame time, start-up, memory at rest, power, latency... --> | <!-- figure and hardware --> | <!-- benchmark or tool --> | <!-- CI, or by hand at each milestone --> |
 
+### Architecture and stability scenarios
+
+<!-- A few realistic change and failure scenarios from quality-bars.md, adapted to this project.
+For each, state the acceptance criterion, the review or test, and where its evidence lives. Include
+compatibility and recovery where relevant. A change scenario can be checked by tracing the code;
+do not implement a future feature just to demonstrate it. -->
+
+| Scenario | Acceptance criterion | Checked by | Evidence |
+|---|---|---|---|
+
 ## 3. Decisions
 
 ### Fixed

@@ -19,7 +19,6 @@
       url = "github:sodiboo/niri-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    umbriel.url = "github:noctalia-dev/umbriel/cachix";
     claude-desktop-nix-flake = {
       url = "github:poeck/claude-desktop-nix-flake";
       inputs.nixpkgs.follows = "nixpkgs";

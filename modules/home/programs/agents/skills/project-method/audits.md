@@ -17,6 +17,13 @@ is done, and how debugging, edge cases, optimisation and improvements are handle
 Each audit names the dimensions it covers. A stage audit covers them all.
 
 - **Correctness**: bugs, wrong results, crashes, panics, unhandled errors.
+- **Architecture and evolvability**: dependency directions, boundaries, data ownership and contracts
+  match the code and ADRs. Trace representative change scenarios from the quality bar: where would
+  a change spread, and can the important parts be tested independently? Support findings with
+  concrete code paths and checks, not module counts or claims of modularity.
+- **Stability and recovery**: check the quality bar's applicable scenarios for sustained use,
+  cancellation, saturation, partial failure, restart and upgrade. Verify bounded resource use,
+  valid state after failure and tested recovery; a successful build is not stability evidence.
 - **Edge cases**: the checklist below, for what the project handles.
 - **Performance**: every budget of the quality bar measured again; profiles of the hot paths.
 - **Resources at rest**: CPU, wake-ups, memory, power while nothing happens.

@@ -47,6 +47,8 @@ scripts/check.sh    # every check of the definition of done; what CI runs
 - New behaviour is tested where a test is practical.
 - The budgets the milestone touches are measured and met; the figures go to
   `docs/measurements.md`.
+- Affected architecture contracts and stability scenarios from the quality bar are checked;
+  evidence and any unverified limits are recorded in measurements or the milestone review.
 - `docs/PLAN.md` gives the new status.
 - Every document the change affects is updated and reread as a newcomer would.
 - Every decision a newcomer would question is an ADR.
@@ -56,8 +58,9 @@ check to make it pass (a skipped test, a raised budget, a silenced lint) without
 
 ## Architecture rules
 
-<!-- FILL: which part may depend on which; what must run without a window or a network; where
-platform code lives. -->
+<!-- FILL: the few boundaries and invariants every change must preserve; which part may depend on
+which; what must run without a window or a network. Link to docs/ARCHITECTURE.md for ownership,
+lifetimes and failure handling, and to the quality bar for change and stability scenarios. -->
 
 ## Rules the code depends on
 
@@ -66,7 +69,8 @@ whatever a newcomer could break without knowing. -->
 
 ## Code rules
 
-- No abstraction without a second concrete use.
+- An abstraction needs a concrete benefit: reuse, isolation of an unstable dependency, protection
+  of an invariant or a test boundary. Do not build speculative extension points.
 - No reimplementation of the standard library without a measurement.
 - A new dependency needs a reason, an alternative weighed and a license checked; ask the owner.
 - Every `unsafe` block has a `// SAFETY:` comment.

@@ -61,7 +61,16 @@ let
       <address type='drive' controller='0' bus='0' target='0' unit='${toString unit}'/>
     </disk>'';
 
-  domainXml = { name, uuid, memoryGiB, passthrough }: pkgs.writeText "${name}.xml" ''
+  domainXml = { name, uuid, memoryGiB, passthrough }:
+    let
+      # Keep CODE and VARS from the same OVMF build. The GPU domain gets a fresh
+      # 4 MiB-layout variable store; preserve the old store for recovery mode.
+      firmware = if passthrough then pkgs.OVMF.firmware else ovmfCode;
+      variables = if passthrough then pkgs.OVMF.variables else ovmfVars;
+      variableStore = if passthrough
+        then "/var/lib/libvirt/qemu/nvram/macos-gpu-4m_VARS.fd"
+        else nvram;
+    in pkgs.writeText "${name}.xml" ''
     <domain type='kvm' xmlns:qemu='http://libvirt.org/schemas/domain/qemu/1.0'>
       <name>${name}</name>
       <uuid>${uuid}</uuid>
@@ -75,8 +84,8 @@ let
       </cputune>''}
       <os>
         <type arch='x86_64' machine='q35'>hvm</type>
-        <loader readonly='yes' type='pflash' format='raw'>${ovmfCode}</loader>
-        <nvram template='${ovmfVars}' templateFormat='raw' format='raw'>${nvram}</nvram>
+        <loader readonly='yes' type='pflash' format='raw'>${firmware}</loader>
+        <nvram template='${variables}' templateFormat='raw' format='raw'>${variableStore}</nvram>
       </os>
       <features>
         <acpi/>

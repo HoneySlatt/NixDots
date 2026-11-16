@@ -18,6 +18,12 @@ never seen the project, at any level, whether they work on it or only use it.
 - **Errors say what went wrong and what to do**, with the context needed to act: the file, the
   value, the step.
 - **Modules follow responsibilities**, each with a short description of its role at its top.
+- **Boundaries protect concrete rules.** Keep dependency directions clear and mutable state owned;
+  isolate platform or external code where its changes would otherwise spread. A boundary must
+  justify its complexity and runtime cost; a wrapper around every call is not a goal.
+- **Lifetimes and limits are explicit.** Make task cancellation and shutdown, queue and cache limits,
+  and behaviour under saturation part of the contract. Errors leave state valid or clearly mark
+  what cannot be recovered; retries are bounded and safe to repeat.
 - **A small public API**, documented, with examples that compile and run.
 - **Generics, macros and traits only where they pay** for the reading they cost.
 - **Tests read as specifications**: their names say the behaviour they check.

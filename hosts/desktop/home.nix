@@ -7,7 +7,7 @@
     ../../modules/home/zed
     ../../modules/home/helix
     ../../modules/home/neovim
-    ../../modules/home/umbriel
+    ../../modules/home/niri
     ../../modules/home/amane
     ../../modules/home/amane/greeter.nix
   ];

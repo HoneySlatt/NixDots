@@ -1,6 +1,6 @@
 ---
 name: web-research
-description: "The web-research role of the delegate skill, on trial: reads the web, with sources kept. Use only where the skill's table names it."
+description: "The web-research role of the delegate skill: reads the web, with sources kept. Use only where the skill's table names it."
 model: claude-sonnet-5-5
 effort: high
 disallowedTools: Agent, SendMessage, ListAgents, CronCreate, CronDelete, ScheduleWakeup, RemoteTrigger, WebFetch, WebSearch, mcp__t3-code

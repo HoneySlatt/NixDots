@@ -34,6 +34,26 @@ Every project, whatever its kind:
 - Bad input never crashes: parsers of untrusted data are fuzzed (`cargo fuzz`), `unsafe` is checked
   under Miri where it can be. Both need a nightly toolchain in the project's Nix shell.
 
+## Architecture and stability
+
+Alongside numerical budgets, each project's quality bar names a few realistic change and failure
+scenarios, their acceptance criteria and how they are checked. Scale the evidence to the project
+and the risk; do not assign a universal architecture score or promise stability from a build.
+
+- **Safe evolution**: trace a representative feature or dependency replacement through the current
+  code, identifying affected parts, contracts and checks. Record limits and coupling that would
+  make the change costly. This can be a review; do not implement future features as proof.
+- **Stable operation**: where applicable, test sustained use, bounded queues and caches, cancellation,
+  shutdown, partial failure and recovery. Name the workload, duration, resource limits and expected
+  final state; repeated operations must not accumulate unbounded resources or abandoned work.
+- **Compatibility**: name supported API, protocol and stored-format versions. Test affected
+  migrations and the recovery path for an interrupted or failed upgrade on test data; state when
+  restoring a backup is required rather than assuming downgrade is safe.
+
+Automate regression checks where practical. Record measured results, reviewed reasoning and
+unverified assumptions separately. Architecture descriptions live in `docs/ARCHITECTURE.md`,
+decisions in ADRs, and evidence in measurements or audits; link to them rather than copying them.
+
 ## Games and real-time 3D
 
 - References: the best AAA open worlds of the time, in image quality, streaming without hitches,

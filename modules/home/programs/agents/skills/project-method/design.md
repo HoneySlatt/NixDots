@@ -19,7 +19,8 @@ written only for a prototype that answers a question (step 5).
 3. **Options.** At least two real ones, honestly argued, including keeping what exists or not doing
    it when that is a real choice. For each: what it gives, what it costs to build and to maintain,
    its risks, what it rules out later, how it meets the quality bar on the high tier and on the
-   lowest machine supported. Figures where they exist, each marked measured or estimated.
+   lowest machine supported. Compare realistic change and failure scenarios as described below.
+   Figures where they exist, each marked measured or estimated.
 4. **Challenge.** A fresh subagent, on the strongest model available, attacks the recommendation:
    what the best team in the field would do differently, what breaks at ten times the size, on the
    lowest machine, in five years. The recommendation survives, or changes.
@@ -32,6 +33,21 @@ written only for a prototype that answers a question (step 5).
 7. **Record.** Each decision in an ADR, with the options rejected and why. The stages and the
    quality bar in `docs/ROADMAP.md`; the questions still open in its open decisions; the milestones
    in `docs/PLAN.md`. A design session that stops half-way writes in the PLAN where it stands.
+
+## Architecture scenarios
+
+Choose a few scenarios that expose the decision's risks: a representative feature, a dependency
+replacement, a format migration or a partial failure. For each option, state:
+
+- which parts and contracts change, and how far the change spreads;
+- who owns the state and work, what stays valid on failure, and how recovery works;
+- how compatibility, correctness and resource budgets would be checked;
+- the cost of implementation, maintenance and replacement, with assumptions and unknowns explicit.
+
+Use code inspection, existing tests or a justified prototype as evidence; label estimates as such.
+Prefer the simplest option that meets the bar across these scenarios. Do not build speculative
+features or extension systems to satisfy imagined futures. Record consequential trade-offs and
+conditions for revisiting the decision in its ADR; later reconsideration needs the owner's decision.
 
 ## A new project
 

@@ -1,8 +1,7 @@
-{ inputs, ... }:
+{ ... }:
 
 {
   imports = [
-    inputs.umbriel.nixosModules.default
     ./hardware.nix
     ./boot.nix
     ./packages.nix
@@ -11,7 +10,7 @@
     ../../modules/nixos/services
     ../../modules/nixos/services/sunshine.nix
     ../../modules/nixos/desktop/amane-greeter
-    ../../modules/nixos/desktop/umbriel.nix
+    ../../modules/nixos/desktop/niri.nix
     ../../modules/nixos/desktop/audio.nix
     ../../modules/nixos/desktop/plasma.nix
     ../../modules/nixos/virtualisation
@@ -31,11 +30,9 @@
   nix.settings = {
     substituters = [
       "https://kopuz.cachix.org"
-      "https://umbriel.cachix.org"
     ];
     trusted-public-keys = [
       "kopuz.cachix.org-1:J2X3AnAYhKTJW5S3aCLoA1ckonQXVNZMQvhZA0YAufw="
-      "umbriel.cachix.org-1:JfNq/2yg2S6D6z4Z2dVSZrZlDPQTKtexB6GAVLD98nw="
     ];
   };
 

@@ -1,14 +1,14 @@
 { config, lib, pkgs, ... }:
 
 let
-  monitorsOn = "umbriel msg dpms-on";
-  monitorsOff = "umbriel msg dpms-off";
+  monitorsOn = "niri msg action power-on-monitors";
+  monitorsOff = "niri msg action power-off-monitors";
 in
 {
   services.swayidle = {
     enable = true;
     systemdTargets = [
-      "umbriel-session.target"
+      "niri.service"
     ];
 
     events = {

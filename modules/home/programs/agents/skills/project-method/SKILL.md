@@ -31,7 +31,7 @@ Each kind of fact has one home. Other documents link to it, because a fact writt
 | `docs/debt.md` | The known debt once it outgrows a page: each item short, with why it stays and where it is tracked; the PLAN links to it |
 | `docs/audits/` | One file per audit: its scope, findings, decisions and fixes |
 | `docs/history.md` | The stages that are done, each in a few lines, with its release and its ADRs |
-| `docs/ARCHITECTURE.md` | The parts of the code, their roles, what depends on what, the main flows |
+| `docs/ARCHITECTURE.md` | The parts, dependencies, main flows, invariants, data ownership and failure boundaries |
 | `docs/adr/NNNN-title.md` | One decision each: context, decision, alternatives rejected, consequences. Only the status changes afterwards. |
 | `docs/glossary.md` | The terms the project coins |
 | `docs/measurements.md` | What the benchmarks measured, one section per milestone or machine |
@@ -101,9 +101,10 @@ seen the ROADMAP, its quality bar and the list of ADRs.
   built; the field is surveyed, options compared and challenged, decisions put to the owner one at
   a time, then recorded in ADRs, the ROADMAP and the PLAN.
 - **Done** means: the checks pass; the program was run; new behaviour is tested; the budgets the
-  milestone touches are measured and met, their figures kept; the PLAN says so; every document
-  affected is updated and reread as a newcomer would; every decision a newcomer would question is an
-  ADR. Never report as working what was not verified.
+  milestone touches are measured and met, their figures kept; affected architecture contracts and
+  stability scenarios from the quality bar are checked; the PLAN says so; every document affected
+  is updated and reread as a newcomer would; every decision a newcomer would question is an ADR.
+  Never report as working what was not verified.
 - **The owner decides direction**: architecture, product behaviour and look, formats, platforms,
   dependencies, what is costly to undo; one decision at a time, the options with their pros and
   cons in plain terms, a recommendation for the long term. Implementation choices are the agent's,

@@ -17,8 +17,8 @@ use crate::theme::{
     Palette, SYMBOL_FONT, Theme,
 };
 
-const UMBRIEL_TOP_MODE: &str = "# Barre en haut : pas de surcharge.";
-const UMBRIEL_COMPACT_MODE: &str = "[layout]\ngap = 0\n[appearance]\nborder_width = 0\ncorner_radius = 0\n[appearance.shadow]\nenabled = false\n[[window_rule]]\nmatch.is_focused = false\nopacity = 1.0";
+const NIRI_TOP_MODE: &str = "// Floating top bar: use the configured layout.";
+const NIRI_COMPACT_MODE: &str = "layout {\n    gaps 0\n    border {\n        off\n    }\n    shadow {\n        off\n    }\n}\nwindow-rule {\n    geometry-corner-radius 0\n    opacity 1.0\n}";
 
 fn position_file() -> String {
     format!("{}/.bar-position", theme::config_dir())
@@ -26,8 +26,8 @@ fn position_file() -> String {
 
 // Top: floating rounded bar; bottom: flush bar with the compositor's gaps and borders turned off
 fn apply_mode(top: bool) {
-    let path = format!("{}/.config/umbriel/bar-mode.toml", theme::home());
-    let mode = if top { UMBRIEL_TOP_MODE } else { UMBRIEL_COMPACT_MODE };
+    let path = format!("{}/.config/niri/bar-mode.kdl", theme::home());
+    let mode = if top { NIRI_TOP_MODE } else { NIRI_COMPACT_MODE };
 
     let _ = fs::write(path, format!("{mode}\n"));
 }
@@ -131,10 +131,7 @@ pub fn view(monitor: &Monitor) -> LayerWindow {
         .space(Zone::Reserve)
         .namespace("amane-bar");
 
-    /*
-     * the game launcher takes the whole screen; the bar only draws nothing, hiding it
-     * as the launcher maps races Umbriel's configure and wlroots kills the shell
-     */
+    // Keep the reserved area stable while the full-screen game launcher covers the bar.
     if popups::shown_on(Popup::SteamLauncher, &monitor.name) {
         return window.child(Rectangle::new().width(Parent).height(Parent));
     }

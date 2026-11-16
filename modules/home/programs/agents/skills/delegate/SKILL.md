@@ -39,20 +39,16 @@ provider's file in the down-provider folder (next section).
 | reviewer-closing | 1 | Opus 5.5, max | `claudeAgent`, `claude-opus-5-5`, `{effort: "max"}` | `reviewer-closing` | `claude` |
 | challenger | 1 | Opus 5.5, max | as reviewer-closing | `challenger` | `claude` |
 | reader | 1 | DeepSeek V4.1 Flash, high; max for hard reading | `deepseekHarness_deepseek`, `deepseek-official/deepseek-flash`, `{reasoningEffort: "high"}` | — | `deepseek` |
-| reader | 2, other reading | Sonnet 5.5, high, on trial | `claudeAgent`, `claude-sonnet-5-5`, `{effort: "high"}` | `reader` | `claude` |
-| reader | 2, plain searches and runs | Haiku 5.5, high, on trial | `claudeAgent`, `claude-haiku-5-5`, `{effort: "high"}` | `reader-light` | `claude` |
+| reader | 2 | Sonnet 5.5, high | `claudeAgent`, `claude-sonnet-5-5`, `{effort: "high"}` | `reader` | `claude` |
 | reader | 3 | none: defer the task | | | |
-| web-research | 1 | DeepSeek V4.1 Flash, high, on trial | as reader 1 | — | `deepseek` |
-| web-research | 2 | Sonnet 5.5, high, on trial | as reader 2 | `web-research` | `claude` |
-| author-bounded | 1 | DeepSeek V4.1 Flash, high, on trial | as reader 1 | — | `deepseek` |
-| author-bounded | 2 | Sonnet 5.5, high, on trial | as reader 2 | `author-bounded` | `claude` |
-| author-bounded | 3 | Opus 5.5, xhigh | as author-hard | `author-hard` | `claude` |
+| web-research | 1 | Sonnet 5.5, high | as reader 2 | `web-research` | `claude` |
+| author-bounded | 1 | Sonnet 5.5, high | as reader 2 | `author-bounded` | `claude` |
+| author-bounded | 2 | Opus 5.5, xhigh | as author-hard | `author-hard` | `claude` |
 | reviewer-second | 1 | DeepSeek V4.1 Flash, max | as reader 1, `{reasoningEffort: "max"}` | — | `deepseek` |
 | reviewer-second | 2 | none: skip it | | | |
 
-- Take the first row you can reach whose provider is not marked down. Two rows with the same
-  number are one step: take the one whose condition fits the task. When no row is left, a role
-  whose last row is not "none" waits for its provider's reset.
+- Take the first row you can reach whose provider is not marked down. When no row is left, a
+  role whose last row is not "none" waits for its provider's reset.
 - A row you cannot reach (no `delegate_task` in your tool) is skipped, never marked down.
 - A Claude Code lead reaches a Claude row through its role subagent, never a built-in one (Explore,
   general-purpose, a fork), with no `model` or `effort` in the call: the definition holds them
@@ -87,6 +83,11 @@ provider's file in the down-provider folder (next section).
 - Every lead runs `provider-check --list` before choosing a target: it deletes the marks whose
   `check-after` has passed and prints the others. A mark is also deleted when `provider-check
   <mark>` reports the provider available, or when the owner says the account was topped up.
+- A lead with Pluto's tools also reads `orchestrator_capabilities` before a Claude target: each
+  provider's `usageLimits` gives its 5-hour and weekly windows (`usedPercent`, `resetsAt`) and
+  when Pluto last read them (`checkedAt`); windows already reset are not listed. A window at 100
+  marks the provider down without a call: `provider-check --down claude USAGE_LIMIT
+  "<resetsAt>"`. Pluto knows windows only for Claude and Codex.
 - `provider-check <mark>` checks only `deepseek` for now: DeepSeek's balance, with Pluto's
   DeepSeek Harness key. It prints `is_available`, the balance, and whether it deleted the mark.
   Its exit code:
@@ -94,7 +95,8 @@ provider's file in the down-provider folder (next section).
   - 1: unavailable; mark it down if it is not;
   - 3: an error (no key, network, a refused key, an unreadable answer, a folder it cannot
     change); the mark is kept;
-  - 4: a mark it cannot check, such as `claude`, which expires at its `check-after`.
+  - 4: a mark it cannot check, such as `claude`, which expires at its `check-after`; read
+    `usageLimits` instead.
 - Before a task in its own worktree, check the provider first, with `provider-check` or a tiny
   read-only task: the project's setup runs before the model's first call.
 
@@ -156,8 +158,9 @@ to catch: the edge cases as tests, the documents to update, the helpers that alr
 
 For the agent that receives a brief:
 
-- You never delegate, schedule work, open threads, message other sessions or ask for secrets. You
-  read nothing outside the project, its `.delegation/` folder, this skill and the paths the brief
+- You never delegate, schedule work, open threads, message other sessions or ask for secrets.
+  Pluto refuses those tools to a `delegate_task` child; the rule holds for every other path, your
+  provider's own subagents included. You read nothing outside the project, its `.delegation/` folder, this skill and the paths the brief
   names. You reach the web only through `run.sh curl`, so that every page is saved. You never
   commit or push: the lead commits after checking.
 - Run every acceptance command, and every command whose result you report, through
@@ -192,7 +195,8 @@ One line per delegated task in `~/.local/state/agents/delegation-ledger.md` (loc
 committed): date, project, task id, role, kind, model and effort, outcome, accepted first time (yes
 or no), correction rounds, hidden checks passed (as `2/3`), the child's cost, the lead's cost,
 defects found later, a note. Costs are in tokens or dollars where Pluto or the transcripts show
-them, `?` otherwise. Outcomes: merged as delivered, fixed by the lead, replaced, failed, provider
+them, `?` otherwise. A Pluto child's cost is the `usage` of its last `task_status`: input (cache
+included) and output tokens, with `partial` noted when it says so; Pluto gives no dollars. Outcomes: merged as delivered, fixed by the lead, replaced, failed, provider
 down. Kinds: search, reading, run, measurement, reproduction, bounded code, review pack, extra
 verification. A defect found later in a delegated change is added to its line.
 

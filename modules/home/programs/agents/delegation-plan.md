@@ -33,12 +33,14 @@ context; this plan works on routing.
   - Every provider can lead and call Claude (Kimi only through `~/.kimi-code/mcp.json`), but
     DeepSeek Harness, Kimi Code and Mistral Vibe get the tool without Pluto's how-to text.
   - DeepSeek Harness cuts any tool call at 60 s: from it, only `mode: "async"` works.
-  - A delegated task can delegate again, with no depth or concurrency limit, and holds all 17
-    tools (`schedule_task`, `create_threads`, `request_secret`).
-  - A child's usage is not added to its parent's; no cost per delegated task exists yet.
+  - A delegated task could delegate again and held every orchestration tool; since step C it
+    cannot (see *Steps*, point 8).
+  - A child's usage is not added to its parent's. Since step C, `task_status` gives its tokens
+    and an estimated cost.
   - Out of credit, DeepSeek Harness reports `QUOTA` (HTTP 402), without retry. Pluto's summary:
     "DeepSeek Harness reported a model error (QUOTA)". DeepSeek's `GET /user/balance` answers
-    `is_available`. Pluto knows Claude's 5-hour and weekly windows but does not expose them.
+    `is_available`. Pluto knows Claude's 5-hour and weekly windows; since step C,
+    `orchestrator_capabilities` exposes them.
 - **Practice of the field** (`~/NixOS/.delegation/routing-practice-1/report.md`, 58 sources):
   fix roles, not models; decide on one's own tasks, paired; 30 tasks resolve only differences of
   15–20 points; a model judge favours its own family; switch models only between tasks.
@@ -79,6 +81,16 @@ context; this plan works on routing.
 15. Effort max stays for the closing review and challenges. Each delegated task that changed files
     is checked by a new `checker` role, Opus at effort high (asked while building step A).
 
+2026-11-09, after step D:
+
+16. DeepSeek V4.1 Flash leaves author-bounded (3 failures in 5 replays, Sonnet never worse);
+    Sonnet 5.5, no longer on trial, becomes its first row, then Opus.
+17. Sonnet 5.5 is no longer on trial as reader (1 failure in 3 replays, never worse than Haiku).
+18. Haiku 5.5 leaves reader (2 failures in 3; Sonnet as good or better on each task, for a third
+    more); its subagent `reader-light` is removed.
+19. DeepSeek V4.1 Flash leaves web-research (3 failures in 4 replays); Sonnet 5.5, no longer on
+    trial, becomes its only row.
+
 ## Design
 
 ### Roles
@@ -95,9 +107,9 @@ optional review whose findings count only with a failing test. `challenger` atta
 | Role | Targets, in order |
 |---|---|
 | lead, author-hard, checker, reviewer-closing, challenger | Opus 5.5, effort max for reviews and challenges, high for `checker`. When Claude's window is out: wait for its reset. |
-| reader | DeepSeek V4.1 Flash, high (max for hard reading); then Sonnet 5.5 (Haiku 5.5 for plain searches and runs), on trial; then defer. |
-| web-research | DeepSeek V4.1 Flash, on trial, the brief naming the independent boards; then Sonnet 5.5, on trial. Research on which model to use is never done by a model under evaluation. |
-| author-bounded | DeepSeek V4.1 Flash, on trial; then Sonnet 5.5, on trial; then Opus 5.5. |
+| reader | DeepSeek V4.1 Flash, high (max for hard reading); then Sonnet 5.5; then defer. |
+| web-research | Sonnet 5.5, the brief naming the independent boards. Research on which model to use is never done by a model under evaluation. |
+| author-bounded | Sonnet 5.5; then Opus 5.5. |
 | reviewer-second | DeepSeek V4.1 Flash, max; else skipped. |
 
 Each row gives the Pluto target (provider instance, model, options). Claude's targets also exist as
@@ -204,14 +216,65 @@ one.
      as unavailable, a check deleting a mark written meanwhile, and five more) are fixed, each
      with a test.
    - The `delegate` skill's section *A provider that is down* now names these commands.
-   Still open: `claude` cannot be checked until Pluto exposes the usage windows (step C); a mark
-   for it expires at its `check-after`. If DeepSeek Harness's `apiKeyEnv` is ever changed from
+   Still open: `provider-check claude` still exits 4; since step C a lead reads Claude's windows
+   in `orchestrator_capabilities` and sets the mark's `check-after` from `resetsAt`. If DeepSeek Harness's `apiKeyEnv` is ever changed from
    `DEEPSEEK_API_KEY`, the script must follow.
-8. **C. Pluto** (its own project, in this order): a delegated task gets no orchestration tools;
-   `orchestrator_capabilities` exposes the providers' usage windows; a child's usage is added to its
-   parent's.
+8. **C. Pluto.** Built 2026-11-09 on branch `pluto` (`cce680c774..131cb1fb4a`, not pushed),
+   waiting for the owner's commit of `flake.lock`, rebuild and restart of `pluto-server`:
+   - A delegated task (lineage `subagent`) gets a credential without `orchestration` and
+     `worktree`: the server refuses it every tool that starts work or acts outside its thread
+     (delegate, launch, fork, read or message other threads, schedule, secrets, projects,
+     guides, chat memory), for every provider, and the chat memory does not learn from it. It reads its own thread and links its own thread's pull requests. The six
+     adapters that give the orchestration instructions no longer give them to a child.
+   - `orchestrator_capabilities` gives each provider's dated usage windows (`usageLimits`).
+   - `task_status` gives the task's own tokens (`usage`) and `estimatedCostUsd`, at standard
+     list prices with the usage page's table, overrides and mappings (the owner's choice; no
+     provider cost is kept). An estimate never waits on the network beyond 2 s.
+   - Closing review in two rounds (`.delegation/pluto-c-closing-review-*`), findings fixed with
+     tests or written down; the server suite keeps its 14 known failures and adds none.
+   Still open, each the owner's call: hide the refused tools from a child's tool list (`/mcp`
+   lists one set for every credential; filtering needs a change to Effect's MCP server, or one
+   per adapter); keep Claude's own reported cost; add a child's usage to its parent's in the
+   clients (asked 2026-11-09: not now); read-only OAuth clients now see the usage windows.
 9. **D. Trials:** Haiku 5.5 and Sonnet 5.5 as reader and fallback; DeepSeek Flash in web research
-   and bounded code; by replays of saved briefs with hidden tests.
+   and bounded code; by replays of saved briefs with hidden tests. Run 2026-11-09:
+   - The replay lot: 10 past tasks rebuilt from the ledger, their briefs from Pluto's child
+     threads, their bases from history. Reading: `step2-research-dsh-usage-object-errors-r1`,
+     `pluto-delegation-capabilities-1`, `pluto-c-tool-access-1`. Web: `multimodel-landscape-1`,
+     `routing-practice-1`. Bounded code: `step2-fix-summary-last-message-r1`,
+     `step2-impl-dsh-live-usage-r1`, and the `AGENTS.md` diets of SlimeEngine, Opium and Slatty.
+     Each brief is saved as `.delegation/replay-<task>.<model>/brief.md` in its repository. The
+     hidden checks are the tests and rules Opus added or restored after the original runs, what
+     Opus's doubles found that the originals missed, or the facts the lead confirmed in them.
+   - The two code tasks start from local branches `replay/step2-*-base` in `pluto-server`: the
+     original's parent commit plus the brief's failing tests, without the case added after
+     review. The hidden tests reject DeepSeek's original diffs and accept Opus's.
+   - Hidden checks passed, per task:
+     - reading (DSH research, Pluto capabilities, tool access): Haiku 3/3, 0/2, 1/2; Sonnet
+       3/3, 1/2, 2/2;
+     - web (landscape, routing): DeepSeek run in `~/NixOS` 0/3, 2/3, run again at the base
+       outside it 2/3, 3/3; Sonnet at the base 3/3, 3/3. The briefs and the skill name some of
+       the answers; only the third check of each is hidden;
+     - bounded code (summary fix, live usage, then the diets of SlimeEngine, Opium, Slatty):
+       DeepSeek 0/1, 0/1, 2/2, 2/3, 2/2; Sonnet 0/1, 1/1, 2/2, 3/3, 2/2. Sonnet's SlimeEngine
+       diet missed the word limit and dropped a path, which no check looked at.
+     Trial lines and costs: the ledger; the proposal with its figures:
+     `~/.local/state/agents/step-d/proposal.md` (local). Worktrees discarded; proofs kept in
+     each repository's `.delegation/replay-*`.
+   - Decided: DeepSeek leaves author-bounded (decision 16); Sonnet is promoted as reader
+     (decision 17); Haiku leaves reader (decision 18); DeepSeek leaves web-research, Sonnet
+     becoming its only row (decision 19). No row is on trial any more. Step D is done.
+   - Learned:
+     - a hidden check must not be stated where a delegate reads; still open: the skill gives
+       DSH's 60 s cut and the three boards, and points to this plan, which holds the web
+       answers;
+     - a hidden check must not forbid what the brief allows (two diet checks did, and were
+       voided);
+     - Claude Code refuses a subagent's write of `report.md` at times, so the lead saves the
+       final message;
+     - original runs score by construction on checks built from them, so only replays compare;
+     - one run per task is not enough: DeepSeek's two runs of each web task disagreed.
+   - Closing review: two rounds (`step-d-closing-review-1`, `-2`), findings applied.
 10. **Later, on the owner's go:** the Max plan's API credits (link a Console organization, then a
     test of a few cents that they pay for a Pluto Claude instance); Pluto choosing the target from
     the role; a pre-commit check of the author's identity.
@@ -220,5 +283,6 @@ one.
 
 - Every child runs as the owner: any provider's child can read another provider's credential files,
   and the lead's hidden checks. A sandbox per provider is not built; the read scope in briefs is the
-  only guard.
+  only guard. This also undoes step C for a child with a shell: ACP, Pi and Kimi agents keep their
+  thread's Pluto token in their environment, which another process of the owner can read.
 - With DeepSeek the only provider besides Claude, no second review from another family exists.

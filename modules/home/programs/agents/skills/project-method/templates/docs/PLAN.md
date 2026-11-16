@@ -27,7 +27,8 @@ next. -->
 - **Goal.** <!-- what the user or the owner can do afterwards -->
 - **Delivers.** <!-- what is built, as the ADRs decide -->
 - **Done when.** <!-- the verifiable criterion -->
-- **How to test.** <!-- the commands -->
+- **How to test.** <!-- the commands; affected architecture contracts and stability scenarios from
+  the quality bar, their checks and evidence links -->
 - **Measured.** <!-- the budgets of the quality bar this milestone touches, and their figures once
   measured -->
 - **By hand.** <!-- what the owner checks themselves, if anything -->

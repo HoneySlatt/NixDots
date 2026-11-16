@@ -12,15 +12,15 @@ let
     amane = import ../../../home/amane/package.nix { inherit inputs pkgs; };
   };
 
-  # Same modes and scales as the session (modules/home/umbriel/monitors.nix)
+  # Same modes and scales as the session (modules/home/niri/monitors.nix)
   outputs = lib.concatStrings (
     lib.mapAttrsToList (name: output: ''
       output "${name}" {
-          mode "${output.mode}"
+          mode "${toString output.mode.width}x${toString output.mode.height}@${toString output.mode.refresh}"
           scale ${builtins.toJSON output.scale}
-          position x=${toString (builtins.elemAt output.position 0)} y=${toString (builtins.elemAt output.position 1)}
+          position x=${toString output.position.x} y=${toString output.position.y}
       }
-    '') config.home-manager.users.${user}.programs.umbriel.settings.output
+    '') config.home-manager.users.${user}.programs.niri.settings.outputs
   );
 
   # uwsm-managed entries need a uwsm setup this system does not have
@@ -32,7 +32,7 @@ let
   start = pkgs.writeShellScript "amane-greeter-start" ''
     # HOME holds the copied theme and wallpaper, which the greeter user can only read
     HOME=${data} XDG_CACHE_HOME="''${XDG_RUNTIME_DIR:-/tmp}/cache" \
-      AMANE_GREETER_USER=${user} AMANE_GREETER_OUTPUT=DP-3 AMANE_GREETER_DEFAULT_SESSION="$(cat ${data}/session 2>/dev/null || echo Niri)" \
+      AMANE_GREETER_USER=${user} AMANE_GREETER_OUTPUT=DP-2 AMANE_GREETER_DEFAULT_SESSION="$(cat ${data}/session 2>/dev/null || echo Niri)" \
       AMANE_GREETER_SESSIONS=${sessions} \
       ${greeter}/bin/amane-greeter
 

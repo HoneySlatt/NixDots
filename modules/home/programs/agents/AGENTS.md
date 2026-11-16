@@ -20,6 +20,10 @@ others), in every project. Each tool reads this one file where it looks for its 
   tiers and when reduced motion or reduced transparency is asked.
 - The bar is measured, not claimed. Each project records its references, its budgets and how they
   are measured, and checks them, in CI where it can.
+- Architectural quality is part of the bar, alongside correctness, user experience and performance.
+  Every project aims for a foundation that stays reliable, understandable, maintainable and safe
+  to evolve. Judge it by explicit contracts, controlled dependencies, predictable failure behaviour
+  and the cost of making realistic changes safely.
 - Done well before done soon. A shortcut that leaves debt is not taken; one that cannot be avoided
   is written down as debt, with its reason.
 - Choose for the long term what must be chosen now (architecture, formats, dependencies). A rewrite
@@ -79,6 +83,15 @@ others), in every project. Each tool reads this one file where it looks for its 
   is unclear, stop and ask.
 - Build the simplest design that reaches the bar. No feature, abstraction or option that nothing
   needs yet. Simplicity serves quality; it never replaces it.
+- Give each part a clear responsibility and dependency direction; avoid dependency cycles and
+  shared mutable global state. An abstraction needs a concrete benefit: reuse, a boundary around
+  an unstable dependency, a protected invariant or a test that needs isolation.
+- Make data ownership and task lifetimes explicit: who may change state, how concurrent work is
+  coordinated, cancelled and stopped. Bound queues, caches and concurrent work; define what happens
+  at their limits and how relevant failures are contained and recovered from.
+- Evolve contracts deliberately: document compatibility promises, test migrations and affected
+  callers, and state the recovery path for a failed upgrade. Judge architecture with realistic
+  change and failure scenarios; a successful build alone proves neither stability nor evolvability.
 - Every changed line traces to the task. Leave unrelated code alone; report dead code or drift
   instead. Remove what your own change left unused.
 - Code reads plainly to any developer or agent who has never seen it: names that say what things
@@ -119,8 +132,8 @@ others), in every project. Each tool reads this one file where it looks for its 
 
 ## 6. The machine
 
-- NixOS, configured in `~/NixOS`, host `desktop`. The compositor is Umbriel
-  (`~/NixOS/modules/home/umbriel`); the desktop shell is Amane (`~/NixOS/modules/home/amane`).
+- NixOS, configured in `~/NixOS`, host `desktop`. The compositor is Niri
+  (`~/NixOS/modules/home/niri`); the desktop shell is Amane (`~/NixOS/modules/home/amane`).
 - Check a change to `~/NixOS` with `nixos-rebuild build --flake ~/NixOS#desktop`, which needs no
   root; the owner switches to it.
 - The owner checks Windows, and macOS on an Intel Mac with an AMD GPU, in virtual machines that only
@@ -136,9 +149,14 @@ others), in every project. Each tool reads this one file where it looks for its 
   script. It gets its own compositor (`--sway` for a layer-shell client), runtime folder and session
   bus, throwaway XDG folders, no network unless `--net`; all of it stops at the end.
 - Reach the desktop only through `owner-desktop -- <command>`, where the project allows it, for what
-  needs the real compositor or GPU. Check first that no game runs.
+  needs the real compositor or GPU.
+- Never hold back for a game: the owner's activity sets the priority, the game when the owner
+  plays, the work when the owner develops. A timed measure checks, before and while it runs, the
+  load other programs put on the GPU and the processor (a game, a build, another session); a run
+  they disturb is marked so and reported to the owner, who stops the other work or has it measured
+  again later. A measure the load does not affect, and every functional test, runs anyway.
 - Close a window you opened through its own program or its process, never through a compositor
-  action that could reach the focused window. Never run `umbriel` without a subcommand: it starts a
+  action that could reach the focused window. Never run `niri` without a subcommand: it starts a
   compositor.
 - A headless run set up by hand needs its own `XDG_RUNTIME_DIR`: without `WAYLAND_DISPLAY`, GTK and
   libwayland fall back on `wayland-0`. nixpkgs' `sway` is a wrapper that survives `kill`: stop the
