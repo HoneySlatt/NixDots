@@ -1,6 +1,6 @@
 # NNNN. <!-- The decision, as a short title -->
 
-- Status: Accepted
+- Status: Accepted <!-- or: Accepted; supersedes NNNN -->
 - Date: YYYY-MM-DD
 
 ## Context

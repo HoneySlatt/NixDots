@@ -32,7 +32,9 @@ Each audit names the dimensions it covers. A stage audit covers them all.
 - **Tests**: each fails when the behaviour it names breaks (mutation testing, `cargo mutants`);
   none skipped, none flaky.
 - **Readability**: the code read by someone who has never seen it (`craft.md`).
-- **Documentation**: accurate, complete, short, understood by a newcomer (`craft.md`).
+- **Documentation**: accurate, complete, short, understood by a newcomer (`craft.md`). A topic
+  whose rule is spread across ADRs that amend one another is consolidated: one ADR supersedes them,
+  the rule stated whole.
 - **Dependencies**: updates, advisories, licenses, ones that can go.
 - **Accessibility**, for anything with an interface.
 - **Debt**: the whole list, triaged as [Debt](#debt) says.

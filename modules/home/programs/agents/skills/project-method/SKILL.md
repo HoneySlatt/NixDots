@@ -31,11 +31,13 @@ Each kind of fact has one home. Other documents link to it, because a fact writt
 | `docs/debt.md` | The known debt once it outgrows a page: each item short, with why it stays and where it is tracked; the PLAN links to it |
 | `docs/audits/` | One file per audit: its scope, findings, decisions and fixes |
 | `docs/history.md` | The stages that are done, each in a few lines, with its release and its ADRs |
-| `docs/ARCHITECTURE.md` | The parts, dependencies, main flows, invariants, data ownership and failure boundaries |
-| `docs/adr/NNNN-title.md` | One decision each: context, decision, alternatives rejected, consequences. Only the status changes afterwards. |
+| `docs/ARCHITECTURE.md` | One page first, the parts by layer and the main flows; then the parts, dependencies, main flows, invariants, data ownership and failure boundaries |
+| `docs/adr/NNNN-title.md` | One decision each: context, decision, alternatives rejected, consequences. Only the status changes afterwards. A changed decision, even in part, is a new ADR that supersedes it and states the rule whole, so that one ADR is read for a topic. |
+| `docs/adr/README.md` | How ADRs are written, and their index, written from the ADRs by `scripts/adr-index.py` |
 | `docs/glossary.md` | The terms the project coins |
 | `docs/measurements.md` | What the benchmarks measured, one section per milestone or machine |
-| `CHANGELOG.md` | What changed for users, per release |
+| `CHANGELOG.md` | What changed for users, per release, gathered from `changelog.d/` by `scripts/changelog.py --merge` |
+| `changelog.d/` | One fragment per change that users see, so that changes made at once never meet in `CHANGELOG.md` |
 | `CONTRIBUTING.md` | The environment and the commands in detail |
 | `flake.nix` | The development shell: the toolchain and every tool the checks and measurements use |
 | `scripts/check.sh` | Every automated check of the definition of done, in one command, benchmarks with budgets included |

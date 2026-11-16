@@ -95,9 +95,11 @@ whatever a newcomer could break without knowing. -->
 - Each fact has one home; other documents link to it:
   - the code's documentation: contracts, limits, figures;
   - `docs/ARCHITECTURE.md`: flows across parts;
-  - ADRs: why a decision was taken, what was rejected; only their status changes later;
+  - ADRs: why a decision was taken, what was rejected; only their status changes later; a
+    decision changed is superseded by a new ADR that states it whole;
   - `docs/PLAN.md`: status and known debt;
-  - `CHANGELOG.md`: what changed for users.
+  - `changelog.d/`: a fragment per change that users see, gathered into `CHANGELOG.md` at a
+    release.
 - A change that leaves a document wrong is not finished.
 
 ## Commits

@@ -24,6 +24,8 @@
             cargo-deny
             lychee
             hyperfine
+            # scripts/adr-index.py and scripts/changelog.py, on the standard library alone.
+            python3
           ];
         };
       });

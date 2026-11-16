@@ -38,4 +38,9 @@ fi
 step "links"
 git ls-files -z '*.md' | xargs -0 lychee --offline --include-fragments --no-progress
 
+# The ADRs' index, written from the ADRs, and the changelog's fragments.
+step "ADRs' index and changelog fragments"
+python3 -I scripts/adr-index.py
+python3 -I scripts/changelog.py
+
 step "all checks passed"

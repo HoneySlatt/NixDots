@@ -3,6 +3,11 @@
 How the code is organised now, for a developer who has never seen it. Decisions and their reasons
 are in [`adr/`](adr/README.md); the contracts of each item are in the code's documentation.
 
+## In one page
+
+<!-- What a newcomer reads first: the parts by layer, bottom up, each in a line, and the main flows
+in a sentence each, linking to the sections below that tell them whole. -->
+
 ## Parts
 
 <!-- One entry per crate, module or package: its role, what it depends on, what it must not do. -->
