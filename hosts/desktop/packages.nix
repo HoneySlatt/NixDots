@@ -10,7 +10,9 @@
 
     # Communication
     discord
+    fluxer-canary-bin
     element-desktop
+    rootapp
     signal-desktop
     tutanota-desktop
 
@@ -40,6 +42,7 @@
     pkgsRocm.blender
     gimp
     inkscape
+    bitwarden-desktop
     kdePackages.kdenlive
     libreoffice
     obsidian
@@ -49,6 +52,7 @@
     cosmic-viewer
     localsend
     rqbit
+    qbittorrent
     rqbit-desktop
 
     # Development

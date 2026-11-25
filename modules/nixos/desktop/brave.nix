@@ -5,7 +5,12 @@ let
   block = 2;
 in
 {
-  imports = [ inputs.brave-browser.nixosModules.default ];
+  # Import only the package. NixOS already declares the Brave module options.
+  nixpkgs.overlays = [
+    (final: _: {
+      inherit (inputs.brave-browser.packages.${final.stdenv.hostPlatform.system}) brave-origin;
+    })
+  ];
 
   programs.chromium = {
     enable = true;
